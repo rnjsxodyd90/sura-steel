@@ -1,98 +1,103 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { ShoppingBag, X, Menu, Star, Check, Instagram, Facebook, Twitter, ArrowRight, Hammer, Globe, ShieldCheck, Mail, MapPin, Phone, Crown, Ruler, Scale, ArrowLeft } from 'lucide-react';
+import { ShoppingBag, X, Menu, Star, Check, Instagram, Facebook, Twitter, ArrowRight, Hammer, Globe, ShieldCheck, Mail, MapPin, Phone, Crown, Ruler, Scale, ArrowLeft, Plus, Minus } from 'lucide-react';
 
-// --- REAL PRODUCT DATA (All Sets Included) ---
+// --- REAL PRODUCT DATA (With Premium Pricing Strategy) ---
 const PRODUCTS = [
-  // =========================
-  //      GOLD COLLECTION
-  // =========================
+  // --- GOLD COLLECTION ---
   { 
     id: 20, 
     name: "Moon Gold", 
-    price: 360, 
     category: "Gold", 
     image: "/images/Moon Gold.jpg", 
     description: "Our signature set. Celestial beauty in 24k gold finish. Hand-polished for a brilliant shine.",
     specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish + PVD Gold" },
+    // Pricing Strategy
+    price_full_set: 380,     // 24 Pieces
+    price_place_setting: 72, // 4 Pieces (Knife, Fork, Spoon, Tea Spoon)
     components: [
-      { name: "Dinner Knife", len: "232mm", thick: "7.0mm", material: "13/0", price: 49 },
-      { name: "Dinner Spoon", len: "200mm", thick: "3.5mm", material: "18/10", price: 47 },
-      { name: "Dinner Fork", len: "201mm", thick: "3.5mm", material: "18/10", price: 47 },
-      { name: "Tea Spoon", len: "143mm", thick: "2.5mm", material: "18/10", price: 24 }
+      { name: "Dinner Knife", len: "232mm", thick: "7.0mm", material: "13/0", price: 22 },
+      { name: "Dinner Spoon", len: "200mm", thick: "3.5mm", material: "18/10", price: 20 },
+      { name: "Dinner Fork", len: "201mm", thick: "3.5mm", material: "18/10", price: 20 },
+      { name: "Tea Spoon", len: "143mm", thick: "2.5mm", material: "18/10", price: 16 },
+      { name: "Dessert Knife", len: "208mm", thick: "7.0mm", material: "13/0", price: 21 },
+      { name: "Dessert Fork", len: "181mm", thick: "3.0mm", material: "18/10", price: 19 },
+      { name: "Cake Fork", len: "161mm", thick: "6.0mm", material: "13/0", price: 19 }
     ]
   },
   { 
     id: 24, 
     name: "Pandora Gold", 
-    price: 355, 
     category: "Gold", 
     image: "/images/Pandora Gold.jpg", 
     description: "Unleash luxury with this premium heavy-gauge set. Bold, substantial, and unforgettable.",
     specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish + PVD Gold" },
+    price_full_set: 395,
+    price_place_setting: 75,
     components: [
-      { name: "Dinner Knife", len: "248mm", thick: "9.0mm", material: "13/0", price: 60 },
-      { name: "Dinner Spoon", len: "208mm", thick: "5.5mm", material: "18/10", price: 95 },
-      { name: "Dinner Fork", len: "212mm", thick: "5.5mm", material: "18/10", price: 95 },
-      { name: "Tea Spoon", len: "142mm", thick: "4.0mm", material: "18/10", price: 45 }
+      { name: "Dinner Knife", len: "248mm", thick: "9.0mm", material: "13/0", price: 24 },
+      { name: "Dinner Spoon", len: "208mm", thick: "5.5mm", material: "18/10", price: 22 },
+      { name: "Dinner Fork", len: "212mm", thick: "5.5mm", material: "18/10", price: 22 },
+      { name: "Tea Spoon", len: "142mm", thick: "4.0mm", material: "18/10", price: 18 }
     ]
   },
-  { id: 1, name: "Ivy Gold", price: 325, category: "Gold", image: "/images/Ivy Gold.jpg", description: "Organic flowing lines wrapped in gold.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish + PVD Gold" } },
-  { id: 2, name: "Jacob Gold", price: 310, category: "Gold", image: "/images/Jacob Gold.jpg", description: "Timeless simplicity for the modern king.", specs: { material: "18/0 Stainless Steel", finish: "Mirror Polish + PVD Gold" } },
-  { id: 3, name: "Jaime Gold", price: 340, category: "Gold", image: "/images/Jaime Gold.jpg", description: "Bold and substantial, a statement piece.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish + PVD Gold" } },
-  { id: 4, name: "Jambi Gold", price: 330, category: "Gold", image: "/images/Jambi Gold.jpg", description: "Exotic inspiration with a flawless gold polish.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish + PVD Gold" } },
-  { id: 5, name: "Kaizen Gold", price: 350, category: "Gold", image: "/images/Kaizen Gold.jpg", description: "Continuous improvement in design, realized in gold.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish + PVD Gold" } },
-  { id: 6, name: "Karina Gold", price: 325, category: "Gold", image: "/images/Karina Gold.jpg", description: "Graceful and elegant, fit for a queen.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish + PVD Gold" } },
-  { id: 7, name: "Lucius Gold", price: 345, category: "Gold", image: "/images/Lucius Gold.jpg", description: "Light and brilliant, illuminating the dining experience.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish + PVD Gold" } },
-  { id: 8, name: "Mercy Gold", price: 315, category: "Gold", image: "/images/Mercy Gold.jpg", description: "Soft edges and a comforting grip in gold.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish + PVD Gold" } },
-  { id: 9, name: "Murray Gold", price: 310, category: "Gold", image: "/images/Murray Gold.jpg", description: "Sturdy and reliable with a touch of luxury.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish + PVD Gold" } },
-  { id: 10, name: "Neville Gold", price: 320, category: "Gold", image: "/images/Neville Gold.jpg", description: "Classic heritage design in a warm gold hue.", specs: { material: "18/0 Stainless Steel", finish: "Mirror Polish + PVD Gold" } },
-  { id: 11, name: "Noah Brushed Gold", price: 340, category: "Gold", image: "/images/Noah Brushed Gold.jpg", description: "Contemporary brushed finish for a modern table.", specs: { material: "18/10 Stainless Steel", finish: "Brushed + PVD Gold" } },
-  { id: 12, name: "Sander Brushed Gold", price: 330, category: "Gold", image: "/images/Sander Brushed Gold.jpg", description: "Matte gold perfection for the industrial chic home.", specs: { material: "18/10 Stainless Steel", finish: "Brushed + PVD Gold" } },
-  { id: 13, name: "Sienna Gold", price: 325, category: "Gold", image: "/images/Sienna Gold.jpg", description: "Warm and inviting, like the Italian sun.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish + PVD Gold" } },
-  { id: 14, name: "Tucson Gold", price: 315, category: "Gold", image: "/images/Tucson Gold.jpg", description: "Rugged elegance with a refined gold layer.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish + PVD Gold" } },
-  { id: 15, name: "Umbridge Gold", price: 335, category: "Gold", image: "/images/Umbridge Gold.jpg", description: "Strictly superior quality and shine.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish + PVD Gold" } },
-  { id: 16, name: "Vermilio Gold", price: 340, category: "Gold", image: "/images/Vermilio Gold.jpg", description: "Vibrant and striking, the center of attention.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish + PVD Gold" } },
-  { id: 17, name: "Xena Faceted Gold", price: 370, category: "Gold", image: "/images/Xena Faceted Gold.jpg", description: "Geometric facets reflect light like diamonds.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish + PVD Gold" } },
-  { id: 18, name: "Zoya Gold", price: 325, category: "Gold", image: "/images/Zoya Gold.jpg", description: "Life and brilliance in a forged gold silhouette.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish + PVD Gold" } },
+  // ... Standard Pricing applied to others for brevity (You can customize per item)
+  { id: 1, name: "Ivy Gold", category: "Gold", image: "/images/Ivy Gold.jpg", description: "Organic flowing lines wrapped in gold.", price_full_set: 350, price_place_setting: 65, components: [] },
+  { id: 2, name: "Jacob Gold", category: "Gold", image: "/images/Jacob Gold.jpg", description: "Timeless simplicity for the modern king.", price_full_set: 340, price_place_setting: 62, components: [] },
+  { id: 3, name: "Jaime Gold", category: "Gold", image: "/images/Jaime Gold.jpg", description: "Bold and substantial, a statement piece.", price_full_set: 360, price_place_setting: 68, components: [] },
+  { id: 4, name: "Jambi Gold", category: "Gold", image: "/images/Jambi Gold.jpg", description: "Exotic inspiration with a flawless gold polish.", price_full_set: 350, price_place_setting: 65, components: [] },
+  { id: 5, name: "Kaizen Gold", category: "Gold", image: "/images/Kaizen Gold.jpg", description: "Continuous improvement in design, realized in gold.", price_full_set: 370, price_place_setting: 70, components: [] },
+  { id: 6, name: "Karina Gold", category: "Gold", image: "/images/Karina Gold.jpg", description: "Graceful and elegant, fit for a queen.", price_full_set: 350, price_place_setting: 65, components: [] },
+  { id: 7, name: "Lucius Gold", category: "Gold", image: "/images/Lucius Gold.jpg", description: "Light and brilliant, illuminating the dining experience.", price_full_set: 365, price_place_setting: 69, components: [] },
+  { id: 8, name: "Mercy Gold", category: "Gold", image: "/images/Mercy Gold.jpg", description: "Soft edges and a comforting grip in gold.", price_full_set: 340, price_place_setting: 64, components: [] },
+  { id: 9, name: "Murray Gold", category: "Gold", image: "/images/Murray Gold.jpg", description: "Sturdy and reliable with a touch of luxury.", price_full_set: 330, price_place_setting: 60, components: [] },
+  { id: 10, name: "Neville Gold", category: "Gold", image: "/images/Neville Gold.jpg", description: "Classic heritage design in a warm gold hue.", price_full_set: 345, price_place_setting: 65, components: [] },
+  { id: 11, name: "Noah Brushed Gold", category: "Gold", image: "/images/Noah Brushed Gold.jpg", description: "Contemporary brushed finish for a modern table.", price_full_set: 360, price_place_setting: 68, components: [] },
+  { id: 12, name: "Sander Brushed Gold", category: "Gold", image: "/images/Sander Brushed Gold.jpg", description: "Matte gold perfection for the industrial chic home.", price_full_set: 355, price_place_setting: 67, components: [] },
+  { id: 13, name: "Sienna Gold", category: "Gold", image: "/images/Sienna Gold.jpg", description: "Warm and inviting, like the Italian sun.", price_full_set: 350, price_place_setting: 65, components: [] },
+  { id: 14, name: "Tucson Gold", category: "Gold", image: "/images/Tucson Gold.jpg", description: "Rugged elegance with a refined gold layer.", price_full_set: 340, price_place_setting: 64, components: [] },
+  { id: 15, name: "Umbridge Gold", category: "Gold", image: "/images/Umbridge Gold.jpg", description: "Strictly superior quality and shine.", price_full_set: 360, price_place_setting: 68, components: [] },
+  { id: 16, name: "Vermilio Gold", category: "Gold", image: "/images/Vermilio Gold.jpg", description: "Vibrant and striking, the center of attention.", price_full_set: 365, price_place_setting: 69, components: [] },
+  { id: 17, name: "Xena Faceted Gold", category: "Gold", image: "/images/Xena Faceted Gold.jpg", description: "Geometric facets reflect light like diamonds.", price_full_set: 390, price_place_setting: 74, components: [] },
+  { id: 18, name: "Zoya Gold", category: "Gold", image: "/images/Zoya Gold.jpg", description: "Life and brilliance in a forged gold silhouette.", price_full_set: 350, price_place_setting: 65, components: [] },
 
-  // =========================
-  //     SILVER COLLECTION
-  // =========================
+  // --- SILVER COLLECTION ---
   { 
     id: 56, 
     name: "Bree", 
-    price: 200, 
     category: "Silver", 
     image: "/images/Bree.jpg", 
     description: "Minimalist design for the modern home. 18/0 Stainless Steel.",
     specs: { material: "18/0 Stainless Steel", finish: "Mirror Finish" },
+    price_full_set: 220,
+    price_place_setting: 45,
     components: [
-      { name: "Dinner Knife", len: "225mm", thick: "6.0mm", material: "13/0", price: 46 },
-      { name: "Dinner Fork", len: "200mm", thick: "4.0mm", material: "18/0", price: 38 },
-      { name: "Dessert Spoon", len: "186mm", thick: "3.5mm", material: "18/0", price: 33 },
-      { name: "Tea Spoon", len: "150mm", thick: "3.5mm", material: "18/0", price: 20 }
+      { name: "Dinner Knife", len: "225mm", thick: "6.0mm", material: "13/0", price: 15 },
+      { name: "Dinner Fork", len: "200mm", thick: "4.0mm", material: "18/0", price: 12 },
+      { name: "Dessert Spoon", len: "186mm", thick: "3.5mm", material: "18/0", price: 12 },
+      { name: "Tea Spoon", len: "150mm", thick: "3.5mm", material: "18/0", price: 9 }
     ]
   },
-  { id: 51, name: "Ivy", price: 225, category: "Silver", image: "/images/Ivy.jpg", description: "Organic lines winding through the design.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish" } },
-  { id: 52, name: "Jacob", price: 210, category: "Silver", image: "/images/Jacob.jpg", description: "Simple, honest, and built to last.", specs: { material: "18/0 Stainless Steel", finish: "Mirror Polish" } },
-  { id: 53, name: "Jaime", price: 240, category: "Silver", image: "/images/Jaime.jpg", description: "Bold and substantial stainless steel.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish" } },
-  { id: 54, name: "Jambi", price: 230, category: "Silver", image: "/images/Jambi.jpg", description: "Exotic inspiration in polished steel.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish" } },
-  { id: 55, name: "Kaizen", price: 250, category: "Silver", image: "/images/Kaizen.jpg", description: "Continuous improvement in steel crafting.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish" } },
-  { id: 57, name: "Karina", price: 225, category: "Silver", image: "/images/Karina.jpg", description: "Graceful elegance.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish" } },
-  { id: 58, name: "Lucius", price: 245, category: "Silver", image: "/images/Lucius.jpg", description: "Light and brilliant mirror finish.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish" } },
-  { id: 59, name: "Mercy", price: 215, category: "Silver", image: "/images/Mercy.jpg", description: "Soft edges for a comfortable grip.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish" } },
-  { id: 60, name: "Moon", price: 260, category: "Silver", image: "/images/Moon.jpg", description: "Celestial beauty in pure 18/10 steel.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish" } },
-  { id: 61, name: "Murray", price: 210, category: "Silver", image: "/images/Murray.jpg", description: "Sturdy reliability.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish" } },
-  { id: 62, name: "Neville", price: 220, category: "Silver", image: "/images/Neville.jpg", description: "Classic heritage design.", specs: { material: "18/0 Stainless Steel", finish: "Mirror Polish" } },
-  { id: 63, name: "Noah Brushed", price: 240, category: "Silver", image: "/images/Noah Brushed.jpg", description: "Contemporary matte finish.", specs: { material: "18/10 Stainless Steel", finish: "Brushed" } },
-  { id: 64, name: "Pandora", price: 255, category: "Silver", image: "/images/Pandora.jpg", description: "Unleash luxury with this heavy-gauge set.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish" } },
-  { id: 65, name: "Sander Brushed", price: 230, category: "Silver", image: "/images/Sander Brushed.jpg", description: "Industrial chic matte silver.", specs: { material: "18/10 Stainless Steel", finish: "Brushed" } },
-  { id: 66, name: "Sienna", price: 225, category: "Silver", image: "/images/Sienna.jpg", description: "Warm and inviting design.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish" } },
-  { id: 67, name: "Tucson", price: 215, category: "Silver", image: "/images/Tucson.jpg", description: "Rugged elegance.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish" } },
-  { id: 68, name: "Umbridge", price: 235, category: "Silver", image: "/images/Umbridge.jpg", description: "Superior quality and shine.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish" } },
-  { id: 69, name: "Vermilio", price: 240, category: "Silver", image: "/images/Vermilio.jpg", description: "Vibrant and striking.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish" } },
-  { id: 70, name: "Xena Faceted", price: 280, category: "Silver", image: "/images/Xena Faceted.jpg", description: "Geometric facets in polished steel.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish" } },
-  { id: 71, name: "Zoya", price: 225, category: "Silver", image: "/images/Zoya.jpg", description: "Life and brilliance in a forged silhouette.", specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish" } }
+  { id: 51, name: "Armesh", category: "Silver", image: "/images/Armesh.jpg", description: "Intricate detailing in pure polished stainless steel.", price_full_set: 260, price_place_setting: 49, components: [] },
+  // ... (Standard silver pricing applied ~€220-€260 range)
+  { id: 52, name: "Jacob", category: "Silver", image: "/images/Jacob.jpg", description: "Simple, honest, and built to last.", price_full_set: 230, price_place_setting: 45, components: [] },
+  { id: 53, name: "Jaime", category: "Silver", image: "/images/Jaime.jpg", description: "Bold and substantial stainless steel.", price_full_set: 260, price_place_setting: 50, components: [] },
+  { id: 54, name: "Jambi", category: "Silver", image: "/images/Jambi.jpg", description: "Exotic inspiration in polished steel.", price_full_set: 250, price_place_setting: 48, components: [] },
+  { id: 55, name: "Kaizen", category: "Silver", image: "/images/Kaizen.jpg", description: "Continuous improvement in steel crafting.", price_full_set: 270, price_place_setting: 52, components: [] },
+  { id: 57, name: "Karina", category: "Silver", image: "/images/Karina.jpg", description: "Graceful elegance.", price_full_set: 245, price_place_setting: 48, components: [] },
+  { id: 58, name: "Lucius", category: "Silver", image: "/images/Lucius.jpg", description: "Light and brilliant mirror finish.", price_full_set: 265, price_place_setting: 51, components: [] },
+  { id: 59, name: "Mercy", category: "Silver", image: "/images/Mercy.jpg", description: "Soft edges for a comfortable grip.", price_full_set: 235, price_place_setting: 46, components: [] },
+  { id: 60, name: "Moon", category: "Silver", image: "/images/Moon.jpg", description: "Celestial beauty in pure 18/10 steel.", price_full_set: 280, price_place_setting: 54, components: [] },
+  { id: 61, name: "Murray", category: "Silver", image: "/images/Murray.jpg", description: "Sturdy reliability.", price_full_set: 230, price_place_setting: 45, components: [] },
+  { id: 62, name: "Neville", category: "Silver", image: "/images/Neville.jpg", description: "Classic heritage design.", price_full_set: 240, price_place_setting: 47, components: [] },
+  { id: 63, name: "Noah Brushed", category: "Silver", image: "/images/Noah Brushed.jpg", description: "Contemporary matte finish.", price_full_set: 260, price_place_setting: 50, components: [] },
+  { id: 64, name: "Pandora", category: "Silver", image: "/images/Pandora.jpg", description: "Unleash luxury with this heavy-gauge set.", price_full_set: 275, price_place_setting: 53, components: [] },
+  { id: 65, name: "Sander Brushed", category: "Silver", image: "/images/Sander Brushed.jpg", description: "Industrial chic matte silver.", price_full_set: 250, price_place_setting: 49, components: [] },
+  { id: 66, name: "Sienna", category: "Silver", image: "/images/Sienna.jpg", description: "Warm and inviting design.", price_full_set: 245, price_place_setting: 48, components: [] },
+  { id: 67, name: "Tucson", category: "Silver", image: "/images/Tucson.jpg", description: "Rugged elegance.", price_full_set: 235, price_place_setting: 46, components: [] },
+  { id: 68, name: "Umbridge", category: "Silver", image: "/images/Umbridge.jpg", description: "Superior quality and shine.", price_full_set: 255, price_place_setting: 50, components: [] },
+  { id: 69, name: "Vermilio", category: "Silver", image: "/images/Vermilio.jpg", description: "Vibrant and striking.", price_full_set: 260, price_place_setting: 51, components: [] },
+  { id: 70, name: "Xena Faceted", category: "Silver", image: "/images/Xena Faceted.jpg", description: "Geometric facets in polished steel.", price_full_set: 300, price_place_setting: 58, components: [] },
+  { id: 71, name: "Zoya", category: "Silver", image: "/images/Zoya.jpg", description: "Life and brilliance in a forged silhouette.", price_full_set: 245, price_place_setting: 48, components: [] }
 ];
 
 const REVIEWS = [
@@ -108,13 +113,39 @@ const Button = ({ children, onClick, variant = 'primary', className = '' }) => {
   const variants = {
     primary: "bg-stone-900 text-white hover:bg-stone-700",
     secondary: "bg-white border border-stone-200 text-stone-900 hover:bg-stone-50",
-    outline: "border-2 border-white text-white hover:bg-white hover:text-stone-900"
+    outline: "border-2 border-white text-white hover:bg-white hover:text-stone-900",
+    sm: "bg-stone-900 text-white hover:bg-stone-700 px-3 py-1 text-xs"
   };
 
   return (
     <button onClick={onClick} className={`${baseStyle} ${variants[variant]} ${className}`}>
       {children}
     </button>
+  );
+};
+
+// --- Mobile Navigation Component (FIXED: Defined Before Usage) ---
+const MobileNav = ({ isOpen, onClose, navigate }) => {
+  return (
+    <>
+      <div 
+        className={`fixed inset-0 bg-black/70 backdrop-blur-sm z-40 transition-opacity duration-300 md:hidden ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+        onClick={onClose}
+      />
+      <div className={`fixed top-0 left-0 h-full w-64 bg-white z-50 shadow-2xl transform transition-transform duration-300 md:hidden ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="p-6 border-b border-stone-100 flex justify-between items-center">
+          <span className="text-xl font-serif font-bold">SURA STEEL</span>
+          <button onClick={onClose} className="p-2 hover:bg-stone-100 rounded-full">
+            <X size={20} />
+          </button>
+        </div>
+        <nav className="p-6 space-y-4 flex flex-col">
+          <button onClick={() => { onClose(); navigate('home'); }} className="text-left text-lg font-medium text-stone-800 hover:text-amber-700">Shop</button>
+          <button onClick={() => { onClose(); navigate('about'); }} className="text-left text-lg font-medium text-stone-800 hover:text-amber-700">About</button>
+          <button onClick={() => { onClose(); navigate('contact'); }} className="text-left text-lg font-medium text-stone-800 hover:text-amber-700">Contact</button>
+        </nav>
+      </div>
+    </>
   );
 };
 
@@ -146,19 +177,21 @@ const CartSidebar = ({ isOpen, onClose, cart, updateQuantity, removeFromCart }) 
                 <button onClick={onClose} className="text-stone-900 underline mt-4 hover:text-amber-700">Continue Shopping</button>
               </div>
             ) : (
-              cart.map(item => (
-                <div key={item.id} className="flex gap-4">
+              cart.map((item, idx) => (
+                <div key={`${item.id}-${idx}`} className="flex gap-4">
                   <img src={item.image} alt={item.name} className="w-20 h-20 object-cover rounded bg-stone-100" />
                   <div className="flex-1">
                     <h3 className="font-medium text-stone-900">{item.name}</h3>
-                    <p className="text-stone-500 text-sm mb-2">€{item.price}</p>
+                    {/* Show Variant Name if it exists (e.g. "Place Setting" or "Dinner Knife") */}
+                    <p className="text-xs text-stone-500">{item.variant}</p>
+                    <p className="text-stone-900 text-sm mb-2">€{item.price}</p>
                     <div className="flex items-center gap-3">
-                      <button onClick={() => updateQuantity(item.id, -1)} className="w-6 h-6 rounded-full border border-stone-300 flex items-center justify-center hover:bg-stone-100">-</button>
+                      <button onClick={() => updateQuantity(item.id, item.variant, -1)} className="w-6 h-6 rounded-full border border-stone-300 flex items-center justify-center hover:bg-stone-100">-</button>
                       <span className="text-sm w-4 text-center">{item.quantity}</span>
-                      <button onClick={() => updateQuantity(item.id, 1)} className="w-6 h-6 rounded-full border border-stone-300 flex items-center justify-center hover:bg-stone-100">+</button>
+                      <button onClick={() => updateQuantity(item.id, item.variant, 1)} className="w-6 h-6 rounded-full border border-stone-300 flex items-center justify-center hover:bg-stone-100">+</button>
                     </div>
                   </div>
-                  <button onClick={() => removeFromCart(item.id)} className="text-stone-400 hover:text-red-500 self-start"><X size={16} /></button>
+                  <button onClick={() => removeFromCart(item.id, item.variant)} className="text-stone-400 hover:text-red-500 self-start"><X size={16} /></button>
                 </div>
               ))
             )}
@@ -194,63 +227,95 @@ const ProductCard = React.memo(({ product, onViewDetails }) => (
         <p className="text-stone-500 text-xs uppercase tracking-wider mb-1">{product.category}</p>
         <h3 className="text-lg font-serif text-stone-900 group-hover:text-amber-700 transition-colors cursor-pointer" onClick={() => onViewDetails(product)}>{product.name}</h3>
       </div>
-      <p className="font-medium text-stone-900">€{product.price}</p>
+      <p className="font-medium text-stone-900">from €{product.price_place_setting}</p>
     </div>
   </div>
 ));
 
-// --- Mobile Navigation Component ---
-const MobileNav = ({ isOpen, onClose, navigate }) => {
-  return (
-    <>
-      <div className={`fixed inset-0 bg-black/70 backdrop-blur-sm z-40 transition-opacity duration-300 md:hidden ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={onClose} />
-      <div className={`fixed top-0 left-0 h-full w-64 bg-white z-50 shadow-2xl transform transition-transform duration-300 md:hidden ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <div className="p-6 border-b border-stone-100 flex justify-between items-center">
-          <span className="text-xl font-serif font-bold">SURA STEEL</span>
-          <button onClick={onClose} className="p-2 hover:bg-stone-100 rounded-full"><X size={20} /></button>
-        </div>
-        <nav className="p-6 space-y-4 flex flex-col">
-          <button onClick={() => { onClose(); navigate('home'); }} className="text-left text-lg font-medium text-stone-800 hover:text-amber-700">Shop</button>
-          <button onClick={() => { onClose(); navigate('about'); }} className="text-left text-lg font-medium text-stone-800 hover:text-amber-700">About</button>
-          <button onClick={() => { onClose(); navigate('contact'); }} className="text-left text-lg font-medium text-stone-800 hover:text-amber-700">Contact</button>
-        </nav>
-      </div>
-    </>
-  );
-};
-
-// --- PAGE: Product Details ---
+// --- PAGE: Product Details (Updated with Purchase Options) ---
 const ProductDetailPage = ({ product, onBack, onAddToCart }) => {
+  const [selectedOption, setSelectedOption] = useState('set'); // 'set' or 'place'
+
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, [product]);
 
   if (!product) return null;
 
+  // Handle adding the main set types
+  const handleAddMainSet = () => {
+    const variantName = selectedOption === 'set' ? '24-Piece Full Set' : '4-Piece Place Setting';
+    const price = selectedOption === 'set' ? product.price_full_set : product.price_place_setting;
+    onAddToCart({ ...product, name: product.name, price: price, variant: variantName });
+  };
+
+  // Handle adding individual components
+  const handleAddSingle = (comp) => {
+     onAddToCart({ 
+       id: product.id, // Keep same ID for grouping, or unique ID if preferred
+       image: product.image,
+       name: product.name, 
+       price: comp.price || 20, // Fallback price
+       variant: `${comp.name} (Single)`,
+       category: product.category
+     });
+  };
+
   return (
     <div className="pt-32 pb-24">
-      {/* Header / Back Button */}
       <div className="container mx-auto px-6 mb-8">
         <button onClick={onBack} className="flex items-center gap-2 text-stone-500 hover:text-stone-900 transition-colors mb-6">
           <ArrowLeft size={20} /> Back to Shop
         </button>
         
         <div className="flex flex-col lg:flex-row gap-12">
-          {/* Main Product Image */}
+          {/* Image */}
           <div className="w-full lg:w-1/2">
-             <div className="aspect-[4/5] bg-stone-100 rounded-lg overflow-hidden shadow-xl">
+             <div className="aspect-[4/5] bg-stone-100 rounded-lg overflow-hidden shadow-xl sticky top-24">
                <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
              </div>
           </div>
 
-          {/* Product Info */}
+          {/* Info & Purchase Options */}
           <div className="w-full lg:w-1/2 flex flex-col">
              <h1 className="text-4xl font-serif text-stone-900 mb-2">{product.name}</h1>
              <span className="text-amber-600 text-sm font-bold tracking-widest uppercase mb-6">{product.category} Collection</span>
              <p className="text-stone-600 text-lg mb-8 leading-relaxed">{product.description}</p>
              
+             {/* --- Purchase Option Selector --- */}
+             <div className="bg-white border border-stone-200 rounded-lg p-6 mb-8 shadow-sm">
+                <h3 className="text-sm font-bold text-stone-900 uppercase mb-4">Choose Your Set</h3>
+                
+                <div className="space-y-3">
+                  <label className={`flex items-center justify-between p-4 border rounded cursor-pointer transition-all ${selectedOption === 'set' ? 'border-amber-500 bg-amber-50' : 'border-stone-200 hover:border-stone-300'}`}>
+                    <div className="flex items-center gap-3">
+                      <input type="radio" name="set-type" checked={selectedOption === 'set'} onChange={() => setSelectedOption('set')} className="text-amber-600 focus:ring-amber-500" />
+                      <div>
+                        <span className="block font-bold text-stone-900">24-Piece Full Set</span>
+                        <span className="text-xs text-stone-500">Service for 6 People</span>
+                      </div>
+                    </div>
+                    <span className="font-serif text-xl text-stone-900">€{product.price_full_set}</span>
+                  </label>
+
+                  <label className={`flex items-center justify-between p-4 border rounded cursor-pointer transition-all ${selectedOption === 'place' ? 'border-amber-500 bg-amber-50' : 'border-stone-200 hover:border-stone-300'}`}>
+                    <div className="flex items-center gap-3">
+                      <input type="radio" name="set-type" checked={selectedOption === 'place'} onChange={() => setSelectedOption('place')} className="text-amber-600 focus:ring-amber-500" />
+                      <div>
+                        <span className="block font-bold text-stone-900">4-Piece Place Setting</span>
+                        <span className="text-xs text-stone-500">Service for 1 Person</span>
+                      </div>
+                    </div>
+                    <span className="font-serif text-xl text-stone-900">€{product.price_place_setting}</span>
+                  </label>
+                </div>
+
+                <Button onClick={handleAddMainSet} className="w-full mt-6 py-4 text-lg">Add to Basket</Button>
+             </div>
+             
+             {/* Specs Mini-Table */}
              {product.specs && (
-               <div className="mb-8 flex gap-12 text-sm border-t border-b border-stone-100 py-6">
+               <div className="grid grid-cols-2 gap-4 text-sm border-t border-stone-100 pt-6">
                   <div>
                     <span className="block text-stone-400 text-xs uppercase tracking-wider mb-1">Material</span>
                     <span className="font-medium text-stone-900">{product.specs.material}</span>
@@ -259,83 +324,57 @@ const ProductDetailPage = ({ product, onBack, onAddToCart }) => {
                     <span className="block text-stone-400 text-xs uppercase tracking-wider mb-1">Finish</span>
                     <span className="font-medium text-stone-900">{product.specs.finish || "Standard"}</span>
                   </div>
-                  <div>
-                    <span className="block text-stone-400 text-xs uppercase tracking-wider mb-1">Origin</span>
-                    <span className="font-medium text-stone-900">South Korea / Indonesia</span>
-                  </div>
                </div>
              )}
-
-             <div className="flex items-center gap-6 mb-12 bg-stone-50 p-6 rounded-lg">
-                <div className="flex flex-col">
-                    <span className="text-sm text-stone-500 mb-1">Set Price</span>
-                    <span className="text-3xl font-serif text-stone-900">€{product.price}</span>
-                </div>
-                <Button onClick={() => onAddToCart(product)} className="flex-1 py-4 text-lg">Add Full Set to Basket</Button>
-             </div>
           </div>
         </div>
       </div>
 
-      {/* --- Technical Breakdown Section (Grid Layout) --- */}
-      {product.components && (
-        <div className="bg-stone-50 py-20 border-t border-stone-200">
+      {/* --- Individual Pieces / Technical Breakdown --- */}
+      <div className="bg-stone-50 py-20 border-t border-stone-200">
           <div className="container mx-auto px-6">
             <div className="text-center mb-16">
-              <h2 className="text-3xl font-serif text-stone-900 mb-3">Technical Specifications</h2>
-              <p className="text-stone-500 max-w-2xl mx-auto">Every piece is crafted to the exacting Sura Standard. Review the precise dimensions and materials of each component below.</p>
+              <h2 className="text-3xl font-serif text-stone-900 mb-3">Shop Individual Pieces</h2>
+              <p className="text-stone-500 max-w-2xl mx-auto">Need a replacement or want to build a custom collection? Select individual components below.</p>
             </div>
             
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-              {product.components.map((comp, idx) => (
-                <div key={idx} className="bg-white p-8 rounded-lg shadow-sm border border-stone-100 text-center group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
-                  {/* Subtle schematic line drawing effect */}
-                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-200 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-
-                  <div className="h-24 mb-6 flex items-center justify-center text-stone-300 relative">
-                     {/* Schematic Placeholder */}
-                     <div className="border border-dashed border-stone-200 w-full h-full flex items-center justify-center rounded bg-stone-50/50">
-                        <span className="text-xs text-stone-400 font-mono tracking-widest uppercase">{comp.name} Drawing</span>
-                     </div>
-                  </div>
+              {(product.components && product.components.length > 0 ? product.components : [
+                  // Fallback components if data is missing
+                  { name: "Dinner Knife", len: "Standard", thick: "Standard", material: "13/0", price: 22 },
+                  { name: "Dinner Fork", len: "Standard", thick: "Standard", material: "18/10", price: 20 },
+                  { name: "Dinner Spoon", len: "Standard", thick: "Standard", material: "18/10", price: 20 },
+                  { name: "Tea Spoon", len: "Standard", thick: "Standard", material: "18/10", price: 16 },
+              ]).map((comp, idx) => (
+                <div key={idx} className="bg-white p-6 rounded-lg shadow-sm border border-stone-100 text-center group relative overflow-hidden flex flex-col h-full">
                   
-                  <h3 className="font-bold text-lg text-stone-900 mb-3">{comp.name}</h3>
-                  
-                  <div className="space-y-2 mb-4">
-                      <div className="flex justify-between text-xs border-b border-stone-100 pb-1">
-                        <span className="text-stone-500">Length</span>
-                        <span className="font-mono text-stone-900">{comp.len}</span>
-                      </div>
-                      <div className="flex justify-between text-xs border-b border-stone-100 pb-1">
-                        <span className="text-stone-500">Gauge</span>
-                        <span className="font-mono text-stone-900 font-bold">{comp.thick}</span>
-                      </div>
-                      <div className="flex justify-between text-xs border-b border-stone-100 pb-1">
-                        <span className="text-stone-500">Steel</span>
-                        <span className="font-mono text-stone-900">{comp.material}</span>
-                      </div>
+                  <h3 className="font-bold text-lg text-stone-900 mb-2">{comp.name}</h3>
+                  <div className="text-xs text-stone-500 space-y-1 mb-4 flex-grow">
+                     <p>Length: {comp.len}</p>
+                     <p>Material: {comp.material}</p>
                   </div>
 
-                  {/* Individual Price display */}
-                  {comp.price && (
-                     <div className="pt-2">
-                        <p className="text-amber-700 font-medium text-sm bg-amber-50 inline-block px-3 py-1 rounded-full">€{comp.price} / pc</p>
-                     </div>
-                  )}
+                  <div className="mt-auto pt-4 border-t border-stone-50 flex items-center justify-between">
+                     <span className="font-serif text-lg text-stone-900">€{comp.price || 20}</span>
+                     <button 
+                        onClick={() => handleAddSingle(comp)}
+                        className="bg-stone-900 text-white p-2 rounded-full hover:bg-amber-600 transition-colors"
+                        title="Add to Cart"
+                     >
+                        <Plus size={16} />
+                     </button>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         </div>
-      )}
     </div>
   );
 };
 
-// --- Page Components ---
-
+// --- Page Components (Home, About, etc.) ---
 const HomePage = ({ addToCart, activeCategory, setActiveCategory, onViewDetails }) => {
-  // OPTIMIZATION: useMemo prevents re-filtering on every small render (like scroll events)
   const filteredProducts = useMemo(() => {
     return activeCategory === 'All' 
       ? PRODUCTS 
@@ -467,7 +506,7 @@ const App = () => {
   const [view, setView] = useState('home');
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null); 
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [cart, setCart] = useState([]);
   const [activeCategory, setActiveCategory] = useState('All');
   const [scrolled, setScrolled] = useState(false);
@@ -487,25 +526,37 @@ const App = () => {
 
   const handleViewDetails = (product) => {
     setSelectedProduct(product);
-    setView('product'); // Switch to the detailed product view
+    setView('product');
     window.scrollTo(0,0);
   };
 
-  const addToCart = (product) => {
+  const addToCart = (item) => {
     setCart(prev => {
-      const existing = prev.find(p => p.id === product.id);
-      if (existing) { return prev.map(p => p.id === product.id ? { ...p, quantity: p.quantity + 1 } : p); }
-      return [...prev, { ...product, quantity: 1 }];
+      // Create unique ID based on product ID + variant
+      const uniqueId = `${item.id}-${item.variant}`;
+      const existing = prev.find(p => `${p.id}-${p.variant}` === uniqueId);
+      
+      if (existing) { 
+        return prev.map(p => `${p.id}-${p.variant}` === uniqueId ? { ...p, quantity: p.quantity + 1 } : p); 
+      }
+      return [...prev, { ...item, quantity: 1 }];
     });
     setIsCartOpen(true);
-    showNotification(`Added ${product.name} to cart`);
+    showNotification(`Added ${item.name} (${item.variant})`);
   };
 
-  const updateQuantity = (id, delta) => {
-    setCart(prev => prev.map(item => item.id === id ? { ...item, quantity: Math.max(1, item.quantity + delta) } : item));
+  const updateQuantity = (id, variant, delta) => {
+    setCart(prev => prev.map(item => {
+      if (item.id === id && item.variant === variant) {
+        return { ...item, quantity: Math.max(1, item.quantity + delta) };
+      }
+      return item;
+    }));
   };
 
-  const removeFromCart = (id) => setCart(prev => prev.filter(item => item.id !== id));
+  const removeFromCart = (id, variant) => {
+    setCart(prev => prev.filter(item => !(item.id === id && item.variant === variant)));
+  };
 
   const showNotification = (msg) => {
     setNotification(msg);
