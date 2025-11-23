@@ -3,63 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sura Steel Business Card Concept</title>
+    <title>Sura Steel Business Card</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap');
-        .font-serif { family-family: 'Playfair Display', serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500&display=swap');
+        
+        .font-serif { font-family: 'Playfair Display', serif; }
         .font-sans { font-family: 'Inter', sans-serif; }
-        /* Ensure background colors print */
+
+        /* Ensure background colors and images print correctly */
         @media print {
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
+        }
+
+        .card-front {
+            background-color: #1c1917;
+            /* This pulls in your specific image */
+            background-image: url('bg.png'); 
+            background-size: cover;
+            background-position: center;
         }
     </style>
 </head>
 <body class="bg-gray-200 min-h-screen flex flex-col items-center justify-center p-8 gap-12">
 
-    <!-- FRONT SIDE -->
-    <div class="w-[500px] h-[300px] bg-[#1c1917] text-white shadow-2xl flex flex-col items-center justify-center relative overflow-hidden rounded-sm">
-        <!-- Subtle texture overlay -->
-        <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
+    <!-- FRONT SIDE (The Royal Side) -->
+    <div class="card-front w-[500px] h-[300px] text-white shadow-2xl flex flex-col items-center justify-center relative overflow-hidden rounded-sm">
         
-        <h1 class="text-4xl font-serif tracking-widest font-bold z-10 mb-2">SURA STEEL</h1>
-        <p class="text-[10px] uppercase tracking-[0.3em] text-stone-400 z-10">Forged in Heritage</p>
+        <!-- Dark Overlay to ensure text is readable -->
+        <div class="absolute inset-0 bg-black/30"></div>
+
+        <div class="z-10 text-center relative">
+            <!-- Cutlery Icon in Gold -->
+            <div class="mb-5 flex justify-center opacity-90">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="text-amber-200 drop-shadow-md">
+                    <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/>
+                    <path d="M7 2v20"/>
+                    <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
+                </svg>
+            </div>
+
+            <h1 class="text-5xl font-serif tracking-[0.15em] font-normal text-white mb-3 drop-shadow-lg">SURA STEEL</h1>
+            
+            <!-- Tagline with gold borders -->
+            <div class="flex items-center justify-center gap-4 opacity-90">
+                <div class="h-px w-8 bg-amber-200/60"></div>
+                <p class="text-[9px] uppercase tracking-[0.4em] text-amber-100 font-sans text-shadow-sm">King's Standard Cutlery</p>
+                <div class="h-px w-8 bg-amber-200/60"></div>
+            </div>
+        </div>
     </div>
 
-    <!-- BACK SIDE -->
+    <!-- BACK SIDE (Information) -->
     <div class="w-[500px] h-[300px] bg-[#fafaf9] text-stone-900 shadow-2xl flex relative overflow-hidden rounded-sm p-12 items-center">
         
-        <div class="flex-1 space-y-6 z-10">
+        <!-- Left: Contact Info -->
+        <div class="flex-1 space-y-8 z-10">
             <div>
                 <h2 class="text-2xl font-serif font-bold text-stone-900">Tae Yong Kwon</h2>
-                <p class="text-xs uppercase tracking-wider text-stone-500 font-sans">Founder & Owner</p>
+                <p class="text-xs uppercase tracking-wider text-stone-500 font-sans mt-1">Founder & Owner</p>
             </div>
 
-            <div class="space-y-2 text-sm font-sans text-stone-700">
-                <p class="flex items-center gap-3">
-                    <span class="w-4 opacity-50">@</span> taeyong@surasteel.com
+            <div class="space-y-3 text-sm font-sans text-stone-600">
+                <p class="flex items-center gap-4">
+                    <span class="w-4 text-stone-400 text-xs font-bold">@</span> taeyong@surasteel.com
                 </p>
-                <p class="flex items-center gap-3">
-                    <span class="w-4 opacity-50">M</span> +31 6 8554 0430
+                <p class="flex items-center gap-4">
+                    <span class="w-4 text-stone-400 text-xs font-bold">M</span> +31 6 8554 0430
                 </p>
-                <p class="flex items-center gap-3">
-                    <span class="w-4 opacity-50">W</span> surasteel.com
+                <p class="flex items-center gap-4">
+                    <span class="w-4 text-stone-400 text-xs font-bold">W</span> surasteel.com
                 </p>
             </div>
         </div>
 
-        <div class="z-10 flex flex-col items-center gap-2">
-            <!-- Actual QR Code linking to https://surasteel.com -->
-            <div class="w-24 h-24 bg-white flex items-center justify-center p-1 border border-stone-200">
+        <!-- Right: QR Code -->
+        <div class="z-10 flex flex-col items-center gap-3">
+            <div class="w-28 h-28 bg-white flex items-center justify-center p-2 border border-stone-200 shadow-sm">
+                <!-- QR Code pointing to surasteel.com -->
                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://surasteel.com" alt="Sura Steel Website QR" class="w-full h-full object-contain mix-blend-multiply">
             </div>
-            <span class="text-[8px] uppercase tracking-widest text-stone-400">Scan to Shop</span>
+            <span class="text-[8px] uppercase tracking-[0.2em] text-stone-400">Scan to Shop</span>
         </div>
 
     </div>
 
-    <p class="text-stone-500 font-sans text-sm mt-8">Standard European Business Card Size: 85mm x 55mm</p>
+    <p class="text-stone-500 font-sans text-sm mt-8">
+        <b>To Print:</b> Press Ctrl+P / Cmd+P -> Save as PDF -> Ensure "Background Graphics" is CHECKED.
+    </p>
 
 </body>
 </html>
