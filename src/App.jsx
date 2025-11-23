@@ -84,8 +84,9 @@ const CartSidebar = ({ isOpen, onClose, cart, updateQuantity, removeFromCart }) 
     setIsCheckingOut(true);
     // Redirect to Stripe or Checkout Page
     setTimeout(() => {
-        // REPLACE THIS URL WITH YOUR REAL STRIPE LINK
-        window.location.href = "https://buy.stripe.com/your-real-link"; 
+        // !!! IMPORTANT: You must replace this with your real Stripe link. 
+        // Create one generic product in Stripe and use its link here.
+        window.location.href = "https://buy.stripe.com/YOUR_REAL_STRIPE_PAYMENT_LINK_HERE"; 
     }, 1000);
   };
 
@@ -181,10 +182,45 @@ const ProductCard = ({ product, onAdd }) => (
   </div>
 );
 
+// --- Mobile Navigation Component ---
+const MobileNav = ({ isOpen, onClose }) => {
+  const links = ['Shop All', 'Knives', 'Sets', 'About', 'Journal', 'Contact'];
+  return (
+    <>
+      <div 
+        className={`fixed inset-0 bg-black/70 backdrop-blur-sm z-40 transition-opacity duration-300 md:hidden ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+        onClick={onClose}
+      />
+      <div className={`fixed top-0 left-0 h-full w-64 bg-white z-50 shadow-2xl transform transition-transform duration-300 md:hidden ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="p-6 border-b border-stone-100 flex justify-between items-center">
+          <span className="text-xl font-serif font-bold">SURA STEEL</span>
+          <button onClick={onClose} className="p-2 hover:bg-stone-100 rounded-full">
+            <X size={20} />
+          </button>
+        </div>
+        <nav className="p-6 space-y-4">
+          {links.map(link => (
+            <a 
+              key={link}
+              href="#"
+              onClick={onClose}
+              className="block text-lg font-medium text-stone-800 hover:text-amber-700 transition-colors"
+            >
+              {link}
+            </a>
+          ))}
+        </nav>
+      </div>
+    </>
+  );
+};
+
+
 // --- Main App Component ---
 
 const App = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // New state for mobile menu
   const [cart, setCart] = useState([]);
   const [activeCategory, setActiveCategory] = useState('All');
   const [scrolled, setScrolled] = useState(false);
@@ -235,11 +271,17 @@ const App = () => {
   return (
     <div className="min-h-screen bg-white text-stone-900 font-sans selection:bg-amber-100 selection:text-amber-900">
       
+      {/* Mobile Navigation Drawer */}
+      <MobileNav isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
+      
       {/* Navigation */}
       <nav className={`fixed w-full z-30 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm py-4' : 'bg-transparent py-6 text-white'}`}>
         <div className="container mx-auto px-6 flex justify-between items-center">
           <div className="flex items-center gap-4">
-            <button className="md:hidden">
+            <button 
+              onClick={() => setIsMobileMenuOpen(true)} // Toggle Mobile Menu
+              className="md:hidden p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors"
+            >
               <Menu size={24} className={scrolled ? 'text-stone-900' : 'text-white'} />
             </button>
             <span className={`text-2xl font-serif tracking-tight font-bold ${scrolled ? 'text-stone-900' : 'text-white'}`}>
