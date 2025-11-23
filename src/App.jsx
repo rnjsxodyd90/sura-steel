@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, X, Menu, Star, ChevronRight, Check, Instagram, Facebook, Twitter, ArrowRight } from 'lucide-react';
+import { ShoppingBag, X, Menu, Star, ChevronRight, Check, Instagram, Facebook, Twitter, ArrowRight, Hammer, Globe, ShieldCheck } from 'lucide-react';
 
-// --- Mock Data ---
+// --- Mock Data (Updated Descriptions) ---
 const PRODUCTS = [
   {
     id: 1,
@@ -9,7 +9,7 @@ const PRODUCTS = [
     price: 185,
     category: "Knives",
     image: "https://images.unsplash.com/photo-1593618998160-e34014e67546?auto=format&fit=crop&q=80&w=800",
-    description: "Hand-forged 8-inch high-carbon steel chef knife with walnut handle."
+    description: "Hand-forged using premium Korean POSCO stainless steel. Perfectly balanced."
   },
   {
     id: 2,
@@ -17,15 +17,15 @@ const PRODUCTS = [
     price: 320,
     category: "Sets",
     image: "https://images.unsplash.com/photo-1615324541783-d5a23f46f499?auto=format&fit=crop&q=80&w=800",
-    description: "Complete service for 6. 18/10 stainless steel with a durable PVD gold matte finish."
+    description: "Tsubame-inspired design. 18/10 POSCO steel with a durable PVD gold matte finish."
   },
   {
     id: 3,
-    name: "Damascus Santoku",
+    name: "Forged Santoku",
     price: 210,
     category: "Knives",
     image: "https://images.unsplash.com/photo-1588832626888-2947df37119e?auto=format&fit=crop&q=80&w=800",
-    description: "67 layers of Damascus steel with a razor-sharp edge and rosewood handle."
+    description: "Precision forged blade. A tribute to our 1970 heritage."
   },
   {
     id: 4,
@@ -33,7 +33,7 @@ const PRODUCTS = [
     price: 145,
     category: "Sets",
     image: "https://images.unsplash.com/photo-1584269600464-3706b29d99a9?auto=format&fit=crop&q=80&w=800",
-    description: "Set of 4 serrated steak knives in matte black titanium coating."
+    description: "Set of 4 forged steak knives. Heavy gauge steel for a substantial feel."
   },
   {
     id: 5,
@@ -41,7 +41,7 @@ const PRODUCTS = [
     price: 250,
     category: "Sets",
     image: "https://images.unsplash.com/photo-1534120914481-b659c258d532?auto=format&fit=crop&q=80&w=800",
-    description: "Timeless polished silver finish. Heavy gauge steel for perfect balance."
+    description: "Timeless polished finish using high-grade Korean raw materials."
   },
   {
     id: 6,
@@ -49,14 +49,14 @@ const PRODUCTS = [
     price: 85,
     category: "Knives",
     image: "https://images.unsplash.com/photo-1560762908-1f6e09886477?auto=format&fit=crop&q=80&w=800",
-    description: "Essential 3.5-inch blade for intricate tasks. Olive wood handle."
+    description: "Essential 3.5-inch forged blade. Sharp, durable, and precise."
   }
 ];
 
 const REVIEWS = [
-  { id: 1, text: "The balance on the chef knife is incredible. It feels like an extension of my hand.", author: "Marcus R., Head Chef" },
-  { id: 2, text: "Absolutely stunning on my dinner table. Guests always ask where I got them.", author: "Sarah L." },
-  { id: 3, text: "Razor sharp out of the box and holds an edge beautifully.", author: "James T." }
+  { id: 1, text: "You can feel the history in the weight of these knives. The forged steel is exceptional.", author: "Chef Min-ho K." },
+  { id: 2, text: "I love knowing this uses POSCO steel. It hasn't rusted or dulled in months.", author: "Sarah L." },
+  { id: 3, text: "The balance reminds me of high-end Japanese cutlery, but at a better price point.", author: "James T." }
 ];
 
 // --- Components ---
@@ -82,20 +82,19 @@ const CartSidebar = ({ isOpen, onClose, cart, updateQuantity, removeFromCart }) 
 
   const handleCheckout = () => {
     setIsCheckingOut(true);
-    // --- STRIPE LINK LOGIC HERE ---
-    // Replace this URL with your actual Stripe Payment Link later
-    window.location.href = "https://buy.stripe.com/test_link"; 
+    // Redirect to Stripe or Checkout Page
+    setTimeout(() => {
+        // REPLACE THIS URL WITH YOUR REAL STRIPE LINK
+        window.location.href = "https://buy.stripe.com/your-real-link"; 
+    }, 1000);
   };
 
   return (
     <>
-      {/* Backdrop */}
       <div 
         className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
         onClick={onClose}
       />
-      
-      {/* Drawer */}
       <div className={`fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white z-50 shadow-2xl transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="flex flex-col h-full">
           <div className="p-6 border-b border-stone-100 flex justify-between items-center bg-stone-50">
@@ -148,7 +147,6 @@ const CartSidebar = ({ isOpen, onClose, cart, updateQuantity, removeFromCart }) 
               <Button onClick={handleCheckout} className="w-full">
                 {isCheckingOut ? 'Processing...' : 'Checkout Securely'}
               </Button>
-              <p className="text-center text-xs text-stone-400 mt-3">Free shipping on orders over $150</p>
             </div>
           )}
         </div>
@@ -289,13 +287,13 @@ const App = () => {
         </div>
         
         <div className="relative z-10 text-center text-white px-6 max-w-4xl mx-auto mt-20">
-          <p className="text-amber-200 tracking-[0.2em] text-sm font-medium mb-6 uppercase">Mastery in Metal</p>
+          <p className="text-amber-200 tracking-[0.2em] text-sm font-medium mb-6 uppercase">Since 1970</p>
           <h1 className="text-5xl md:text-7xl font-serif mb-8 leading-tight">
-            Culinary Precision <br /> Meets Timeless Art.
+            Korean Steel. <br /> Tsubame Legacy.
           </h1>
           <p className="text-lg text-stone-200 mb-10 max-w-2xl mx-auto font-light">
-            Hand-forged blades and artisan flatware designed for the modern table. 
-            Experience the weight, balance, and beauty of true craftsmanship.
+            Crafted from high-grade <b>POSCO Stainless Steel</b>. Forged using techniques inherited from 
+            the masters of Tsubame, Japan.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button variant="outline" onClick={() => document.getElementById('shop').scrollIntoView({ behavior: 'smooth' })}>
@@ -305,35 +303,35 @@ const App = () => {
         </div>
       </header>
 
-      {/* Features */}
+      {/* Heritage Features */}
       <section className="py-24 bg-stone-50">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
             <div className="space-y-4">
               <div className="w-16 h-16 mx-auto bg-stone-200 rounded-full flex items-center justify-center text-stone-900">
-                <Star size={24} />
+                <ShieldCheck size={24} />
               </div>
-              <h3 className="text-xl font-serif">Premium Steel</h3>
+              <h3 className="text-xl font-serif">POSCO Steel</h3>
               <p className="text-stone-500 leading-relaxed">
-                We use only high-carbon VG-10 and 18/10 stainless steel, ensuring lasting sharpness and rust resistance.
+                We utilize raw materials from Korea's POSCO Steel, renowned globally for purity and durability.
               </p>
             </div>
             <div className="space-y-4">
               <div className="w-16 h-16 mx-auto bg-stone-200 rounded-full flex items-center justify-center text-stone-900">
-                <Check size={24} />
+                <Hammer size={24} />
               </div>
-              <h3 className="text-xl font-serif">Lifetime Guarantee</h3>
+              <h3 className="text-xl font-serif">True Forged Tech</h3>
               <p className="text-stone-500 leading-relaxed">
-                We stand behind our craftsmanship. Every piece comes with a lifetime warranty against defects.
+                Using authentic "Danjo" (Forged) technology, creating a denser, stronger blade than stamped alternatives.
               </p>
             </div>
             <div className="space-y-4">
               <div className="w-16 h-16 mx-auto bg-stone-200 rounded-full flex items-center justify-center text-stone-900">
-                <ShoppingBag size={24} />
+                <Globe size={24} />
               </div>
-              <h3 className="text-xl font-serif">Artisan Made</h3>
+              <h3 className="text-xl font-serif">Global Journey</h3>
               <p className="text-stone-500 leading-relaxed">
-                Forged by master smiths with decades of experience in traditional Japanese and Western techniques.
+                Roots in Tsubame, born in Korea (1970), and now perfected in our specialized facility in Indonesia.
               </p>
             </div>
           </div>
@@ -345,8 +343,8 @@ const App = () => {
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
             <div>
-              <h2 className="text-4xl font-serif text-stone-900 mb-4">The Collection</h2>
-              <p className="text-stone-500">Elevate your culinary experience.</p>
+              <h2 className="text-4xl font-serif text-stone-900 mb-4">The Forged Collection</h2>
+              <p className="text-stone-500">Experience the difference of Korean Steel.</p>
             </div>
             
             <div className="flex gap-4 border-b border-stone-200 pb-2">
@@ -374,26 +372,30 @@ const App = () => {
         </div>
       </section>
 
-      {/* Craftsmanship/About Preview */}
+      {/* Our Story / About Section */}
       <section className="py-24 bg-stone-900 text-white relative overflow-hidden">
         <div className="container mx-auto px-6 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
             <div className="order-2 md:order-1">
               <img 
                 src="https://images.unsplash.com/photo-1590233633800-410d440c9d64?auto=format&fit=crop&q=80&w=1200" 
-                alt="Blacksmith working" 
+                alt="Forging steel" 
                 className="rounded-lg shadow-2xl opacity-90"
               />
             </div>
             <div className="order-1 md:order-2 space-y-8">
-              <span className="text-amber-500 uppercase tracking-widest text-sm font-bold">Our Process</span>
-              <h2 className="text-4xl md:text-5xl font-serif leading-tight">Forged in Fire, <br/>Finished by Hand.</h2>
+              <span className="text-amber-500 uppercase tracking-widest text-sm font-bold">Our Heritage</span>
+              <h2 className="text-4xl md:text-5xl font-serif leading-tight">From Tsubame to the World.</h2>
               <p className="text-stone-400 text-lg leading-relaxed">
-                Mass production has no place here. Each knife takes over 60 hours to create, passing through 
-                the hands of four distinct masters: the forger, the grinder, the polisher, and the assembler.
+                Our story began by learning the art of cutlery in <b>Tsubame, Japan</b>—a region legendary for its metalwork. 
+                Bringing this knowledge to Korea in 1970, we established a legacy of quality.
+              </p>
+              <p className="text-stone-400 text-lg leading-relaxed">
+                Today, we continue this tradition in Indonesia, combining <b>Korean POSCO steel</b> with true <b>Forged (Danjo) technology</b> 
+                to create cutlery that lasts generations.
               </p>
               <button className="flex items-center gap-2 text-white border-b border-amber-500 pb-1 hover:text-amber-500 transition-colors">
-                Read our story <ArrowRight size={16} />
+                Read our full history <ArrowRight size={16} />
               </button>
             </div>
           </div>
@@ -403,7 +405,7 @@ const App = () => {
       {/* Reviews */}
       <section className="py-24 bg-amber-50">
         <div className="container mx-auto px-6 max-w-4xl text-center">
-          <h2 className="text-3xl font-serif mb-16">From Our Table to Yours</h2>
+          <h2 className="text-3xl font-serif mb-16">From Our Forge to Your Table</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {REVIEWS.map(review => (
               <div key={review.id} className="bg-white p-8 rounded shadow-sm hover:shadow-md transition-shadow">
@@ -422,7 +424,7 @@ const App = () => {
       <section className="py-24 border-t border-stone-200">
         <div className="container mx-auto px-6 text-center max-w-xl">
           <h2 className="text-2xl font-serif mb-4">Join the Inner Circle</h2>
-          <p className="text-stone-500 mb-8">Sign up for early access to new drops and exclusive chef recipes.</p>
+          <p className="text-stone-500 mb-8">Sign up for early access to new forged drops and exclusive chef recipes.</p>
           <div className="flex flex-col sm:flex-row gap-3">
             <input 
               type="email" 
@@ -441,7 +443,7 @@ const App = () => {
             <div>
               <span className="text-white text-xl font-serif font-bold block mb-6">SURA STEEL</span>
               <p className="text-sm leading-relaxed mb-6">
-                Premium cutlery for those who respect the ingredients.
+                Premium forged cutlery. <br/> Korean Materials. <br/> Global Craftsmanship.
               </p>
               <div className="flex gap-4">
                 <Instagram size={20} className="hover:text-white cursor-pointer" />
@@ -456,7 +458,6 @@ const App = () => {
                 <li><a href="#" className="hover:text-white transition-colors">Chef Knives</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Steak Sets</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Accessories</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Gift Cards</a></li>
               </ul>
             </div>
 
@@ -465,7 +466,6 @@ const App = () => {
               <ul className="space-y-4 text-sm">
                 <li><a href="#" className="hover:text-white transition-colors">Care Guide</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Shipping</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Returns</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Warranty</a></li>
               </ul>
             </div>
