@@ -134,22 +134,22 @@ const PRODUCTS = [
   // ... Placeholders for other items (Shortened for stability)
   { id: 1, name: "Ivy Gold", category: "Gold", image: "/images/Ivy Gold.jpg", description: "Organic flowing lines wrapped in gold.", price_full_set: 350, price_place_setting: 65, components: [] },
   { id: 2, name: "Jacob Gold", category: "Gold", image: "/images/Jacob Gold.jpg", description: "Timeless simplicity for the modern king.", price_full_set: 340, price_place_setting: 62, components: [] },
-  { id: 3, name: "Jaime Gold", category: "Gold", image: "/images/Jaime Gold.jpg", description: "Bold and substantial.", price_full_set: 360, price_place_setting: 68, components: [] },
+  { id: 3, name: "Jaime Gold", category: "Gold", image: "/images/Jaime Gold.jpg", description: "Bold and substantial, a statement piece.", price_full_set: 360, price_place_setting: 68, components: [] },
   { id: 4, name: "Jambi Gold", category: "Gold", image: "/images/Jambi Gold.jpg", description: "Exotic inspiration with a flawless gold polish.", price_full_set: 350, price_place_setting: 65, components: [] },
-  { id: 5, name: "Kaizen Gold", category: "Gold", image: "/images/Kaizen Gold.jpg", description: "Continuous improvement in design.", price_full_set: 370, price_place_setting: 70, components: [] },
-  { id: 6, name: "Karina Gold", category: "Gold", image: "/images/Karina Gold.jpg", description: "Graceful and elegant.", price_full_set: 350, price_place_setting: 65, components: [] },
-  { id: 7, name: "Lucius Gold", category: "Gold", image: "/images/Lucius Gold.jpg", description: "Light and brilliant.", price_full_set: 365, price_place_setting: 69, components: [] },
-  { id: 8, name: "Mercy Gold", category: "Gold", image: "/images/Mercy Gold.jpg", description: "Soft edges and a comforting grip.", price_full_set: 340, price_place_setting: 64, components: [] },
-  { id: 9, name: "Murray Gold", category: "Gold", image: "/images/Murray Gold.jpg", description: "Sturdy and reliable.", price_full_set: 330, price_place_setting: 60, components: [] },
-  { id: 10, name: "Neville Gold", category: "Gold", image: "/images/Neville Gold.jpg", description: "Classic heritage design.", price_full_set: 345, price_place_setting: 65, components: [] },
-  { id: 11, name: "Noah Brushed Gold", category: "Gold", image: "/images/Noah Brushed Gold.jpg", description: "Contemporary brushed finish.", price_full_set: 360, price_place_setting: 68, components: [] },
-  { id: 12, name: "Sander Brushed Gold", category: "Gold", image: "/images/Sander Brushed Gold.jpg", description: "Matte gold perfection.", price_full_set: 355, price_place_setting: 67, components: [] },
-  { id: 13, name: "Sienna Gold", category: "Gold", image: "/images/Sienna Gold.jpg", description: "Warm and inviting.", price_full_set: 350, price_place_setting: 65, components: [] },
-  { id: 14, name: "Tucson Gold", category: "Gold", image: "/images/Tucson Gold.jpg", description: "Rugged elegance.", price_full_set: 340, price_place_setting: 64, components: [] },
-  { id: 15, name: "Umbridge Gold", category: "Gold", image: "/images/Umbridge Gold.jpg", description: "Strictly superior quality.", price_full_set: 360, price_place_setting: 68, components: [] },
-  { id: 16, name: "Vermilio Gold", category: "Gold", image: "/images/Vermilio Gold.jpg", description: "Vibrant and striking.", price_full_set: 365, price_place_setting: 69, components: [] },
-  { id: 17, name: "Xena Faceted Gold", category: "Gold", image: "/images/Xena Faceted Gold.jpg", description: "Geometric facets reflect light.", price_full_set: 390, price_place_setting: 74, components: [] },
-  { id: 18, name: "Zoya Gold", category: "Gold", image: "/images/Zoya Gold.jpg", description: "Life and brilliance.", price_full_set: 350, price_place_setting: 65, components: [] },
+  { id: 5, name: "Kaizen Gold", category: "Gold", image: "/images/Kaizen Gold.jpg", description: "Continuous improvement in design, realized in gold.", price_full_set: 370, price_place_setting: 70, components: [] },
+  { id: 6, name: "Karina Gold", category: "Gold", image: "/images/Karina Gold.jpg", description: "Graceful and elegant, fit for a queen.", price_full_set: 350, price_place_setting: 65, components: [] },
+  { id: 7, name: "Lucius Gold", category: "Gold", image: "/images/Lucius Gold.jpg", description: "Light and brilliant, illuminating the dining experience.", price_full_set: 365, price_place_setting: 69, components: [] },
+  { id: 8, name: "Mercy Gold", category: "Gold", image: "/images/Mercy Gold.jpg", description: "Soft edges and a comforting grip in gold.", price_full_set: 340, price_place_setting: 64, components: [] },
+  { id: 9, name: "Murray Gold", category: "Gold", image: "/images/Murray Gold.jpg", description: "Sturdy and reliable with a touch of luxury.", price_full_set: 330, price_place_setting: 60, components: [] },
+  { id: 10, name: "Neville Gold", category: "Gold", image: "/images/Neville Gold.jpg", description: "Classic heritage design in a warm gold hue.", price_full_set: 345, price_place_setting: 65, components: [] },
+  { id: 11, name: "Noah Brushed Gold", category: "Gold", image: "/images/Noah Brushed Gold.jpg", description: "Contemporary brushed finish for a modern table.", price_full_set: 360, price_place_setting: 68, components: [] },
+  { id: 12, name: "Sander Brushed Gold", category: "Gold", image: "/images/Sander Brushed Gold.jpg", description: "Matte gold perfection for the industrial chic home.", price_full_set: 355, price_place_setting: 67, components: [] },
+  { id: 13, name: "Sienna Gold", category: "Gold", image: "/images/Sienna Gold.jpg", description: "Warm and inviting, like the Italian sun.", price_full_set: 350, price_place_setting: 65, components: [] },
+  { id: 14, name: "Tucson Gold", category: "Gold", image: "/images/Tucson Gold.jpg", description: "Rugged elegance with a refined gold layer.", price_full_set: 340, price_place_setting: 64, components: [] },
+  { id: 15, name: "Umbridge Gold", category: "Gold", image: "/images/Umbridge Gold.jpg", description: "Strictly superior quality and shine.", price_full_set: 360, price_place_setting: 68, components: [] },
+  { id: 16, name: "Vermilio Gold", category: "Gold", image: "/images/Vermilio Gold.jpg", description: "Vibrant and striking, the center of attention.", price_full_set: 365, price_place_setting: 69, components: [] },
+  { id: 17, name: "Xena Faceted Gold", category: "Gold", image: "/images/Xena Faceted Gold.jpg", description: "Geometric facets reflect light like diamonds.", price_full_set: 390, price_place_setting: 74, components: [] },
+  { id: 18, name: "Zoya Gold", category: "Gold", image: "/images/Zoya Gold.jpg", description: "Life and brilliance in a forged gold silhouette.", price_full_set: 350, price_place_setting: 65, components: [] },
 
   // --- SILVER COLLECTION ---
   { 
@@ -212,30 +212,6 @@ const Button = ({ children, onClick, variant = 'primary', className = '' }) => {
     <button onClick={onClick} className={`${baseStyle} ${variants[variant]} ${className}`}>
       {children}
     </button>
-  );
-};
-
-// Define MobileNav BEFORE App
-const MobileNav = ({ isOpen, onClose, navigate, lang, setLang, t }) => {
-  return (
-    <>
-      <div className={`fixed inset-0 bg-black/70 backdrop-blur-sm z-40 transition-opacity duration-300 md:hidden ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={onClose} />
-      <div className={`fixed top-0 left-0 h-full w-64 bg-white z-50 shadow-2xl transform transition-transform duration-300 md:hidden ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <div className="p-6 border-b border-stone-100 flex justify-between items-center">
-          <span className="text-xl font-serif font-bold">SURA STEEL</span>
-          <button onClick={onClose} className="p-2 hover:bg-stone-100 rounded-full"><X size={20} /></button>
-        </div>
-        <nav className="p-6 space-y-4 flex flex-col">
-          <button onClick={() => { onClose(); navigate('home'); }} className="text-left text-lg font-medium text-stone-800 hover:text-amber-700">{t.nav.shop}</button>
-          <button onClick={() => { onClose(); navigate('about'); }} className="text-left text-lg font-medium text-stone-800 hover:text-amber-700">{t.nav.about}</button>
-          <button onClick={() => { onClose(); navigate('contact'); }} className="text-left text-lg font-medium text-stone-800 hover:text-amber-700">{t.nav.contact}</button>
-          <div className="border-t border-stone-100 pt-4 mt-2">
-            <button onClick={() => setLang('en')} className={`mr-4 font-bold ${lang === 'en' ? 'text-amber-700' : 'text-stone-400'}`}>EN</button>
-            <button onClick={() => setLang('nl')} className={`font-bold ${lang === 'nl' ? 'text-amber-700' : 'text-stone-400'}`}>NL</button>
-          </div>
-        </nav>
-      </div>
-    </>
   );
 };
 
@@ -320,6 +296,30 @@ const ProductCard = React.memo(({ product, onViewDetails, lang, t }) => (
     </div>
   </div>
 ));
+
+// --- Mobile Navigation Component ---
+const MobileNav = ({ isOpen, onClose, navigate, lang, setLang, t }) => {
+  return (
+    <>
+      <div className={`fixed inset-0 bg-black/70 backdrop-blur-sm z-40 transition-opacity duration-300 md:hidden ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={onClose} />
+      <div className={`fixed top-0 left-0 h-full w-64 bg-white z-50 shadow-2xl transform transition-transform duration-300 md:hidden ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="p-6 border-b border-stone-100 flex justify-between items-center">
+          <span className="text-xl font-serif font-bold">SURA STEEL</span>
+          <button onClick={onClose} className="p-2 hover:bg-stone-100 rounded-full"><X size={20} /></button>
+        </div>
+        <nav className="p-6 space-y-4 flex flex-col">
+          <button onClick={() => { onClose(); navigate('home'); }} className="text-left text-lg font-medium text-stone-800 hover:text-amber-700">{t.nav.shop}</button>
+          <button onClick={() => { onClose(); navigate('about'); }} className="text-left text-lg font-medium text-stone-800 hover:text-amber-700">{t.nav.about}</button>
+          <button onClick={() => { onClose(); navigate('contact'); }} className="text-left text-lg font-medium text-stone-800 hover:text-amber-700">{t.nav.contact}</button>
+          <div className="border-t border-stone-100 pt-4 mt-2">
+            <button onClick={() => setLang('en')} className={`mr-4 font-bold ${lang === 'en' ? 'text-amber-700' : 'text-stone-400'}`}>EN</button>
+            <button onClick={() => setLang('nl')} className={`font-bold ${lang === 'nl' ? 'text-amber-700' : 'text-stone-400'}`}>NL</button>
+          </div>
+        </nav>
+      </div>
+    </>
+  );
+};
 
 // --- PAGE: Product Details ---
 const ProductDetailPage = ({ product, onBack, onAddToCart, lang }) => {
@@ -507,7 +507,62 @@ const HomePage = ({ addToCart, activeCategory, setActiveCategory, onViewDetails,
   );
 };
 
-// --- App Component ---
+const AboutPage = () => (
+  <div className="pt-32 pb-24">
+    <div className="container mx-auto px-6 max-w-4xl">
+      <h1 className="text-5xl font-serif text-stone-900 mb-8 text-center">The Meaning of Sura</h1>
+      <div className="relative h-96 mb-12 overflow-hidden rounded-lg shadow-xl">
+        <img src="/background.png" alt="Forging" className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-black/30 flex items-center justify-center"><span className="text-white text-xl tracking-widest uppercase font-bold border-2 border-white px-8 py-4">Since 1970</span></div>
+      </div>
+      <div className="space-y-8 text-lg text-stone-600 leading-relaxed">
+        <h3 className="text-2xl font-serif text-stone-900">What is a King's Dish?</h3>
+        <p>In the Joseon Dynasty of Korea, the King's daily meal was called <b>"Sura" (수라)</b>. It was not merely food; it was a symbol of the nation's prosperity, prepared with the finest ingredients and served with the utmost respect.</p>
+        <p>At Sura Steel, we believe the tools used to prepare a meal should carry that same dignity. We named our brand <b>Sura</b> because we provide cutlery that possesses the quality, balance, and sharpness fit for a king's table.</p>
+        <h3 className="text-2xl font-serif text-stone-900">Our Global Journey</h3>
+        <p>Our story began by learning the art of cutlery in <b>Tsubame, Japan</b>—a region legendary for its metalwork. Bringing this knowledge to Korea in 1970, we established a legacy of precision.</p>
+        <p>We partner with <b>POSCO</b>, Korea's premier steel manufacturer, to source high-carbon stainless steel. Today, we continue this tradition in Indonesia, utilizing authentic <b>"Danjo" (Forged)</b> technology to create tools that last generations.</p>
+      </div>
+    </div>
+  </div>
+);
+
+const ContactPage = () => (
+  <div className="pt-32 pb-24 bg-stone-50 min-h-screen">
+    <div className="container mx-auto px-6 max-w-3xl">
+      <h1 className="text-4xl font-serif text-stone-900 mb-12 text-center">Contact Us</h1>
+      <div className="bg-white p-8 rounded-lg shadow-sm grid md:grid-cols-2 gap-12">
+        <div className="space-y-6">
+          <div><h3 className="font-bold text-stone-900 mb-2 flex items-center gap-2"><Mail size={18} /> Email</h3><p className="text-stone-600">taeyong@surasteel.com</p></div>
+          <div><h3 className="font-bold text-stone-900 mb-2 flex items-center gap-2"><Phone size={18} /> Phone</h3><p className="text-stone-600">+31 6 8554 0430</p></div>
+          <div><h3 className="font-bold text-stone-900 mb-2 flex items-center gap-2"><MapPin size={18} /> HQ</h3><p className="text-stone-600">123 Artisan Way<br/>The Hague, Netherlands</p></div>
+        </div>
+        <form className="space-y-4">
+          <input type="text" placeholder="Your Name" className="w-full p-3 border border-stone-200 rounded focus:border-stone-900 outline-none" />
+          <input type="email" placeholder="Email Address" className="w-full p-3 border border-stone-200 rounded focus:border-stone-900 outline-none" />
+          <textarea rows="4" placeholder="Message" className="w-full p-3 border border-stone-200 rounded focus:border-stone-900 outline-none"></textarea>
+          <Button className="w-full">Send Message</Button>
+        </form>
+      </div>
+    </div>
+  </div>
+);
+
+const PolicyPage = ({ title }) => (
+  <div className="pt-32 pb-24 container mx-auto px-6 max-w-3xl">
+    <h1 className="text-4xl font-serif text-stone-900 mb-8">{title}</h1>
+    <div className="prose prose-stone">
+      <p className="mb-4">At Sura Steel, we stand by the quality of our forged cutlery.</p>
+      <h3 className="text-xl font-bold mt-6 mb-2">Shipping</h3>
+      <p className="mb-4">We ship worldwide from our logistics center in The Hague. Standard shipping takes 3-5 business days within the EU and 7-14 days internationally.</p>
+      <h3 className="text-xl font-bold mt-6 mb-2">Returns & Warranty</h3>
+      <p className="mb-4">If you are not completely satisfied, you may return your unused items within 30 days. We offer a lifetime warranty against manufacturing defects on all forged products.</p>
+    </div>
+  </div>
+);
+
+// --- Main App Component ---
+
 const App = () => {
   const [view, setView] = useState('home');
   const [isCartOpen, setIsCartOpen] = useState(false);
