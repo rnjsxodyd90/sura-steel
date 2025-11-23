@@ -160,8 +160,8 @@ const HomePage = ({ addToCart, activeCategory, setActiveCategory }) => {
     <>
       <header className="relative h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          {/* CHANGED: Now using the local file /hero.jpg from the public folder */}
-          <img src="/hero.jpg" alt="Sura Steel Royal Background" className="w-full h-full object-cover" />
+          {/* UPDATED: Now looking for background.png in the public folder */}
+          <img src="/background.png" alt="Sura Steel Royal Background" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-black/40" />
         </div>
         <div className="relative z-10 text-center text-white px-6 max-w-4xl mx-auto mt-20">
@@ -242,8 +242,7 @@ const AboutPage = () => (
     <div className="container mx-auto px-6 max-w-4xl">
       <h1 className="text-5xl font-serif text-stone-900 mb-8 text-center">The Meaning of Sura</h1>
       <div className="relative h-96 mb-12 overflow-hidden rounded-lg shadow-xl">
-        {/* Also updating About page image to use the hero image for consistency if preferred, or keep as is. Keeping Unsplash for variety unless requested. */}
-        <img src="https://images.unsplash.com/photo-1590233633800-410d440c9d64?auto=format&fit=crop&q=80&w=1200" alt="Forging" className="w-full h-full object-cover" />
+        <img src="/background.png" alt="Forging" className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-black/30 flex items-center justify-center"><span className="text-white text-xl tracking-widest uppercase font-bold border-2 border-white px-8 py-4">Since 1970</span></div>
       </div>
       <div className="space-y-8 text-lg text-stone-600 leading-relaxed">
@@ -431,7 +430,7 @@ const App = () => {
               <ul className="space-y-4 text-sm">
                 <li>taeyong@surasteel.com</li>
                 <li>+31 6 8554 0430</li>
-                <li>123 Jan Krosstraat<br/>The Hague, Netherlands</li>
+                <li>123 Artisan Way<br/>The Hague, Netherlands</li>
               </ul>
             </div>
           </div>
