@@ -1,22 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ShoppingBag, X, Menu, Star, Check, Instagram, Facebook, Twitter, ArrowRight, Hammer, Globe, ShieldCheck, Mail, MapPin, Phone, Crown, Ruler, Scale, Info } from 'lucide-react';
 
-// --- REAL PRODUCT DATA (With Technical Specs from PDF) ---
+// --- REAL PRODUCT DATA (Knives Removed) ---
 const PRODUCTS = [
-  // --- KNIVES (Previous Items) ---
-  { 
-    id: 101, 
-    name: "The Royal Chef", 
-    price: 185, 
-    category: "Knives", 
-    image: "/images/royal-chef.jpg", 
-    description: "Hand-forged using premium Korean POSCO stainless steel.",
-    specs: { material: "High-Carbon POSCO Steel", finish: "Hand-Forged", items: [{name: "Chef Knife", len: "330mm", thick: "2.5mm"}] }
-  },
-  { id: 102, name: "Forged Santoku", price: 210, category: "Knives", image: "/images/santoku.jpg", description: "Precision forged blade. A tribute to our 1970 heritage." },
-  { id: 103, name: "Noir Steak Knives", price: 145, category: "Knives", image: "/images/noir-steak.jpg", description: "Set of 4 forged steak knives. Heavy gauge steel." },
-  { id: 104, name: "Artisan Paring Knife", price: 85, category: "Knives", image: "/images/paring.jpg", description: "Essential 3.5-inch forged blade. Sharp and precise." },
-
   // --- GOLD SETS (With PDF Data) ---
   { 
     id: 20, 
@@ -25,7 +11,6 @@ const PRODUCTS = [
     category: "Gold", 
     image: "/images/Moon Gold.jpg", 
     description: "Our signature set. Celestial beauty in 24k gold finish.",
-    // Data taken from PDF Page 33
     specs: {
       material: "18/10 Stainless Steel",
       finish: "Mirror Polish + PVD Gold",
@@ -44,7 +29,6 @@ const PRODUCTS = [
     category: "Gold", 
     image: "/images/Pandora Gold.jpg", 
     description: "Unleash luxury with this premium heavy-gauge set.",
-    // Data taken from PDF Page 79
     specs: {
       material: "18/10 Stainless Steel",
       finish: "Mirror Polish + PVD Gold",
@@ -56,7 +40,6 @@ const PRODUCTS = [
       ]
     }
   },
-  // ... (Add 'specs' to other items as you have time)
   { id: 1, name: "Armesh Gold", price: 340, category: "Gold", image: "/images/Armesh Gold.jpg", description: "Intricate detailing with a luxurious gold finish." },
   { id: 2, name: "Batavia Gold", price: 320, category: "Gold", image: "/images/Batavia Gold.jpg", description: "Classic curves meeting royal gold elegance." },
   { id: 5, name: "Bree Gold", price: 300, category: "Gold", image: "/images/Bree Gold.jpg", description: "Minimalist design elevated by a warm gold tone." },
@@ -93,7 +76,7 @@ const Button = ({ children, onClick, variant = 'primary', className = '' }) => {
   );
 };
 
-// --- NEW: Product Detail Modal ---
+// --- Product Detail Modal ---
 const ProductModal = ({ product, isOpen, onClose, onAddToCart }) => {
   if (!isOpen || !product) return null;
 
@@ -307,7 +290,8 @@ const HomePage = ({ addToCart, activeCategory, setActiveCategory, onOpenModal })
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
             <div><h2 className="text-4xl font-serif text-stone-900 mb-4">The Royal Collection</h2><p className="text-stone-500">Experience the difference of Korean Steel.</p></div>
             <div className="flex gap-4 border-b border-stone-200 pb-2 overflow-x-auto">
-              {['All', 'Sets', 'Gold', 'Silver', 'Knives'].map(cat => (
+              {/* Removed 'Knives' from filter since we removed the knife products */}
+              {['All', 'Sets', 'Gold', 'Silver'].map(cat => (
                 <button key={cat} onClick={() => setActiveCategory(cat)} className={`pb-2 text-sm uppercase tracking-wider transition-colors whitespace-nowrap ${activeCategory === cat ? 'text-stone-900 border-b-2 border-stone-900 -mb-[9px]' : 'text-stone-400 hover:text-stone-600'}`}>{cat}</button>
               ))}
             </div>
@@ -493,8 +477,9 @@ const App = () => {
             <div>
               <h4 className="text-white font-bold mb-6">Shop</h4>
               <ul className="space-y-4 text-sm">
-                <li><button onClick={() => navigate('home')} className="hover:text-white transition-colors">Chef Knives</button></li>
-                <li><button onClick={() => navigate('home')} className="hover:text-white transition-colors">Steak Sets</button></li>
+                {/* Removed chef knives / steak sets as categories since products are gone */}
+                <li><button onClick={() => navigate('home')} className="hover:text-white transition-colors">Gold Collection</button></li>
+                <li><button onClick={() => navigate('home')} className="hover:text-white transition-colors">Silver Collection</button></li>
               </ul>
             </div>
             <div>
