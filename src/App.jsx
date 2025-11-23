@@ -118,7 +118,7 @@ const CartSidebar = ({ isOpen, onClose, cart, updateQuantity, removeFromCart }) 
                   <img src={item.image} alt={item.name} className="w-20 h-20 object-cover rounded bg-stone-100" />
                   <div className="flex-1">
                     <h3 className="font-medium text-stone-900">{item.name}</h3>
-                    <p className="text-stone-500 text-sm mb-2">${item.price}</p>
+                    <p className="text-stone-500 text-sm mb-2">€{item.price}</p>
                     <div className="flex items-center gap-3">
                       <button 
                         onClick={() => updateQuantity(item.id, -1)}
@@ -143,7 +143,7 @@ const CartSidebar = ({ isOpen, onClose, cart, updateQuantity, removeFromCart }) 
             <div className="p-6 border-t border-stone-100 bg-stone-50">
               <div className="flex justify-between mb-4 text-lg font-serif font-medium">
                 <span>Total</span>
-                <span>${total.toFixed(2)}</span>
+                <span>€{total.toFixed(2)}</span>
               </div>
               <Button onClick={handleCheckout} className="w-full">
                 {isCheckingOut ? 'Processing...' : 'Checkout Securely'}
@@ -166,7 +166,7 @@ const ProductCard = ({ product, onAdd }) => (
       />
       <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
         <Button onClick={() => onAdd(product)} className="w-full shadow-lg">
-          Add to Basket - ${product.price}
+          Add to Basket - €{product.price}
         </Button>
       </div>
     </div>
@@ -177,7 +177,7 @@ const ProductCard = ({ product, onAdd }) => (
           {product.name}
         </h3>
       </div>
-      <p className="font-medium text-stone-900">${product.price}</p>
+      <p className="font-medium text-stone-900">€{product.price}</p>
     </div>
   </div>
 );
@@ -517,7 +517,7 @@ const App = () => {
               <ul className="space-y-4 text-sm">
                 <li>hello@surasteel.com</li>
                 <li>+1 (555) 012-3456</li>
-                <li>123 Artisan Way<br/>Portland, OR 97209</li>
+                <li>123 Artisan Way<br/>The Hague, Netherlands</li>
               </ul>
             </div>
           </div>
