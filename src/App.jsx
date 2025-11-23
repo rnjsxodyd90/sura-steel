@@ -1,60 +1,87 @@
 import React, { useState, useEffect } from 'react';
 import { ShoppingBag, X, Menu, Star, Check, Instagram, Facebook, Twitter, ArrowRight, Hammer, Globe, ShieldCheck, Mail, MapPin, Phone, Crown } from 'lucide-react';
 
-// --- Mock Data ---
+// --- REAL PRODUCT DATA (Incorporating All Images) ---
 const PRODUCTS = [
-  {
-    id: 1,
-    name: "The Royal Chef",
-    price: 185,
-    category: "Knives",
-    image: "https://images.unsplash.com/photo-1593618998160-e34014e67546?auto=format&fit=crop&q=80&w=800",
-    description: "Hand-forged using premium Korean POSCO stainless steel. Fit for a royal banquet."
-  },
-  {
-    id: 2,
-    name: "Imperial Gold Set (24pc)",
-    price: 320,
-    category: "Sets",
-    image: "https://images.unsplash.com/photo-1615324541783-d5a23f46f499?auto=format&fit=crop&q=80&w=800",
-    description: "Tsubame-inspired design. 18/10 POSCO steel with a durable PVD gold matte finish."
-  },
-  {
-    id: 3,
-    name: "Forged Santoku",
-    price: 210,
-    category: "Knives",
-    image: "https://images.unsplash.com/photo-1588832626888-2947df37119e?auto=format&fit=crop&q=80&w=800",
-    description: "Precision forged blade. A tribute to our 1970 heritage."
-  },
-  {
-    id: 4,
-    name: "Noir Steak Knives",
-    price: 145,
-    category: "Sets",
-    image: "https://images.unsplash.com/photo-1584269600464-3706b29d99a9?auto=format&fit=crop&q=80&w=800",
-    description: "Set of 4 forged steak knives. Heavy gauge steel for a substantial feel."
-  },
-  {
-    id: 5,
-    name: "Classic Silver Service",
-    price: 250,
-    category: "Sets",
-    image: "https://images.unsplash.com/photo-1534120914481-b659c258d532?auto=format&fit=crop&q=80&w=800",
-    description: "Timeless polished finish using high-grade Korean raw materials."
-  },
-  {
-    id: 6,
-    name: "Artisan Paring Knife",
-    price: 85,
-    category: "Knives",
-    image: "https://images.unsplash.com/photo-1560762908-1f6e09886477?auto=format&fit=crop&q=80&w=800",
-    description: "Essential 3.5-inch forged blade. Sharp, durable, and precise."
-  }
+  // --- KNIVES (Previous Items) ---
+  { id: 101, name: "The Royal Chef", price: 185, category: "Knives", image: "/images/royal-chef.jpg", description: "Hand-forged using premium Korean POSCO stainless steel." },
+  { id: 102, name: "Forged Santoku", price: 210, category: "Knives", image: "/images/santoku.jpg", description: "Precision forged blade. A tribute to our 1970 heritage." },
+  { id: 103, name: "Noir Steak Knives", price: 145, category: "Knives", image: "/images/noir-steak.jpg", description: "Set of 4 forged steak knives. Heavy gauge steel." },
+  { id: 104, name: "Artisan Paring Knife", price: 85, category: "Knives", image: "/images/paring.jpg", description: "Essential 3.5-inch forged blade. Sharp and precise." },
+
+  // --- GOLD SETS ---
+  { id: 1, name: "Armesh Gold", price: 340, category: "Gold", image: "/images/Armesh Gold.jpg", description: "Intricate detailing with a luxurious gold finish." },
+  { id: 2, name: "Batavia Gold", price: 320, category: "Gold", image: "/images/Batavia Gold.jpg", description: "Classic curves meeting royal gold elegance." },
+  { id: 3, name: "Beatrix Gold", price: 330, category: "Gold", image: "/images/Beatrix Gold.jpg", description: "Sophisticated and regal, perfect for grand banquets." },
+  { id: 4, name: "Bradford Gold", price: 310, category: "Gold", image: "/images/Bradford Gold.jpg", description: "Strong, bold lines with a premium gold coating." },
+  { id: 5, name: "Bree Gold", price: 300, category: "Gold", image: "/images/Bree Gold.jpg", description: "Minimalist design elevated by a warm gold tone." },
+  { id: 6, name: "Cassiopeia Brushed Gold", price: 350, category: "Gold", image: "/images/Cassiopeia Brushed Gold.jpg", description: "Stunning brushed texture that catches the light beautifully." },
+  { id: 7, name: "Charles Gold", price: 325, category: "Gold", image: "/images/Charles Gold.jpg", description: "Traditional grandeur with a modern gold twist." },
+  { id: 8, name: "Claire Gold", price: 315, category: "Gold", image: "/images/Claire Gold.jpg", description: "Delicate and refined, a jewel for your table." },
+  { id: 9, name: "Diggory Brushed Gold", price: 345, category: "Gold", image: "/images/Diggory Brushed Gold.jpg", description: "Rustic forged texture with a matte gold finish." },
+  { id: 10, name: "Eira Gold", price: 335, category: "Gold", image: "/images/Eira Gold.jpg", description: "Inspired by winter light, glowing in gold." },
+  { id: 11, name: "Espen Gold", price: 320, category: "Gold", image: "/images/Espen Gold.jpg", description: "Nature-inspired durability in a precious metal finish." },
+  { id: 12, name: "Ivy Gold", price: 325, category: "Gold", image: "/images/Ivy Gold.jpg", description: "Organic flowing lines wrapped in gold." },
+  { id: 13, name: "Jacob Gold", price: 310, category: "Gold", image: "/images/Jacob Gold.jpg", description: "Timeless simplicity for the modern king." },
+  { id: 14, name: "Jaime Gold", price: 340, category: "Gold", image: "/images/Jaime Gold.jpg", description: "Bold and substantial, a statement piece." },
+  { id: 15, name: "Jambi Gold", price: 330, category: "Gold", image: "/images/Jambi Gold.jpg", description: "Exotic inspiration with a flawless gold polish." },
+  { id: 16, name: "Kaizen Gold", price: 350, category: "Gold", image: "/images/Kaizen Gold.jpg", description: "Continuous improvement in design, realized in gold." },
+  { id: 17, name: "Karina Gold", price: 325, category: "Gold", image: "/images/Karina Gold.jpg", description: "Graceful and elegant, fit for a queen." },
+  { id: 18, name: "Lucius Gold", price: 345, category: "Gold", image: "/images/Lucius Gold.jpg", description: "Light and brilliant, illuminating the dining experience." },
+  { id: 19, name: "Mercy Gold", price: 315, category: "Gold", image: "/images/Mercy Gold.jpg", description: "Soft edges and a comforting grip in gold." },
+  { id: 20, name: "Moon Gold", price: 360, category: "Gold", image: "/images/Moon Gold.jpg", description: "Our signature set. Celestial beauty in 24k gold finish." },
+  { id: 21, name: "Murray Gold", price: 310, category: "Gold", image: "/images/Murray Gold.jpg", description: "Sturdy and reliable with a touch of luxury." },
+  { id: 22, name: "Neville Gold", price: 320, category: "Gold", image: "/images/Neville Gold.jpg", description: "Classic heritage design in a warm gold hue." },
+  { id: 23, name: "Noah Brushed Gold", price: 340, category: "Gold", image: "/images/Noah Brushed Gold.jpg", description: "Contemporary brushed finish for a modern table." },
+  { id: 24, name: "Pandora Gold", price: 355, category: "Gold", image: "/images/Pandora Gold.jpg", description: "Unleash luxury with this premium heavy-gauge set." },
+  { id: 25, name: "Sander Brushed Gold", price: 330, category: "Gold", image: "/images/Sander Brushed Gold.jpg", description: "Matte gold perfection for the industrial chic home." },
+  { id: 26, name: "Sienna Gold", price: 325, category: "Gold", image: "/images/Sienna Gold.jpg", description: "Warm and inviting, like the Italian sun." },
+  { id: 27, name: "Tucson Gold", price: 315, category: "Gold", image: "/images/Tucson Gold.jpg", description: "Rugged elegance with a refined gold layer." },
+  { id: 28, name: "Umbridge Gold", price: 335, category: "Gold", image: "/images/Umbridge Gold.jpg", description: "Strictly superior quality and shine." },
+  { id: 29, name: "Vermilio Gold", price: 340, category: "Gold", image: "/images/Vermilio Gold.jpg", description: "Vibrant and striking, the center of attention." },
+  { id: 30, name: "Xena Faceted Gold", price: 370, category: "Gold", image: "/images/Xena Faceted Gold.jpg", description: "Geometric facets reflect light like diamonds." },
+  { id: 31, name: "Zoya Gold", price: 325, category: "Gold", image: "/images/Zoya Gold.jpg", description: "Life and brilliance in a forged gold silhouette." },
+
+  // --- SILVER SETS ---
+  { id: 51, name: "Armesh", price: 240, category: "Silver", image: "/images/Armesh.jpg", description: "Intricate detailing in pure polished stainless steel." },
+  { id: 52, name: "Batavia", price: 220, category: "Silver", image: "/images/Batavia.jpg", description: "Classic curves tailored for the silver purist." },
+  { id: 53, name: "Beatrix", price: 230, category: "Silver", image: "/images/Beatrix.jpg", description: "Sophisticated stainless steel, mirror polished." },
+  { id: 54, name: "Bolton Brushed", price: 250, category: "Silver", image: "/images/Bolton Brushed.jpg", description: "Textured brushed steel that hides fingerprints." },
+  { id: 55, name: "Bradford", price: 210, category: "Silver", image: "/images/Bradford.jpg", description: "Strong, bold lines in heavy gauge steel." },
+  { id: 56, name: "Bree", price: 200, category: "Silver", image: "/images/Bree.jpg", description: "Minimalist design for the modern home." },
+  { id: 57, name: "Camille", price: 215, category: "Silver", image: "/images/Camille.jpg", description: "Elegant and fluid, like liquid silver." },
+  { id: 58, name: "Cassiopeia Brushed", price: 260, category: "Silver", image: "/images/Cassiopeia Brushed.jpg", description: "Stardust texture in a cool silver tone." },
+  { id: 59, name: "Celeste", price: 225, category: "Silver", image: "/images/Celeste.jpg", description: "Heavenly balance and shine." },
+  { id: 60, name: "Charles", price: 235, category: "Silver", image: "/images/Charles.jpg", description: "A royal classic in pure steel." },
+  { id: 61, name: "Claire", price: 215, category: "Silver", image: "/images/Claire.jpg", description: "Delicate refinement for fine dining." },
+  { id: 62, name: "Diggory Brushed", price: 255, category: "Silver", image: "/images/Diggory Brushed.jpg", description: "Rustic forged texture with a matte finish." },
+  { id: 63, name: "Eira", price: 235, category: "Silver", image: "/images/Eira.jpg", description: "Cool and crisp as winter snow." },
+  { id: 64, name: "Espen", price: 220, category: "Silver", image: "/images/Espen.jpg", description: "Nature-inspired durability." },
+  { id: 65, name: "Gaius", price: 240, category: "Silver", image: "/images/Gaius.jpg", description: "Commanding presence on any table." },
+  { id: 66, name: "Ivy", price: 225, category: "Silver", image: "/images/Ivy.jpg", description: "Organic lines winding through the design." },
+  { id: 67, name: "Jacob", price: 210, category: "Silver", image: "/images/Jacob.jpg", description: "Simple, honest, and built to last." },
+  { id: 68, name: "Jaime", price: 240, category: "Silver", image: "/images/Jaime.jpg", description: "Bold and substantial stainless steel." },
+  { id: 69, name: "Jambi", price: 230, category: "Silver", image: "/images/Jambi.jpg", description: "Exotic inspiration in polished steel." },
+  { id: 70, name: "Kaizen", price: 250, category: "Silver", image: "/images/Kaizen.jpg", description: "Continuous improvement in steel crafting." },
+  { id: 71, name: "Karina", price: 225, category: "Silver", image: "/images/Karina.jpg", description: "Graceful elegance." },
+  { id: 72, name: "Lucius", price: 245, category: "Silver", image: "/images/Lucius.jpg", description: "Light and brilliant mirror finish." },
+  { id: 73, name: "Mercy", price: 215, category: "Silver", image: "/images/Mercy.jpg", description: "Soft edges for a comfortable grip." },
+  { id: 74, name: "Moon", price: 260, category: "Silver", image: "/images/Moon.jpg", description: "Celestial beauty in pure 18/10 steel." },
+  { id: 75, name: "Murray", price: 210, category: "Silver", image: "/images/Murray.jpg", description: "Sturdy reliability." },
+  { id: 76, name: "Neville", price: 220, category: "Silver", image: "/images/Neville.jpg", description: "Classic heritage design." },
+  { id: 77, name: "Noah Brushed", price: 240, category: "Silver", image: "/images/Noah Brushed.jpg", description: "Contemporary matte finish." },
+  { id: 78, name: "Pandora", price: 255, category: "Silver", image: "/images/Pandora.jpg", description: "Unleash luxury with this heavy-gauge set." },
+  { id: 79, name: "Sander Brushed", price: 230, category: "Silver", image: "/images/Sander Brushed.jpg", description: "Industrial chic matte silver." },
+  { id: 80, name: "Sienna", price: 225, category: "Silver", image: "/images/Sienna.jpg", description: "Warm and inviting design." },
+  { id: 81, name: "Tucson", price: 215, category: "Silver", image: "/images/Tucson.jpg", description: "Rugged elegance." },
+  { id: 82, name: "Umbridge", price: 235, category: "Silver", image: "/images/Umbridge.jpg", description: "Superior quality and shine." },
+  { id: 83, name: "Vermilio", price: 240, category: "Silver", image: "/images/Vermilio.jpg", description: "Vibrant and striking." },
+  { id: 84, name: "Xena Faceted", price: 280, category: "Silver", image: "/images/Xena Faceted.jpg", description: "Geometric facets in polished steel." },
+  { id: 85, name: "Zoya", price: 225, category: "Silver", image: "/images/Zoya.jpg", description: "Life and brilliance in a forged silhouette." }
 ];
 
 const REVIEWS = [
-  { id: 1, text: "You can feel the history in the weight of these knives. The forged steel is exceptional.", author: "Chef Min-ho K." },
+  { id: 1, text: "The Moon Gold set is absolutely stunning. The weight feels substantial and the finish is flawless.", author: "Chef Min-ho K." },
   { id: 2, text: "I love knowing this uses POSCO steel. It hasn't rusted or dulled in months.", author: "Sarah L." },
   { id: 3, text: "The balance reminds me of high-end Japanese cutlery, but at a better price point.", author: "James T." }
 ];
@@ -152,15 +179,45 @@ const ProductCard = ({ product, onAdd }) => (
   </div>
 );
 
-// --- Pages ---
+// --- Mobile Navigation Component ---
+const MobileNav = ({ isOpen, onClose, navigate }) => {
+  return (
+    <>
+      <div 
+        className={`fixed inset-0 bg-black/70 backdrop-blur-sm z-40 transition-opacity duration-300 md:hidden ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+        onClick={onClose}
+      />
+      <div className={`fixed top-0 left-0 h-full w-64 bg-white z-50 shadow-2xl transform transition-transform duration-300 md:hidden ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="p-6 border-b border-stone-100 flex justify-between items-center">
+          <span className="text-xl font-serif font-bold">SURA STEEL</span>
+          <button onClick={onClose} className="p-2 hover:bg-stone-100 rounded-full">
+            <X size={20} />
+          </button>
+        </div>
+        <nav className="p-6 space-y-4 flex flex-col">
+          <button onClick={() => { onClose(); navigate('home'); }} className="text-left text-lg font-medium text-stone-800 hover:text-amber-700">Shop</button>
+          <button onClick={() => { onClose(); navigate('about'); }} className="text-left text-lg font-medium text-stone-800 hover:text-amber-700">About</button>
+          <button onClick={() => { onClose(); navigate('contact'); }} className="text-left text-lg font-medium text-stone-800 hover:text-amber-700">Contact</button>
+        </nav>
+      </div>
+    </>
+  );
+};
+
+// --- Page Components ---
 
 const HomePage = ({ addToCart, activeCategory, setActiveCategory }) => {
-  const filteredProducts = activeCategory === 'All' ? PRODUCTS : PRODUCTS.filter(p => p.category === activeCategory);
+  // Updated filter logic to handle new categories
+  const filteredProducts = activeCategory === 'All' 
+    ? PRODUCTS 
+    : activeCategory === 'Sets' 
+      ? PRODUCTS.filter(p => p.category === 'Gold' || p.category === 'Silver') // Show both Gold and Silver under "Sets"
+      : PRODUCTS.filter(p => p.category === activeCategory);
+
   return (
     <>
       <header className="relative h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          {/* UPDATED: Now looking for background.png in the public folder */}
           <img src="/background.png" alt="Sura Steel Royal Background" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-black/40" />
         </div>
@@ -207,9 +264,10 @@ const HomePage = ({ addToCart, activeCategory, setActiveCategory }) => {
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
             <div><h2 className="text-4xl font-serif text-stone-900 mb-4">The Royal Collection</h2><p className="text-stone-500">Experience the difference of Korean Steel.</p></div>
-            <div className="flex gap-4 border-b border-stone-200 pb-2">
-              {['All', 'Knives', 'Sets'].map(cat => (
-                <button key={cat} onClick={() => setActiveCategory(cat)} className={`pb-2 text-sm uppercase tracking-wider transition-colors ${activeCategory === cat ? 'text-stone-900 border-b-2 border-stone-900 -mb-[9px]' : 'text-stone-400 hover:text-stone-600'}`}>{cat}</button>
+            <div className="flex gap-4 border-b border-stone-200 pb-2 overflow-x-auto">
+              {/* Updated Filter Menu */}
+              {['All', 'Sets', 'Gold', 'Silver', 'Knives'].map(cat => (
+                <button key={cat} onClick={() => setActiveCategory(cat)} className={`pb-2 text-sm uppercase tracking-wider transition-colors whitespace-nowrap ${activeCategory === cat ? 'text-stone-900 border-b-2 border-stone-900 -mb-[9px]' : 'text-stone-400 hover:text-stone-600'}`}>{cat}</button>
               ))}
             </div>
           </div>
@@ -353,34 +411,30 @@ const App = () => {
     <div className="min-h-screen bg-white text-stone-900 font-sans selection:bg-amber-100 selection:text-amber-900 flex flex-col">
       
       {/* Mobile Menu */}
-      <div className={`fixed inset-0 bg-black/70 backdrop-blur-sm z-40 transition-opacity duration-300 md:hidden ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={() => setIsMobileMenuOpen(false)} />
-      <div className={`fixed top-0 left-0 h-full w-64 bg-white z-50 shadow-2xl transform transition-transform duration-300 md:hidden ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <div className="p-6 border-b border-stone-100 flex justify-between items-center">
-          <span className="text-xl font-serif font-bold">SURA STEEL</span>
-          <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 hover:bg-stone-100 rounded-full"><X size={20} /></button>
-        </div>
-        <nav className="p-6 space-y-4 flex flex-col">
-          <button onClick={() => navigate('home')} className="text-left text-lg font-medium text-stone-800 hover:text-amber-700">Shop</button>
-          <button onClick={() => navigate('about')} className="text-left text-lg font-medium text-stone-800 hover:text-amber-700">About</button>
-          <button onClick={() => navigate('contact')} className="text-left text-lg font-medium text-stone-800 hover:text-amber-700">Contact</button>
-        </nav>
-      </div>
+      <MobileNav isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} navigate={navigate} />
 
       {/* Navbar */}
       <nav className={`fixed w-full z-30 transition-all duration-300 ${scrolled || view !== 'home' ? 'bg-white/95 backdrop-blur-md shadow-sm py-4 text-stone-900' : 'bg-transparent py-6 text-white'}`}>
-        <div className="container mx-auto px-6 flex justify-between items-center">
-          <div className="flex items-center gap-4">
+        {/* FIX: Used Grid instead of Flexbox for perfect centering */}
+        <div className="container mx-auto px-6 grid grid-cols-3 items-center">
+          
+          {/* Left: Mobile Menu & Logo (Align Start) */}
+          <div className="flex items-center gap-4 justify-self-start">
             <button onClick={() => setIsMobileMenuOpen(true)} className="md:hidden p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors">
               <Menu size={24} className={scrolled || view !== 'home' ? 'text-stone-900' : 'text-white'} />
             </button>
             <button onClick={() => navigate('home')} className="text-2xl font-serif tracking-tight font-bold">SURA STEEL</button>
           </div>
-          <div className="hidden md:flex gap-8 text-sm font-medium tracking-wide">
+
+          {/* Center: Navigation Links (Align Center) */}
+          <div className="hidden md:flex gap-8 text-sm font-medium tracking-wide justify-self-center">
             <button onClick={() => navigate('home')} className="hover:opacity-70 transition-opacity">Shop</button>
             <button onClick={() => navigate('about')} className="hover:opacity-70 transition-opacity">About</button>
             <button onClick={() => navigate('contact')} className="hover:opacity-70 transition-opacity">Contact</button>
           </div>
-          <div className="flex items-center gap-6">
+
+          {/* Right: Cart (Align End) */}
+          <div className="flex items-center gap-6 justify-self-end">
             <button onClick={() => setIsCartOpen(true)} className="relative hover:opacity-70 transition-opacity">
               <ShoppingBag size={24} />
               {cartCount > 0 && <span className="absolute -top-2 -right-2 bg-amber-700 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">{cartCount}</span>}
