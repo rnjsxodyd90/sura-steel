@@ -104,6 +104,7 @@ const PRODUCTS = [
     specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish + PVD Gold" },
     price_full_set: 380,     
     price_place_setting: 72, 
+    stripe_link: "", 
     components: [
       { name: "Dinner Knife", name_nl: "Diner mes", len: "232mm", thick: "7.0mm", material: "13/0", price: 22 },
       { name: "Dinner Spoon", name_nl: "Diner lepel", len: "200mm", thick: "3.5mm", material: "18/10", price: 20 },
@@ -124,6 +125,7 @@ const PRODUCTS = [
     specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish + PVD Gold" },
     price_full_set: 395,
     price_place_setting: 75,
+    stripe_link: "",
     components: [
       { name: "Dinner Knife", name_nl: "Diner mes", len: "248mm", thick: "9.0mm", material: "13/0", price: 24 },
       { name: "Dinner Spoon", name_nl: "Diner lepel", len: "208mm", thick: "5.5mm", material: "18/10", price: 22 },
@@ -131,7 +133,7 @@ const PRODUCTS = [
       { name: "Tea Spoon", name_nl: "Theelepel", len: "142mm", thick: "4.0mm", material: "18/10", price: 18 }
     ]
   },
-  // ... Placeholders for other items (Shortened for stability)
+  // ... Other Gold Sets
   { id: 1, name: "Ivy Gold", category: "Gold", image: "/images/Ivy Gold.jpg", description: "Organic flowing lines wrapped in gold.", price_full_set: 350, price_place_setting: 65, components: [] },
   { id: 2, name: "Jacob Gold", category: "Gold", image: "/images/Jacob Gold.jpg", description: "Timeless simplicity for the modern king.", price_full_set: 340, price_place_setting: 62, components: [] },
   { id: 3, name: "Jaime Gold", category: "Gold", image: "/images/Jaime Gold.jpg", description: "Bold and substantial, a statement piece.", price_full_set: 360, price_place_setting: 68, components: [] },
@@ -162,6 +164,7 @@ const PRODUCTS = [
     specs: { material: "18/0 Stainless Steel", finish: "Mirror Finish" },
     price_full_set: 220,
     price_place_setting: 45,
+    stripe_link: "",
     components: [
       { name: "Dinner Knife", name_nl: "Diner mes", len: "225mm", thick: "6.0mm", material: "13/0", price: 15 },
       { name: "Dinner Fork", name_nl: "Diner vork", len: "200mm", thick: "4.0mm", material: "18/0", price: 12 },
@@ -197,7 +200,7 @@ const REVIEWS = [
   { id: 3, text: "The balance reminds me of high-end Japanese cutlery, but at a better price point.", author: "James T." }
 ];
 
-// --- Components ---
+// --- COMPONENTS (Defined BEFORE Usage) ---
 
 const Button = ({ children, onClick, variant = 'primary', className = '' }) => {
   const baseStyle = "px-6 py-3 transition-all duration-300 font-medium tracking-wide flex items-center justify-center gap-2";
@@ -207,11 +210,34 @@ const Button = ({ children, onClick, variant = 'primary', className = '' }) => {
     outline: "border-2 border-white text-white hover:bg-white hover:text-stone-900",
     sm: "bg-stone-900 text-white hover:bg-stone-700 px-3 py-1 text-xs"
   };
-
   return (
     <button onClick={onClick} className={`${baseStyle} ${variants[variant]} ${className}`}>
       {children}
     </button>
+  );
+};
+
+// Moved Component Definitions BEFORE App
+const MobileNav = ({ isOpen, onClose, navigate, lang, setLang, t }) => {
+  return (
+    <>
+      <div className={`fixed inset-0 bg-black/70 backdrop-blur-sm z-40 transition-opacity duration-300 md:hidden ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={onClose} />
+      <div className={`fixed top-0 left-0 h-full w-64 bg-white z-50 shadow-2xl transform transition-transform duration-300 md:hidden ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="p-6 border-b border-stone-100 flex justify-between items-center">
+          <span className="text-xl font-serif font-bold">SURA STEEL</span>
+          <button onClick={onClose} className="p-2 hover:bg-stone-100 rounded-full"><X size={20} /></button>
+        </div>
+        <nav className="p-6 space-y-4 flex flex-col">
+          <button onClick={() => { onClose(); navigate('home'); }} className="text-left text-lg font-medium text-stone-800 hover:text-amber-700">{t.nav.shop}</button>
+          <button onClick={() => { onClose(); navigate('about'); }} className="text-left text-lg font-medium text-stone-800 hover:text-amber-700">{t.nav.about}</button>
+          <button onClick={() => { onClose(); navigate('contact'); }} className="text-left text-lg font-medium text-stone-800 hover:text-amber-700">{t.nav.contact}</button>
+          <div className="border-t border-stone-100 pt-4 mt-2">
+            <button onClick={() => setLang('en')} className={`mr-4 font-bold ${lang === 'en' ? 'text-amber-700' : 'text-stone-400'}`}>EN</button>
+            <button onClick={() => setLang('nl')} className={`font-bold ${lang === 'nl' ? 'text-amber-700' : 'text-stone-400'}`}>NL</button>
+          </div>
+        </nav>
+      </div>
+    </>
   );
 };
 
@@ -223,7 +249,8 @@ const CartSidebar = ({ isOpen, onClose, cart, updateQuantity, removeFromCart, la
   const handleCheckout = () => {
     setIsCheckingOut(true);
     setTimeout(() => {
-        window.location.href = "https://buy.stripe.com/YOUR_LINK_HERE"; 
+        // Generic checkout link (replace later)
+        window.location.href = "https://buy.stripe.com/YOUR_GENERIC_LINK_HERE"; 
     }, 1000);
   };
 
@@ -297,31 +324,65 @@ const ProductCard = React.memo(({ product, onViewDetails, lang, t }) => (
   </div>
 ));
 
-// --- Mobile Navigation Component ---
-const MobileNav = ({ isOpen, onClose, navigate, lang, setLang, t }) => {
+// --- PAGES (Defined BEFORE App) ---
+
+const HomePage = ({ addToCart, activeCategory, setActiveCategory, onViewDetails, lang, t }) => {
+  const filteredProducts = useMemo(() => {
+    return activeCategory === 'All' 
+      ? PRODUCTS 
+      : activeCategory === 'Sets' 
+        ? PRODUCTS.filter(p => p.category === 'Gold' || p.category === 'Silver') 
+        : PRODUCTS.filter(p => p.category === activeCategory);
+  }, [activeCategory]);
+
   return (
     <>
-      <div className={`fixed inset-0 bg-black/70 backdrop-blur-sm z-40 transition-opacity duration-300 md:hidden ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={onClose} />
-      <div className={`fixed top-0 left-0 h-full w-64 bg-white z-50 shadow-2xl transform transition-transform duration-300 md:hidden ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <div className="p-6 border-b border-stone-100 flex justify-between items-center">
-          <span className="text-xl font-serif font-bold">SURA STEEL</span>
-          <button onClick={onClose} className="p-2 hover:bg-stone-100 rounded-full"><X size={20} /></button>
+      <header className="relative h-screen flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img src="/background.png" alt="Sura Steel Royal Background" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-black/40" />
         </div>
-        <nav className="p-6 space-y-4 flex flex-col">
-          <button onClick={() => { onClose(); navigate('home'); }} className="text-left text-lg font-medium text-stone-800 hover:text-amber-700">{t.nav.shop}</button>
-          <button onClick={() => { onClose(); navigate('about'); }} className="text-left text-lg font-medium text-stone-800 hover:text-amber-700">{t.nav.about}</button>
-          <button onClick={() => { onClose(); navigate('contact'); }} className="text-left text-lg font-medium text-stone-800 hover:text-amber-700">{t.nav.contact}</button>
-          <div className="border-t border-stone-100 pt-4 mt-2">
-            <button onClick={() => setLang('en')} className={`mr-4 font-bold ${lang === 'en' ? 'text-amber-700' : 'text-stone-400'}`}>EN</button>
-            <button onClick={() => setLang('nl')} className={`font-bold ${lang === 'nl' ? 'text-amber-700' : 'text-stone-400'}`}>NL</button>
+        <div className="relative z-10 text-center text-white px-6 max-w-4xl mx-auto mt-20">
+          <div className="mb-8 flex justify-center">
+            <span className="px-5 py-2 rounded-full border border-amber-200/30 text-amber-100 text-[10px] uppercase tracking-[0.3em] font-light bg-black/10 backdrop-blur-md">{t.hero.badge}</span>
           </div>
-        </nav>
-      </div>
+          <h1 className="text-5xl md:text-7xl font-serif mb-8 leading-tight">{t.hero.title}</h1>
+          <p className="text-lg text-stone-200 mb-10 max-w-2xl mx-auto font-light">{t.hero.desc}</p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button variant="outline" onClick={() => document.getElementById('shop').scrollIntoView({ behavior: 'smooth' })}>{t.hero.cta}</Button>
+          </div>
+        </div>
+      </header>
+
+      <section className="py-24 bg-stone-50">
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+            <div className="space-y-4"><div className="w-16 h-16 mx-auto bg-stone-200 rounded-full flex items-center justify-center text-stone-900"><Crown size={24} /></div><h3 className="text-xl font-serif">{t.features.std_title}</h3><p className="text-stone-500 leading-relaxed">{t.features.std_desc}</p></div>
+            <div className="space-y-4"><div className="w-16 h-16 mx-auto bg-stone-200 rounded-full flex items-center justify-center text-stone-900"><Hammer size={24} /></div><h3 className="text-xl font-serif">{t.features.tech_title}</h3><p className="text-stone-500 leading-relaxed">{t.features.tech_desc}</p></div>
+            <div className="space-y-4"><div className="w-16 h-16 mx-auto bg-stone-200 rounded-full flex items-center justify-center text-stone-900"><ShieldCheck size={24} /></div><h3 className="text-xl font-serif">{t.features.mat_title}</h3><p className="text-stone-500 leading-relaxed">{t.features.mat_desc}</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="shop" className="py-24">
+        <div className="container mx-auto px-6">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+            <div><h2 className="text-4xl font-serif text-stone-900 mb-4">{t.shop.title}</h2><p className="text-stone-500">{t.shop.subtitle}</p></div>
+            <div className="flex gap-4 border-b border-stone-200 pb-2 overflow-x-auto">
+              {['All', 'Sets', 'Gold', 'Silver'].map(cat => (
+                <button key={cat} onClick={() => setActiveCategory(cat)} className={`pb-2 text-sm uppercase tracking-wider transition-colors whitespace-nowrap ${activeCategory === cat ? 'text-stone-900 border-b-2 border-stone-900 -mb-[9px]' : 'text-stone-400 hover:text-stone-600'}`}>{cat === 'All' ? t.filters.all : cat === 'Sets' ? t.filters.sets : cat === 'Gold' ? t.filters.gold : t.filters.silver}</button>
+              ))}
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-x-8 gap-y-16">
+            {filteredProducts.map(product => (<ProductCard key={product.id} product={product} onViewDetails={onViewDetails} lang={lang} t={t} />))}
+          </div>
+        </div>
+      </section>
     </>
   );
 };
 
-// --- PAGE: Product Details ---
 const ProductDetailPage = ({ product, onBack, onAddToCart, lang }) => {
   const [selectedOption, setSelectedOption] = useState('set');
   const t = TRANSLATIONS[lang].product;
@@ -445,65 +506,6 @@ const ProductDetailPage = ({ product, onBack, onAddToCart, lang }) => {
         </div>
       )}
     </div>
-  );
-};
-
-// --- Page Components ---
-
-const HomePage = ({ addToCart, activeCategory, setActiveCategory, onViewDetails, lang, t }) => {
-  const filteredProducts = useMemo(() => {
-    return activeCategory === 'All' 
-      ? PRODUCTS 
-      : activeCategory === 'Sets' 
-        ? PRODUCTS.filter(p => p.category === 'Gold' || p.category === 'Silver') 
-        : PRODUCTS.filter(p => p.category === activeCategory);
-  }, [activeCategory]);
-
-  return (
-    <>
-      <header className="relative h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img src="/background.png" alt="Sura Steel Royal Background" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-black/40" />
-        </div>
-        <div className="relative z-10 text-center text-white px-6 max-w-4xl mx-auto mt-20">
-          <div className="mb-8 flex justify-center">
-            <span className="px-5 py-2 rounded-full border border-amber-200/30 text-amber-100 text-[10px] uppercase tracking-[0.3em] font-light bg-black/10 backdrop-blur-md">{t.hero.badge}</span>
-          </div>
-          <h1 className="text-5xl md:text-7xl font-serif mb-8 leading-tight">{t.hero.title}</h1>
-          <p className="text-lg text-stone-200 mb-10 max-w-2xl mx-auto font-light">{t.hero.desc}</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="outline" onClick={() => document.getElementById('shop').scrollIntoView({ behavior: 'smooth' })}>{t.hero.cta}</Button>
-          </div>
-        </div>
-      </header>
-
-      <section className="py-24 bg-stone-50">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-            <div className="space-y-4"><div className="w-16 h-16 mx-auto bg-stone-200 rounded-full flex items-center justify-center text-stone-900"><Crown size={24} /></div><h3 className="text-xl font-serif">{t.features.std_title}</h3><p className="text-stone-500 leading-relaxed">{t.features.std_desc}</p></div>
-            <div className="space-y-4"><div className="w-16 h-16 mx-auto bg-stone-200 rounded-full flex items-center justify-center text-stone-900"><Hammer size={24} /></div><h3 className="text-xl font-serif">{t.features.tech_title}</h3><p className="text-stone-500 leading-relaxed">{t.features.tech_desc}</p></div>
-            <div className="space-y-4"><div className="w-16 h-16 mx-auto bg-stone-200 rounded-full flex items-center justify-center text-stone-900"><ShieldCheck size={24} /></div><h3 className="text-xl font-serif">{t.features.mat_title}</h3><p className="text-stone-500 leading-relaxed">{t.features.mat_desc}</p></div>
-          </div>
-        </div>
-      </section>
-
-      <section id="shop" className="py-24">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-            <div><h2 className="text-4xl font-serif text-stone-900 mb-4">{t.shop.title}</h2><p className="text-stone-500">{t.shop.subtitle}</p></div>
-            <div className="flex gap-4 border-b border-stone-200 pb-2 overflow-x-auto">
-              {['All', 'Sets', 'Gold', 'Silver'].map(cat => (
-                <button key={cat} onClick={() => setActiveCategory(cat)} className={`pb-2 text-sm uppercase tracking-wider transition-colors whitespace-nowrap ${activeCategory === cat ? 'text-stone-900 border-b-2 border-stone-900 -mb-[9px]' : 'text-stone-400 hover:text-stone-600'}`}>{cat === 'All' ? t.filters.all : cat === 'Sets' ? t.filters.sets : cat === 'Gold' ? t.filters.gold : t.filters.silver}</button>
-              ))}
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-x-8 gap-y-16">
-            {filteredProducts.map(product => (<ProductCard key={product.id} product={product} onViewDetails={onViewDetails} lang={lang} t={t} />))}
-          </div>
-        </div>
-      </section>
-    </>
   );
 };
 
