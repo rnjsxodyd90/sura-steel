@@ -246,12 +246,28 @@ const CartSidebar = ({ isOpen, onClose, cart, updateQuantity, removeFromCart, la
   const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     setIsCheckingOut(true);
-    setTimeout(() => {
-        // Generic checkout link (replace later)
-        window.location.href = "https://buy.stripe.com/YOUR_GENERIC_LINK_HERE"; 
-    }, 1000);
+    try {
+      const response = await fetch('/.netlify/functions/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cart }),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok && data.url) {
+        window.location.href = data.url;
+      } else {
+        alert('Error creating checkout session. Please try again.');
+        setIsCheckingOut(false);
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Error processing checkout. Please try again.');
+      setIsCheckingOut(false);
+    }
   };
 
   return (
