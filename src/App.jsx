@@ -579,6 +579,83 @@ const PolicyPage = ({ title }) => (
   </div>
 );
 
+const SuccessPage = ({ onContinueShopping, lang }) => {
+  const content = {
+    en: {
+      title: "Thank You for Your Order!",
+      subtitle: "Your order has been confirmed",
+      message: "We've received your payment and are preparing your royal cutlery. You'll receive a confirmation email shortly with your order details.",
+      orderInfo: "What happens next?",
+      steps: [
+        { icon: "📧", title: "Confirmation Email", desc: "You'll receive an order confirmation within a few minutes." },
+        { icon: "📦", title: "Preparation", desc: "Our artisans will carefully package your cutlery set." },
+        { icon: "🚚", title: "Shipping", desc: "Ships from The Hague within 1-2 business days." },
+        { icon: "🏠", title: "Delivery", desc: "EU: 3-5 days | International: 7-14 days" }
+      ],
+      cta: "Continue Shopping",
+      support: "Questions? Contact us at taeyong@surasteel.com"
+    },
+    nl: {
+      title: "Bedankt voor uw bestelling!",
+      subtitle: "Uw bestelling is bevestigd",
+      message: "We hebben uw betaling ontvangen en bereiden uw koninklijk bestek voor. U ontvangt binnenkort een bevestigingsmail met uw bestelgegevens.",
+      orderInfo: "Wat gebeurt er nu?",
+      steps: [
+        { icon: "📧", title: "Bevestigingsmail", desc: "U ontvangt binnen enkele minuten een orderbevestiging." },
+        { icon: "📦", title: "Voorbereiding", desc: "Onze ambachtslieden zullen uw bestekset zorgvuldig inpakken." },
+        { icon: "🚚", title: "Verzending", desc: "Verzonden vanuit Den Haag binnen 1-2 werkdagen." },
+        { icon: "🏠", title: "Levering", desc: "EU: 3-5 dagen | Internationaal: 7-14 dagen" }
+      ],
+      cta: "Verder Winkelen",
+      support: "Vragen? Neem contact op via taeyong@surasteel.com"
+    }
+  };
+
+  const t = content[lang] || content.en;
+
+  return (
+    <div className="pt-32 pb-24 min-h-screen bg-gradient-to-b from-stone-50 to-white">
+      <div className="container mx-auto px-6 max-w-3xl">
+        {/* Success Icon */}
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center w-24 h-24 bg-green-100 rounded-full mb-6 animate-[pulse_2s_ease-in-out_1]">
+            <Check size={48} className="text-green-600" />
+          </div>
+          <h1 className="text-4xl md:text-5xl font-serif text-stone-900 mb-3">{t.title}</h1>
+          <p className="text-xl text-amber-600 font-medium">{t.subtitle}</p>
+        </div>
+
+        {/* Message */}
+        <div className="bg-white border border-stone-200 rounded-xl p-8 shadow-sm mb-10 text-center">
+          <p className="text-stone-600 text-lg leading-relaxed">{t.message}</p>
+        </div>
+
+        {/* Order Timeline */}
+        <div className="bg-stone-900 text-white rounded-xl p-8 mb-10">
+          <h2 className="text-xl font-serif mb-8 text-center">{t.orderInfo}</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {t.steps.map((step, idx) => (
+              <div key={idx} className="text-center">
+                <div className="text-4xl mb-3">{step.icon}</div>
+                <h3 className="font-bold text-sm mb-1">{step.title}</h3>
+                <p className="text-xs text-stone-400">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div className="text-center">
+          <Button onClick={onContinueShopping} className="px-12 py-4 text-lg">
+            {t.cta} <ArrowRight size={20} />
+          </Button>
+          <p className="text-stone-500 text-sm mt-6">{t.support}</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // --- Main App Component ---
 
 const App = () => {
@@ -593,6 +670,17 @@ const App = () => {
   const [lang, setLang] = useState('en'); // 'en' or 'nl'
 
   const t = TRANSLATIONS[lang];
+
+  // Check for successful payment on page load
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('success') === 'true') {
+      setView('success');
+      setCart([]); // Clear cart after successful purchase
+      // Clean up the URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -662,6 +750,7 @@ const App = () => {
         {view === 'about' && <AboutPage />}
         {view === 'contact' && <ContactPage />}
         {view === 'policy' && <PolicyPage title="Shipping & Returns" />}
+        {view === 'success' && <SuccessPage onContinueShopping={() => navigate('home')} lang={lang} />}
       </main>
 
       <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} cart={cart} updateQuantity={updateQuantity} removeFromCart={removeFromCart} lang={lang} />
