@@ -610,7 +610,7 @@ const ContactPage = ({ lang }) => {
           <div className="space-y-6">
             <div>
               <h3 className="font-bold text-stone-900 mb-2 flex items-center gap-2"><Mail size={18} /> Email</h3>
-              <a href="mailto:taeyong@surasteel.com" className="text-stone-600 hover:text-amber-700 transition-colors">taeyong@surasteel.com</a>
+              <a href="mailto:info@surasteel.com" className="text-stone-600 hover:text-amber-700 transition-colors">info@surasteel.com</a>
             </div>
             <div>
               <h3 className="font-bold text-stone-900 mb-2 flex items-center gap-2"><Phone size={18} /> Phone</h3>
@@ -700,7 +700,7 @@ const SuccessPage = ({ onContinueShopping, lang }) => {
         { icon: "🏠", title: "Delivery", desc: "EU: 3-5 days (depending on the country) | International: 7-14 days" }
       ],
       cta: "Continue Shopping",
-      support: "Questions? Contact us at taeyong@surasteel.com"
+      support: "Questions? Contact us at info@surasteel.com"
     },
     nl: {
       title: "Bedankt voor uw bestelling!",
@@ -714,7 +714,7 @@ const SuccessPage = ({ onContinueShopping, lang }) => {
         { icon: "🏠", title: "Levering", desc: "EU: 3-5 dagen | Internationaal: 7-14 dagen" }
       ],
       cta: "Verder Winkelen",
-      support: "Vragen? Neem contact op via taeyong@surasteel.com"
+      support: "Vragen? Neem contact op via info@surasteel.com"
     }
   };
 
@@ -839,7 +839,7 @@ const Footer = ({ navigate, lang }) => {
               </a>
             </div>
             <div className="text-stone-400 text-sm space-y-2">
-              <p className="flex items-center gap-2"><Mail size={14} /> taeyong@surasteel.com</p>
+              <p className="flex items-center gap-2"><Mail size={14} /> info@surasteel.com</p>
               <p className="flex items-center gap-2"><Phone size={14} /> +31 6 8554 0430</p>
               <p className="flex items-center gap-2"><MapPin size={14} /> The Hague, NL</p>
             </div>
