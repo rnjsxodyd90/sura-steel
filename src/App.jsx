@@ -545,26 +545,133 @@ const AboutPage = () => (
   </div>
 );
 
-const ContactPage = () => (
-  <div className="pt-32 pb-24 bg-stone-50 min-h-screen">
-    <div className="container mx-auto px-6 max-w-3xl">
-      <h1 className="text-4xl font-serif text-stone-900 mb-12 text-center">Contact Us</h1>
-      <div className="bg-white p-8 rounded-lg shadow-sm grid md:grid-cols-2 gap-12">
-        <div className="space-y-6">
-          <div><h3 className="font-bold text-stone-900 mb-2 flex items-center gap-2"><Mail size={18} /> Email</h3><p className="text-stone-600">taeyong@surasteel.com</p></div>
-          <div><h3 className="font-bold text-stone-900 mb-2 flex items-center gap-2"><Phone size={18} /> Phone</h3><p className="text-stone-600">+31 6 8554 0430</p></div>
-          <div><h3 className="font-bold text-stone-900 mb-2 flex items-center gap-2"><MapPin size={18} /> HQ</h3><p className="text-stone-600">123 Artisan Way<br/>The Hague, Netherlands</p></div>
+const ContactPage = ({ lang }) => {
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [status, setStatus] = useState({ type: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const content = {
+    en: {
+      title: "Contact Us",
+      name: "Your Name",
+      email: "Email Address",
+      message: "Message",
+      send: "Send Message",
+      sending: "Sending...",
+      success: "Message sent! We'll get back to you soon.",
+      error: "Failed to send. Please try again or email us directly."
+    },
+    nl: {
+      title: "Neem Contact Op",
+      name: "Uw Naam",
+      email: "E-mailadres",
+      message: "Bericht",
+      send: "Verstuur Bericht",
+      sending: "Versturen...",
+      success: "Bericht verzonden! We nemen snel contact met u op.",
+      error: "Verzenden mislukt. Probeer het opnieuw of mail ons direct."
+    }
+  };
+
+  const t = content[lang] || content.en;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setStatus({ type: '', message: '' });
+
+    try {
+      const response = await fetch('/.netlify/functions/send-contact-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setStatus({ type: 'success', message: t.success });
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        setStatus({ type: 'error', message: data.error || t.error });
+      }
+    } catch (error) {
+      setStatus({ type: 'error', message: t.error });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="pt-32 pb-24 bg-stone-50 min-h-screen">
+      <div className="container mx-auto px-6 max-w-3xl">
+        <h1 className="text-4xl font-serif text-stone-900 mb-12 text-center">{t.title}</h1>
+        <div className="bg-white p-8 rounded-lg shadow-sm grid md:grid-cols-2 gap-12">
+          <div className="space-y-6">
+            <div>
+              <h3 className="font-bold text-stone-900 mb-2 flex items-center gap-2"><Mail size={18} /> Email</h3>
+              <a href="mailto:taeyong@surasteel.com" className="text-stone-600 hover:text-amber-700 transition-colors">taeyong@surasteel.com</a>
+            </div>
+            <div>
+              <h3 className="font-bold text-stone-900 mb-2 flex items-center gap-2"><Phone size={18} /> Phone</h3>
+              <a href="tel:+31685540430" className="text-stone-600 hover:text-amber-700 transition-colors">+31 6 8554 0430</a>
+            </div>
+            <div>
+              <h3 className="font-bold text-stone-900 mb-2 flex items-center gap-2"><MapPin size={18} /> HQ</h3>
+              <p className="text-stone-600">The Hague, Netherlands</p>
+            </div>
+            <div className="pt-4 border-t border-stone-100">
+              <h3 className="font-bold text-stone-900 mb-3">Follow Us</h3>
+              <div className="flex gap-4">
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-stone-100 rounded-full flex items-center justify-center hover:bg-amber-100 hover:text-amber-700 transition-colors">
+                  <Instagram size={18} />
+                </a>
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-stone-100 rounded-full flex items-center justify-center hover:bg-amber-100 hover:text-amber-700 transition-colors">
+                  <Facebook size={18} />
+                </a>
+              </div>
+            </div>
+          </div>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input 
+              type="text" 
+              placeholder={t.name}
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              required
+              className="w-full p-3 border border-stone-200 rounded focus:border-stone-900 outline-none transition-colors" 
+            />
+            <input 
+              type="email" 
+              placeholder={t.email}
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              required
+              className="w-full p-3 border border-stone-200 rounded focus:border-stone-900 outline-none transition-colors" 
+            />
+            <textarea 
+              rows="4" 
+              placeholder={t.message}
+              value={formData.message}
+              onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+              required
+              className="w-full p-3 border border-stone-200 rounded focus:border-stone-900 outline-none transition-colors resize-none"
+            />
+            {status.message && (
+              <div className={`p-3 rounded text-sm ${status.type === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
+                {status.type === 'success' && <Check size={16} className="inline mr-2" />}
+                {status.message}
+              </div>
+            )}
+            <Button className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? t.sending : t.send}
+            </Button>
+          </form>
         </div>
-        <form className="space-y-4">
-          <input type="text" placeholder="Your Name" className="w-full p-3 border border-stone-200 rounded focus:border-stone-900 outline-none" />
-          <input type="email" placeholder="Email Address" className="w-full p-3 border border-stone-200 rounded focus:border-stone-900 outline-none" />
-          <textarea rows="4" placeholder="Message" className="w-full p-3 border border-stone-200 rounded focus:border-stone-900 outline-none"></textarea>
-          <Button className="w-full">Send Message</Button>
-        </form>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const PolicyPage = ({ title }) => (
   <div className="pt-32 pb-24 container mx-auto px-6 max-w-3xl">
@@ -584,13 +691,13 @@ const SuccessPage = ({ onContinueShopping, lang }) => {
     en: {
       title: "Thank You for Your Order!",
       subtitle: "Your order has been confirmed",
-      message: "We've received your payment and are preparing your royal cutlery. You'll receive a confirmation email shortly with your order details.",
+      message: "We've received your payment and are preparing your cutlery. You'll receive a confirmation email shortly with your order details.",
       orderInfo: "What happens next?",
       steps: [
         { icon: "📧", title: "Confirmation Email", desc: "You'll receive an order confirmation within a few minutes." },
         { icon: "📦", title: "Preparation", desc: "Our artisans will carefully package your cutlery set." },
         { icon: "🚚", title: "Shipping", desc: "Ships from The Hague within 1-2 business days." },
-        { icon: "🏠", title: "Delivery", desc: "EU: 3-5 days | International: 7-14 days" }
+        { icon: "🏠", title: "Delivery", desc: "EU: 3-5 days (depending on the country) | International: 7-14 days" }
       ],
       cta: "Continue Shopping",
       support: "Questions? Contact us at taeyong@surasteel.com"
@@ -653,6 +760,122 @@ const SuccessPage = ({ onContinueShopping, lang }) => {
         </div>
       </div>
     </div>
+  );
+};
+
+// --- Footer Component ---
+
+const Footer = ({ navigate, lang }) => {
+  const t = TRANSLATIONS[lang].footer;
+  
+  const content = {
+    en: {
+      tagline: "Dining Fit For Royalty",
+      desc: "Premium Korean steel cutlery crafted with Tsubame precision. Serving royalty since 1970.",
+      quickLinks: "Quick Links",
+      shop: "Shop Collection",
+      about: "Our Story",
+      contact: "Contact Us",
+      shipping: "Shipping & Returns",
+      connect: "Connect",
+      newsletter: "Newsletter",
+      newsletterDesc: "Get updates on new collections and exclusive offers.",
+      emailPlaceholder: "Enter your email",
+      subscribe: "Subscribe"
+    },
+    nl: {
+      tagline: "Dineren Als Een Koning",
+      desc: "Premium Koreaans stalen bestek vervaardigd met Tsubame-precisie. Koninklijke service sinds 1970.",
+      quickLinks: "Snelle Links",
+      shop: "Collectie Bekijken",
+      about: "Ons Verhaal",
+      contact: "Contact",
+      shipping: "Verzending & Retour",
+      connect: "Volg Ons",
+      newsletter: "Nieuwsbrief",
+      newsletterDesc: "Ontvang updates over nieuwe collecties en exclusieve aanbiedingen.",
+      emailPlaceholder: "Voer uw e-mail in",
+      subscribe: "Aanmelden"
+    }
+  };
+
+  const c = content[lang] || content.en;
+
+  return (
+    <footer className="bg-stone-900 text-white">
+      {/* Main Footer */}
+      <div className="container mx-auto px-6 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+          {/* Brand */}
+          <div className="lg:col-span-1">
+            <h3 className="text-2xl font-serif font-bold mb-2">SURA STEEL</h3>
+            <p className="text-amber-400 text-sm mb-4">{c.tagline}</p>
+            <p className="text-stone-400 text-sm leading-relaxed">{c.desc}</p>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h4 className="font-bold text-sm uppercase tracking-wider mb-4">{c.quickLinks}</h4>
+            <ul className="space-y-3 text-stone-400">
+              <li><button onClick={() => navigate('home')} className="hover:text-amber-400 transition-colors">{c.shop}</button></li>
+              <li><button onClick={() => navigate('about')} className="hover:text-amber-400 transition-colors">{c.about}</button></li>
+              <li><button onClick={() => navigate('contact')} className="hover:text-amber-400 transition-colors">{c.contact}</button></li>
+              <li><button onClick={() => navigate('policy')} className="hover:text-amber-400 transition-colors">{c.shipping}</button></li>
+            </ul>
+          </div>
+
+          {/* Connect */}
+          <div>
+            <h4 className="font-bold text-sm uppercase tracking-wider mb-4">{c.connect}</h4>
+            <div className="flex gap-3 mb-6">
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-stone-800 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors">
+                <Instagram size={18} />
+              </a>
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-stone-800 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors">
+                <Facebook size={18} />
+              </a>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-stone-800 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors">
+                <Twitter size={18} />
+              </a>
+            </div>
+            <div className="text-stone-400 text-sm space-y-2">
+              <p className="flex items-center gap-2"><Mail size={14} /> taeyong@surasteel.com</p>
+              <p className="flex items-center gap-2"><Phone size={14} /> +31 6 8554 0430</p>
+              <p className="flex items-center gap-2"><MapPin size={14} /> The Hague, NL</p>
+            </div>
+          </div>
+
+          {/* Newsletter */}
+          <div>
+            <h4 className="font-bold text-sm uppercase tracking-wider mb-4">{c.newsletter}</h4>
+            <p className="text-stone-400 text-sm mb-4">{c.newsletterDesc}</p>
+            <form className="flex gap-2" onSubmit={(e) => e.preventDefault()}>
+              <input 
+                type="email" 
+                placeholder={c.emailPlaceholder}
+                className="flex-1 px-4 py-2 bg-stone-800 border border-stone-700 rounded text-sm text-white placeholder-stone-500 focus:border-amber-500 outline-none transition-colors"
+              />
+              <button type="submit" className="px-4 py-2 bg-amber-600 hover:bg-amber-500 rounded text-sm font-medium transition-colors">
+                {c.subscribe}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Bar */}
+      <div className="border-t border-stone-800">
+        <div className="container mx-auto px-6 py-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-stone-500 text-sm">
+            <p>© {new Date().getFullYear()} Sura Steel. {t.rights}</p>
+            <div className="flex gap-6">
+              <button onClick={() => navigate('policy')} className="hover:text-amber-400 transition-colors">{t.privacy}</button>
+              <button onClick={() => navigate('policy')} className="hover:text-amber-400 transition-colors">{t.terms}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
   );
 };
 
@@ -748,10 +971,12 @@ const App = () => {
         {view === 'home' && <HomePage addToCart={addToCart} activeCategory={activeCategory} setActiveCategory={setActiveCategory} onViewDetails={handleViewDetails} lang={lang} t={t} />}
         {view === 'product' && <ProductDetailPage product={selectedProduct} onBack={() => setView('home')} onAddToCart={addToCart} lang={lang} />}
         {view === 'about' && <AboutPage />}
-        {view === 'contact' && <ContactPage />}
+        {view === 'contact' && <ContactPage lang={lang} />}
         {view === 'policy' && <PolicyPage title="Shipping & Returns" />}
         {view === 'success' && <SuccessPage onContinueShopping={() => navigate('home')} lang={lang} />}
       </main>
+
+      <Footer navigate={navigate} lang={lang} />
 
       <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} cart={cart} updateQuantity={updateQuantity} removeFromCart={removeFromCart} lang={lang} />
       {notification && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-stone-900 text-white px-6 py-3 rounded shadow-xl z-50 flex items-center gap-3"><Check size={16} /> {notification}</div>}
