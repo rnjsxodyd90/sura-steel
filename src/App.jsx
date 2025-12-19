@@ -538,8 +538,7 @@ const AboutPage = () => (
         <p>In the Joseon Dynasty of Korea, the King's daily meal was called <b>"Sura" (수라)</b>. It was not merely food; it was a symbol of the nation's prosperity, prepared with the finest ingredients and served with the utmost respect.</p>
         <p>At Sura Steel, we believe the tools used to prepare a meal should carry that same dignity. We named our brand <b>Sura</b> because we provide cutlery that possesses the quality, balance, and sharpness fit for a king's table.</p>
         <h3 className="text-2xl font-serif text-stone-900">Our Global Journey</h3>
-        <p>Our story began by learning the art of cutlery in <b>Tsubame, Japan</b>—a region legendary for its metalwork. Bringing this knowledge to Korea in 1970, we established a legacy of precision.</p>
-        <p>We partner with <b>POSCO</b>, Korea's premier steel manufacturer, to source high-carbon stainless steel. Today, we continue this tradition in Indonesia, utilizing authentic <b>"Danjo" (Forged)</b> technology to create tools that last generations.</p>
+        <p>Rooted in the metalworking legends of <b>Tsubame, Japan</b>, and refined in Korea since 1970, our legacy is one of precision. By partnering with Korean experts for high-grade stainless steel and employing authentic <b>"Danjo" (Forged)</b> technology, we create enduring tools designed to last generations.</p>
       </div>
     </div>
   </div>
