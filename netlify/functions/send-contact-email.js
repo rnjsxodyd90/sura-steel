@@ -62,7 +62,7 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         from: 'Sura Steel Contact <onboarding@resend.dev>', // Change after domain verification
-        to: ['taeyong@surasteel.com'],
+        to: ['info@surasteel.com'],
         subject: `New Contact Form Message from ${name}`,
         html: `
           <h2>New Contact Form Submission</h2>
