@@ -1002,9 +1002,7 @@ const App = () => {
   const getStock = (productId, variant) => {
     const key = `${productId}-${variant}`;
     const stock = inventory[key] ?? null;
-    if (stock !== null) {
-      console.log(`Stock check: ${key} = ${stock}`);
-    }
+    console.log(`Stock check: ${key} = ${stock} (inventory has ${Object.keys(inventory).length} items)`);
     return stock; // null means not tracked (unlimited)
   };
 
