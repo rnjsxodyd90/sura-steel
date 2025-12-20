@@ -44,7 +44,8 @@ const TRANSLATIONS = {
       in_stock: "In Stock - Ships from The Hague"
     },
     cart: { title: "Your Basket", empty: "Your basket is empty.", continue: "Continue Shopping", total: "Total", checkout: "Checkout Securely" },
-    footer: { privacy: "Privacy Policy", terms: "Terms of Service", rights: "All rights reserved." }
+    footer: { privacy: "Privacy Policy", terms: "Terms of Service", rights: "All rights reserved." },
+    stock: { inStock: "In Stock", lowStock: "Only {count} left!", outOfStock: "Out of Stock", soldOut: "Sold Out" }
   },
   nl: {
     nav: { shop: "Winkel", about: "Over Ons", contact: "Contact" },
@@ -87,7 +88,8 @@ const TRANSLATIONS = {
       in_stock: "Op Voorraad - Verzonden vanuit Den Haag"
     },
     cart: { title: "Uw Winkelwagen", empty: "Uw winkelwagen is leeg.", continue: "Verder Winkelen", total: "Totaal", checkout: "Veilig Afrekenen" },
-    footer: { privacy: "Privacybeleid", terms: "Algemene Voorwaarden", rights: "Alle rechten voorbehouden." }
+    footer: { privacy: "Privacybeleid", terms: "Algemene Voorwaarden", rights: "Alle rechten voorbehouden." },
+    stock: { inStock: "Op Voorraad", lowStock: "Nog maar {count}!", outOfStock: "Niet op Voorraad", soldOut: "Uitverkocht" }
   }
 };
 
@@ -317,32 +319,49 @@ const CartSidebar = ({ isOpen, onClose, cart, updateQuantity, removeFromCart, la
   );
 };
 
-const ProductCard = React.memo(({ product, onViewDetails, lang, t }) => (
-  <div className="group relative">
-    <div className="aspect-[4/5] overflow-hidden bg-stone-100 mb-4 cursor-pointer relative" onClick={() => onViewDetails(product)}>
-      <img 
-        src={product.image} 
-        alt={product.name} 
-        loading="lazy"
-        className="h-full w-full object-cover object-center group-hover:scale-105 transition-transform duration-700" 
-      />
-      <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-        <Button className="w-full shadow-lg">{t.product.collection}</Button>
+const ProductCard = React.memo(({ product, onViewDetails, lang, t, getStock }) => {
+  // Check stock for the place setting variant (most common purchase)
+  const stock = getStock ? getStock(product.id, '4-Piece Place Setting') : null;
+  const isOutOfStock = stock !== null && stock === 0;
+  const isLowStock = stock !== null && stock > 0 && stock <= 5;
+
+  return (
+    <div className="group relative">
+      <div className="aspect-[4/5] overflow-hidden bg-stone-100 mb-4 cursor-pointer relative" onClick={() => onViewDetails(product)}>
+        {isOutOfStock && (
+          <div className="absolute inset-0 bg-black/50 z-10 flex items-center justify-center">
+            <span className="bg-white text-stone-900 px-4 py-2 font-bold text-sm uppercase tracking-wider">{t.stock?.outOfStock || 'Out of Stock'}</span>
+          </div>
+        )}
+        {isLowStock && !isOutOfStock && (
+          <div className="absolute top-3 left-3 z-10 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded">
+            {(t.stock?.lowStock || 'Only {count} left!').replace('{count}', stock)}
+          </div>
+        )}
+        <img 
+          src={product.image} 
+          alt={product.name} 
+          loading="lazy"
+          className={`h-full w-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ${isOutOfStock ? 'grayscale' : ''}`}
+        />
+        <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+          <Button className="w-full shadow-lg">{t.product.collection}</Button>
+        </div>
+      </div>
+      <div className="flex justify-between items-start">
+        <div>
+          <p className="text-stone-500 text-xs uppercase tracking-wider mb-1">{product.category} {t.product.collection}</p>
+          <h3 className="text-lg font-serif text-stone-900 group-hover:text-amber-700 transition-colors cursor-pointer" onClick={() => onViewDetails(product)}>{product.name}</h3>
+        </div>
+        <p className="font-medium text-stone-900">{t.shop.from} €{product.price_place_setting}</p>
       </div>
     </div>
-    <div className="flex justify-between items-start">
-      <div>
-        <p className="text-stone-500 text-xs uppercase tracking-wider mb-1">{product.category} {t.product.collection}</p>
-        <h3 className="text-lg font-serif text-stone-900 group-hover:text-amber-700 transition-colors cursor-pointer" onClick={() => onViewDetails(product)}>{product.name}</h3>
-      </div>
-      <p className="font-medium text-stone-900">{t.shop.from} €{product.price_place_setting}</p>
-    </div>
-  </div>
-));
+  );
+});
 
 // --- PAGES (Defined BEFORE App) ---
 
-const HomePage = ({ addToCart, activeCategory, setActiveCategory, onViewDetails, lang, t }) => {
+const HomePage = ({ addToCart, activeCategory, setActiveCategory, onViewDetails, lang, t, getStock }) => {
   const filteredProducts = useMemo(() => {
     return activeCategory === 'All' 
       ? PRODUCTS 
@@ -391,7 +410,7 @@ const HomePage = ({ addToCart, activeCategory, setActiveCategory, onViewDetails,
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-x-8 gap-y-16">
-            {filteredProducts.map(product => (<ProductCard key={product.id} product={product} onViewDetails={onViewDetails} lang={lang} t={t} />))}
+            {filteredProducts.map(product => (<ProductCard key={product.id} product={product} onViewDetails={onViewDetails} lang={lang} t={t} getStock={getStock} />))}
           </div>
         </div>
       </section>
@@ -399,9 +418,10 @@ const HomePage = ({ addToCart, activeCategory, setActiveCategory, onViewDetails,
   );
 };
 
-const ProductDetailPage = ({ product, onBack, onAddToCart, lang }) => {
+const ProductDetailPage = ({ product, onBack, onAddToCart, lang, getStock }) => {
   const [selectedOption, setSelectedOption] = useState('set');
   const t = TRANSLATIONS[lang].product;
+  const tStock = TRANSLATIONS[lang].stock;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -411,7 +431,17 @@ const ProductDetailPage = ({ product, onBack, onAddToCart, lang }) => {
 
   const description = lang === 'nl' && product.description_nl ? product.description_nl : product.description;
 
+  // Get stock for both variants
+  const fullSetStock = getStock ? getStock(product.id, '24-Piece Full Set') : null;
+  const placeSettingStock = getStock ? getStock(product.id, '4-Piece Place Setting') : null;
+  
+  // Check if current selection is out of stock
+  const currentStock = selectedOption === 'set' ? fullSetStock : placeSettingStock;
+  const isOutOfStock = currentStock !== null && currentStock === 0;
+  const isLowStock = currentStock !== null && currentStock > 0 && currentStock <= 5;
+
   const handleAddMainSet = () => {
+    if (isOutOfStock) return;
     const variantName = selectedOption === 'set' ? t.full_set : t.place_setting;
     const price = selectedOption === 'set' ? product.price_full_set : product.price_place_setting;
     onAddToCart({ ...product, name: product.name, price: price, variant: variantName });
@@ -473,7 +503,23 @@ const ProductDetailPage = ({ product, onBack, onAddToCart, lang }) => {
                     <span className="font-serif text-xl text-stone-900">€{product.price_place_setting}</span>
                   </label>
                 </div>
-                <Button onClick={handleAddMainSet} className="w-full mt-6 py-4 text-lg">{t.add_set}</Button>
+                {/* Stock Status */}
+                {currentStock !== null && (
+                  <div className={`mt-4 text-center py-2 rounded ${isOutOfStock ? 'bg-red-50 text-red-700' : isLowStock ? 'bg-amber-50 text-amber-700' : 'bg-green-50 text-green-700'}`}>
+                    {isOutOfStock 
+                      ? (tStock?.outOfStock || 'Out of Stock')
+                      : isLowStock 
+                        ? (tStock?.lowStock || 'Only {count} left!').replace('{count}', currentStock)
+                        : (tStock?.inStock || 'In Stock')}
+                  </div>
+                )}
+                <Button 
+                  onClick={handleAddMainSet} 
+                  className={`w-full mt-4 py-4 text-lg ${isOutOfStock ? 'bg-stone-400 cursor-not-allowed hover:bg-stone-400' : ''}`}
+                  disabled={isOutOfStock}
+                >
+                  {isOutOfStock ? (tStock?.soldOut || 'Sold Out') : t.add_set}
+                </Button>
              </div>
              
              {product.specs && (
@@ -918,8 +964,37 @@ const App = () => {
   const [scrolled, setScrolled] = useState(false);
   const [notification, setNotification] = useState(null);
   const [lang, setLang] = useState('nl'); // 'nl' or 'en'
+  const [inventory, setInventory] = useState({});
 
   const t = TRANSLATIONS[lang];
+
+  // Fetch inventory on load
+  useEffect(() => {
+    const fetchInventory = async () => {
+      try {
+        const response = await fetch('/.netlify/functions/get-inventory');
+        const data = await response.json();
+        if (data.inventory && Array.isArray(data.inventory)) {
+          // Convert array to object keyed by product_id + variant
+          const inventoryMap = {};
+          data.inventory.forEach(item => {
+            const key = `${item.product_id}-${item.variant}`;
+            inventoryMap[key] = item.stock;
+          });
+          setInventory(inventoryMap);
+        }
+      } catch (error) {
+        console.log('Inventory not configured or unavailable');
+      }
+    };
+    fetchInventory();
+  }, []);
+
+  // Helper function to get stock for a product variant
+  const getStock = (productId, variant) => {
+    const key = `${productId}-${variant}`;
+    return inventory[key] ?? null; // null means not tracked (unlimited)
+  };
 
   // Check for successful payment on page load
   useEffect(() => {
@@ -995,8 +1070,8 @@ const App = () => {
       </nav>
 
       <main className="flex-grow">
-        {view === 'home' && <HomePage addToCart={addToCart} activeCategory={activeCategory} setActiveCategory={setActiveCategory} onViewDetails={handleViewDetails} lang={lang} t={t} />}
-        {view === 'product' && <ProductDetailPage product={selectedProduct} onBack={() => setView('home')} onAddToCart={addToCart} lang={lang} />}
+        {view === 'home' && <HomePage addToCart={addToCart} activeCategory={activeCategory} setActiveCategory={setActiveCategory} onViewDetails={handleViewDetails} lang={lang} t={t} getStock={getStock} />}
+        {view === 'product' && <ProductDetailPage product={selectedProduct} onBack={() => setView('home')} onAddToCart={addToCart} lang={lang} getStock={getStock} />}
         {view === 'about' && <AboutPage />}
         {view === 'contact' && <ContactPage lang={lang} />}
         {view === 'policy' && <PolicyPage title="Shipping & Returns" />}
