@@ -55,32 +55,19 @@ exports.handler = async (event) => {
 
         if (supabaseUrl && supabaseServiceKey) {
           for (const item of lineItems.data) {
-            // Parse product info from name (format: "Product Name (Variant)")
-            const nameMatch = item.description.match(/^(.+?)\s*\((.+)\)$/);
-            const productName = nameMatch ? nameMatch[1] : item.description;
-            const variant = nameMatch ? nameMatch[2] : 'default';
+            // Get product metadata from price object
+            const price = await stripe.prices.retrieve(item.price);
+            const productId = price.product_data?.metadata?.product_id;
+            const variant = price.product_data?.metadata?.variant;
 
-            console.log(`Updating inventory: ${productName} - ${variant} x ${item.quantity}`);
+            if (!productId || !variant) {
+              console.warn(`Missing metadata for item: ${item.description}`);
+              continue;
+            }
 
-            // Find product and update stock
-            // Note: In production, you'd want to store product_id in Stripe metadata
-            const response = await fetch(
-              `${supabaseUrl}/rest/v1/inventory?product_name=eq.${encodeURIComponent(productName)}&variant=eq.${encodeURIComponent(variant)}`,
-              {
-                method: 'PATCH',
-                headers: {
-                  'apikey': supabaseServiceKey,
-                  'Authorization': `Bearer ${supabaseServiceKey}`,
-                  'Content-Type': 'application/json',
-                  'Prefer': 'return=minimal',
-                },
-                body: JSON.stringify({
-                  stock: `stock - ${item.quantity}`,
-                }),
-              }
-            );
+            console.log(`Updating inventory: Product ${productId} - ${variant} x ${item.quantity}`);
 
-            // Alternative: Use RPC function for atomic decrement
+            // Use RPC function for atomic decrement
             await fetch(`${supabaseUrl}/rest/v1/rpc/decrement_stock`, {
               method: 'POST',
               headers: {
@@ -89,7 +76,7 @@ exports.handler = async (event) => {
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                p_product_name: productName,
+                p_product_id: parseInt(productId),
                 p_variant: variant,
                 p_quantity: item.quantity,
               }),

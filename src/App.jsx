@@ -294,7 +294,7 @@ const CartSidebar = ({ isOpen, onClose, cart, updateQuantity, removeFromCart, la
                   <img src={item.image} alt={item.name} className="w-20 h-20 object-cover rounded bg-stone-100" />
                   <div className="flex-1">
                     <h3 className="font-medium text-stone-900">{item.name}</h3>
-                    <p className="text-xs text-stone-500">{item.variant}</p>
+                    <p className="text-xs text-stone-500">{item.variantDisplay || item.variant}</p>
                     <p className="text-stone-900 text-sm mb-2">€{item.price}</p>
                     <div className="flex items-center gap-3">
                       <button onClick={() => updateQuantity(item.id, item.variant, -1)} className="w-6 h-6 rounded-full border border-stone-300 flex items-center justify-center hover:bg-stone-100">-</button>
@@ -320,8 +320,8 @@ const CartSidebar = ({ isOpen, onClose, cart, updateQuantity, removeFromCart, la
 };
 
 const ProductCard = React.memo(({ product, onViewDetails, lang, t, getStock }) => {
-  // Check stock for the place setting variant (most common purchase)
-  const stock = getStock ? getStock(product.id, '4-Piece Place Setting') : null;
+  // Check stock for the place setting variant (most common purchase, using database variant name)
+  const stock = getStock ? getStock(product.id, 'place_setting') : null;
   const isOutOfStock = stock !== null && stock === 0;
   const isLowStock = stock !== null && stock > 0 && stock <= 5;
 
@@ -431,9 +431,9 @@ const ProductDetailPage = ({ product, onBack, onAddToCart, lang, getStock }) => 
 
   const description = lang === 'nl' && product.description_nl ? product.description_nl : product.description;
 
-  // Get stock for both variants
-  const fullSetStock = getStock ? getStock(product.id, '24-Piece Full Set') : null;
-  const placeSettingStock = getStock ? getStock(product.id, '4-Piece Place Setting') : null;
+  // Get stock for both variants (using database variant names)
+  const fullSetStock = getStock ? getStock(product.id, 'full_set') : null;
+  const placeSettingStock = getStock ? getStock(product.id, 'place_setting') : null;
   
   // Check if current selection is out of stock
   const currentStock = selectedOption === 'set' ? fullSetStock : placeSettingStock;
@@ -442,9 +442,10 @@ const ProductDetailPage = ({ product, onBack, onAddToCart, lang, getStock }) => 
 
   const handleAddMainSet = () => {
     if (isOutOfStock) return;
-    const variantName = selectedOption === 'set' ? t.full_set : t.place_setting;
+    const variantDisplay = selectedOption === 'set' ? t.full_set : t.place_setting;
+    const variantDb = selectedOption === 'set' ? 'full_set' : 'place_setting';
     const price = selectedOption === 'set' ? product.price_full_set : product.price_place_setting;
-    onAddToCart({ ...product, name: product.name, price: price, variant: variantName });
+    onAddToCart({ ...product, name: product.name, price: price, variant: variantDb, variantDisplay: variantDisplay });
   };
 
   const handleAddSingle = (comp) => {
