@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { ShoppingBag, X, Menu, Star, Check, Instagram, Facebook, Twitter, ArrowRight, Hammer, Globe, ShieldCheck, Mail, MapPin, Phone, Crown, Ruler, Scale, ArrowLeft, Plus, Minus, Languages } from 'lucide-react';
+import { ShoppingBag, X, Menu, Star, Check, Instagram, Facebook, Twitter, ArrowRight, Hammer, Globe, ShieldCheck, Mail, MapPin, Phone, Crown, Ruler, Scale, ArrowLeft, Plus, Minus, Languages, Lock, LogOut, Package, BarChart3, Boxes, RefreshCw, TrendingUp, DollarSign, ShoppingCart, Eye, EyeOff } from 'lucide-react';
 
 // --- TRANSLATIONS ---
 const TRANSLATIONS = {
@@ -45,7 +45,45 @@ const TRANSLATIONS = {
     },
     cart: { title: "Your Basket", empty: "Your basket is empty.", continue: "Continue Shopping", total: "Total", checkout: "Checkout Securely" },
     footer: { privacy: "Privacy Policy", terms: "Terms of Service", rights: "All rights reserved." },
-    stock: { inStock: "In Stock", lowStock: "Only {count} left!", outOfStock: "Out of Stock", soldOut: "Sold Out" }
+    stock: { inStock: "In Stock", lowStock: "Only {count} left!", outOfStock: "Out of Stock", soldOut: "Sold Out" },
+    admin: {
+      login: "Admin Login",
+      password: "Password",
+      loginBtn: "Login",
+      logout: "Logout",
+      dashboard: "Dashboard",
+      orders: "Orders",
+      inventory: "Inventory",
+      analytics: "Analytics",
+      loading: "Loading...",
+      error: "Error loading data",
+      noOrders: "No orders found",
+      orderId: "Order ID",
+      date: "Date",
+      customer: "Customer",
+      total: "Total",
+      items: "Items",
+      status: "Status",
+      product: "Product",
+      variant: "Variant",
+      stock: "Stock",
+      update: "Update",
+      save: "Save",
+      saved: "Saved!",
+      totalRevenue: "Total Revenue",
+      orderCount: "Total Orders",
+      avgOrder: "Average Order",
+      popularProducts: "Popular Products",
+      quantity: "Qty Sold",
+      revenue: "Revenue",
+      last30Days: "Last 30 Days",
+      last7Days: "Last 7 Days",
+      last90Days: "Last 90 Days",
+      revenueChart: "Daily Revenue",
+      invalidPassword: "Invalid password",
+      updateSuccess: "Inventory updated successfully",
+      updateError: "Failed to update inventory"
+    }
   },
   nl: {
     nav: { shop: "Winkel", about: "Over Ons", contact: "Contact" },
@@ -89,7 +127,45 @@ const TRANSLATIONS = {
     },
     cart: { title: "Uw Winkelwagen", empty: "Uw winkelwagen is leeg.", continue: "Verder Winkelen", total: "Totaal", checkout: "Veilig Afrekenen" },
     footer: { privacy: "Privacybeleid", terms: "Algemene Voorwaarden", rights: "Alle rechten voorbehouden." },
-    stock: { inStock: "Op Voorraad", lowStock: "Nog maar {count}!", outOfStock: "Niet op Voorraad", soldOut: "Uitverkocht" }
+    stock: { inStock: "Op Voorraad", lowStock: "Nog maar {count}!", outOfStock: "Niet op Voorraad", soldOut: "Uitverkocht" },
+    admin: {
+      login: "Admin Inloggen",
+      password: "Wachtwoord",
+      loginBtn: "Inloggen",
+      logout: "Uitloggen",
+      dashboard: "Dashboard",
+      orders: "Bestellingen",
+      inventory: "Voorraad",
+      analytics: "Analyses",
+      loading: "Laden...",
+      error: "Fout bij laden",
+      noOrders: "Geen bestellingen gevonden",
+      orderId: "Bestelling ID",
+      date: "Datum",
+      customer: "Klant",
+      total: "Totaal",
+      items: "Artikelen",
+      status: "Status",
+      product: "Product",
+      variant: "Variant",
+      stock: "Voorraad",
+      update: "Bijwerken",
+      save: "Opslaan",
+      saved: "Opgeslagen!",
+      totalRevenue: "Totale Omzet",
+      orderCount: "Totaal Bestellingen",
+      avgOrder: "Gemiddelde Bestelling",
+      popularProducts: "Populaire Producten",
+      quantity: "Aantal Verkocht",
+      revenue: "Omzet",
+      last30Days: "Laatste 30 Dagen",
+      last7Days: "Laatste 7 Dagen",
+      last90Days: "Laatste 90 Dagen",
+      revenueChart: "Dagelijkse Omzet",
+      invalidPassword: "Ongeldig wachtwoord",
+      updateSuccess: "Voorraad bijgewerkt",
+      updateError: "Voorraad bijwerken mislukt"
+    }
   }
 };
 
@@ -837,6 +913,716 @@ const SuccessPage = ({ onContinueShopping, lang }) => {
   );
 };
 
+// --- Admin Dashboard Component ---
+
+const AdminDashboard = ({ lang, products, onLogout }) => {
+  const t = TRANSLATIONS[lang].admin;
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authToken, setAuthToken] = useState(null);
+  const [activeTab, setActiveTab] = useState('orders');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loginError, setLoginError] = useState('');
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  // Check for existing auth on mount
+  useEffect(() => {
+    const token = localStorage.getItem('admin_token');
+    if (token === 'admin-authenticated') {
+      setAuthToken(token);
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setIsLoggingIn(true);
+    setLoginError('');
+
+    try {
+      const response = await fetch('/.netlify/functions/admin-auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        localStorage.setItem('admin_token', data.token);
+        setAuthToken(data.token);
+        setIsAuthenticated(true);
+        setPassword('');
+      } else {
+        setLoginError(t.invalidPassword);
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setLoginError(t.error);
+    } finally {
+      setIsLoggingIn(false);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('admin_token');
+    setAuthToken(null);
+    setIsAuthenticated(false);
+    if (onLogout) onLogout();
+  };
+
+  // Login Screen
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-stone-100 flex items-center justify-center px-4">
+        <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 bg-stone-900 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Lock className="text-white" size={28} />
+            </div>
+            <h1 className="text-2xl font-serif font-bold text-stone-900">{t.login}</h1>
+            <p className="text-stone-500 mt-2">SURA STEEL</p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder={t.password}
+                className="w-full p-4 border border-stone-200 rounded focus:border-stone-900 outline-none transition-colors pr-12"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
+
+            {loginError && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded text-sm">
+                {loginError}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={isLoggingIn}
+              className="w-full bg-stone-900 text-white py-4 rounded font-medium hover:bg-stone-700 transition-colors disabled:bg-stone-400"
+            >
+              {isLoggingIn ? t.loading : t.loginBtn}
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  // Dashboard Tabs
+  const tabs = [
+    { id: 'orders', label: t.orders, icon: Package },
+    { id: 'inventory', label: t.inventory, icon: Boxes },
+    { id: 'analytics', label: t.analytics, icon: BarChart3 },
+  ];
+
+  return (
+    <div className="min-h-screen bg-stone-100">
+      {/* Admin Header */}
+      <header className="bg-stone-900 text-white">
+        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <h1 className="text-xl font-serif font-bold">SURA STEEL</h1>
+            <span className="text-stone-400 text-sm">| {t.dashboard}</span>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 text-stone-300 hover:text-white transition-colors"
+          >
+            <LogOut size={18} />
+            {t.logout}
+          </button>
+        </div>
+
+        {/* Tabs */}
+        <div className="container mx-auto px-6">
+          <div className="flex gap-1">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 px-6 py-3 font-medium transition-colors ${
+                  activeTab === tab.id
+                    ? 'bg-stone-100 text-stone-900 rounded-t-lg'
+                    : 'text-stone-400 hover:text-white'
+                }`}
+              >
+                <tab.icon size={18} />
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </header>
+
+      {/* Tab Content */}
+      <main className="container mx-auto px-6 py-8">
+        {activeTab === 'orders' && <OrdersTab authToken={authToken} t={t} lang={lang} />}
+        {activeTab === 'inventory' && <InventoryTab authToken={authToken} t={t} lang={lang} products={products} />}
+        {activeTab === 'analytics' && <AnalyticsTab authToken={authToken} t={t} lang={lang} />}
+      </main>
+    </div>
+  );
+};
+
+// Orders Tab Component
+const OrdersTab = ({ authToken, t, lang }) => {
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  const fetchOrders = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/.netlify/functions/admin-get-orders', {
+        headers: {
+          'Authorization': `Bearer ${authToken}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setOrders(data.orders || []);
+      } else {
+        setError(data.error || t.error);
+      }
+    } catch (err) {
+      console.error('Error fetching orders:', err);
+      setError(t.error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatDate = (timestamp) => {
+    return new Date(timestamp * 1000).toLocaleDateString(lang === 'nl' ? 'nl-NL' : 'en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <RefreshCw className="animate-spin text-stone-400" size={32} />
+        <span className="ml-3 text-stone-500">{t.loading}</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg">
+        {error}
+        <button onClick={fetchOrders} className="ml-4 underline hover:no-underline">
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-serif text-stone-900">{t.orders}</h2>
+        <button
+          onClick={fetchOrders}
+          className="flex items-center gap-2 text-stone-500 hover:text-stone-900 transition-colors"
+        >
+          <RefreshCw size={18} />
+          Refresh
+        </button>
+      </div>
+
+      {orders.length === 0 ? (
+        <div className="bg-white p-8 rounded-lg text-center text-stone-500">
+          <Package size={48} className="mx-auto mb-4 opacity-30" />
+          {t.noOrders}
+        </div>
+      ) : (
+        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-stone-50 border-b border-stone-200">
+                <tr>
+                  <th className="text-left px-6 py-4 text-xs font-bold text-stone-500 uppercase tracking-wider">{t.orderId}</th>
+                  <th className="text-left px-6 py-4 text-xs font-bold text-stone-500 uppercase tracking-wider">{t.date}</th>
+                  <th className="text-left px-6 py-4 text-xs font-bold text-stone-500 uppercase tracking-wider">{t.customer}</th>
+                  <th className="text-left px-6 py-4 text-xs font-bold text-stone-500 uppercase tracking-wider">{t.items}</th>
+                  <th className="text-right px-6 py-4 text-xs font-bold text-stone-500 uppercase tracking-wider">{t.total}</th>
+                  <th className="text-center px-6 py-4 text-xs font-bold text-stone-500 uppercase tracking-wider">{t.status}</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-stone-100">
+                {orders.map((order) => (
+                  <tr key={order.id} className="hover:bg-stone-50 transition-colors">
+                    <td className="px-6 py-4">
+                      <span className="font-mono text-sm text-stone-600">
+                        {order.id.substring(0, 16)}...
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-stone-600">
+                      {formatDate(order.created)}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm font-medium text-stone-900">{order.customer.name}</div>
+                      <div className="text-xs text-stone-500">{order.customer.email}</div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-stone-600">
+                        {order.items.map((item, idx) => (
+                          <div key={idx}>
+                            {item.quantity}x {item.name}
+                          </div>
+                        ))}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <span className="font-serif text-lg text-stone-900">
+                        {order.currency.toUpperCase()} {order.amount_total.toFixed(2)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                        {order.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Inventory Tab Component
+const InventoryTab = ({ authToken, t, lang, products }) => {
+  const [inventory, setInventory] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [editingItem, setEditingItem] = useState(null);
+  const [editValue, setEditValue] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState(null);
+
+  useEffect(() => {
+    fetchInventory();
+  }, []);
+
+  const fetchInventory = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/.netlify/functions/get-inventory');
+      const data = await response.json();
+
+      if (data.inventory && Array.isArray(data.inventory)) {
+        const inventoryMap = {};
+        data.inventory.forEach(item => {
+          const key = `${item.product_id}-${item.variant}`;
+          inventoryMap[key] = item.stock;
+        });
+        setInventory(inventoryMap);
+      }
+    } catch (err) {
+      console.error('Error fetching inventory:', err);
+      setError(t.error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEdit = (productId, variant) => {
+    const key = `${productId}-${variant}`;
+    setEditingItem(key);
+    setEditValue(inventory[key] !== undefined ? inventory[key].toString() : '0');
+    setSaveMessage(null);
+  };
+
+  const handleSave = async (productId, variant) => {
+    setSaving(true);
+    setSaveMessage(null);
+
+    try {
+      const response = await fetch('/.netlify/functions/admin-update-inventory', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`,
+        },
+        body: JSON.stringify({
+          product_id: productId,
+          variant: variant,
+          stock: parseInt(editValue) || 0,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        const key = `${productId}-${variant}`;
+        setInventory(prev => ({ ...prev, [key]: parseInt(editValue) || 0 }));
+        setEditingItem(null);
+        setSaveMessage({ type: 'success', text: t.updateSuccess });
+      } else {
+        setSaveMessage({ type: 'error', text: data.error || t.updateError });
+      }
+    } catch (err) {
+      console.error('Error saving inventory:', err);
+      setSaveMessage({ type: 'error', text: t.updateError });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setEditingItem(null);
+    setEditValue('');
+  };
+
+  const getStock = (productId, variant) => {
+    const key = `${productId}-${variant}`;
+    return inventory[key];
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <RefreshCw className="animate-spin text-stone-400" size={32} />
+        <span className="ml-3 text-stone-500">{t.loading}</span>
+      </div>
+    );
+  }
+
+  // Create inventory rows for all products with both variants
+  const inventoryRows = [];
+  products.forEach(product => {
+    ['full_set', 'place_setting'].forEach(variant => {
+      inventoryRows.push({
+        productId: product.id,
+        productName: product.name,
+        category: product.category,
+        variant: variant,
+        variantLabel: variant === 'full_set' ? '24-Piece Full Set' : '4-Piece Place Setting',
+      });
+    });
+  });
+
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-serif text-stone-900">{t.inventory}</h2>
+        <button
+          onClick={fetchInventory}
+          className="flex items-center gap-2 text-stone-500 hover:text-stone-900 transition-colors"
+        >
+          <RefreshCw size={18} />
+          Refresh
+        </button>
+      </div>
+
+      {saveMessage && (
+        <div className={`mb-4 px-4 py-3 rounded ${saveMessage.type === 'success' ? 'bg-green-50 border border-green-200 text-green-700' : 'bg-red-50 border border-red-200 text-red-700'}`}>
+          {saveMessage.text}
+        </div>
+      )}
+
+      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-stone-50 border-b border-stone-200">
+              <tr>
+                <th className="text-left px-6 py-4 text-xs font-bold text-stone-500 uppercase tracking-wider">{t.product}</th>
+                <th className="text-left px-6 py-4 text-xs font-bold text-stone-500 uppercase tracking-wider">Category</th>
+                <th className="text-left px-6 py-4 text-xs font-bold text-stone-500 uppercase tracking-wider">{t.variant}</th>
+                <th className="text-center px-6 py-4 text-xs font-bold text-stone-500 uppercase tracking-wider">{t.stock}</th>
+                <th className="text-center px-6 py-4 text-xs font-bold text-stone-500 uppercase tracking-wider">{t.update}</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-stone-100">
+              {inventoryRows.map((row) => {
+                const key = `${row.productId}-${row.variant}`;
+                const stock = getStock(row.productId, row.variant);
+                const isEditing = editingItem === key;
+
+                return (
+                  <tr key={key} className="hover:bg-stone-50 transition-colors">
+                    <td className="px-6 py-4">
+                      <span className="font-medium text-stone-900">{row.productName}</span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`inline-flex px-2 py-1 rounded text-xs font-medium ${row.category === 'Gold' ? 'bg-amber-100 text-amber-700' : 'bg-stone-100 text-stone-600'}`}>
+                        {row.category}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-stone-600">
+                      {row.variantLabel}
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      {isEditing ? (
+                        <input
+                          type="number"
+                          min="0"
+                          value={editValue}
+                          onChange={(e) => setEditValue(e.target.value)}
+                          className="w-20 px-3 py-2 border border-stone-300 rounded text-center focus:border-stone-900 outline-none"
+                          autoFocus
+                        />
+                      ) : (
+                        <span className={`inline-flex items-center justify-center w-16 py-1 rounded text-sm font-medium ${
+                          stock === undefined ? 'bg-stone-100 text-stone-500' :
+                          stock === 0 ? 'bg-red-100 text-red-700' :
+                          stock <= 5 ? 'bg-amber-100 text-amber-700' :
+                          'bg-green-100 text-green-700'
+                        }`}>
+                          {stock !== undefined ? stock : '-'}
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      {isEditing ? (
+                        <div className="flex items-center justify-center gap-2">
+                          <button
+                            onClick={() => handleSave(row.productId, row.variant)}
+                            disabled={saving}
+                            className="px-3 py-1 bg-stone-900 text-white rounded text-sm hover:bg-stone-700 disabled:bg-stone-400"
+                          >
+                            {saving ? '...' : t.save}
+                          </button>
+                          <button
+                            onClick={handleCancel}
+                            className="px-3 py-1 border border-stone-300 rounded text-sm hover:bg-stone-50"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => handleEdit(row.productId, row.variant)}
+                          className="px-4 py-1 border border-stone-300 rounded text-sm hover:bg-stone-50 transition-colors"
+                        >
+                          Edit
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Analytics Tab Component
+const AnalyticsTab = ({ authToken, t, lang }) => {
+  const [analytics, setAnalytics] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [period, setPeriod] = useState(30);
+
+  useEffect(() => {
+    fetchAnalytics();
+  }, [period]);
+
+  const fetchAnalytics = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`/.netlify/functions/admin-get-analytics?days=${period}`, {
+        headers: {
+          'Authorization': `Bearer ${authToken}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setAnalytics(data);
+      } else {
+        setError(data.error || t.error);
+      }
+    } catch (err) {
+      console.error('Error fetching analytics:', err);
+      setError(t.error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <RefreshCw className="animate-spin text-stone-400" size={32} />
+        <span className="ml-3 text-stone-500">{t.loading}</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg">
+        {error}
+        <button onClick={fetchAnalytics} className="ml-4 underline hover:no-underline">
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  const maxRevenue = analytics?.revenueByDay ? Math.max(...analytics.revenueByDay.map(d => d.revenue), 1) : 1;
+
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-serif text-stone-900">{t.analytics}</h2>
+        <div className="flex items-center gap-4">
+          <select
+            value={period}
+            onChange={(e) => setPeriod(parseInt(e.target.value))}
+            className="px-4 py-2 border border-stone-200 rounded bg-white focus:border-stone-900 outline-none"
+          >
+            <option value={7}>{t.last7Days}</option>
+            <option value={30}>{t.last30Days}</option>
+            <option value={90}>{t.last90Days}</option>
+          </select>
+          <button
+            onClick={fetchAnalytics}
+            className="flex items-center gap-2 text-stone-500 hover:text-stone-900 transition-colors"
+          >
+            <RefreshCw size={18} />
+          </button>
+        </div>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="bg-white p-6 rounded-lg shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-stone-500 text-sm uppercase tracking-wider">{t.totalRevenue}</p>
+              <p className="text-3xl font-serif font-bold text-stone-900 mt-2">
+                EUR {analytics?.totalRevenue?.toFixed(2) || '0.00'}
+              </p>
+            </div>
+            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+              <DollarSign className="text-green-600" size={24} />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-lg shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-stone-500 text-sm uppercase tracking-wider">{t.orderCount}</p>
+              <p className="text-3xl font-serif font-bold text-stone-900 mt-2">
+                {analytics?.orderCount || 0}
+              </p>
+            </div>
+            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+              <ShoppingCart className="text-blue-600" size={24} />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-lg shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-stone-500 text-sm uppercase tracking-wider">{t.avgOrder}</p>
+              <p className="text-3xl font-serif font-bold text-stone-900 mt-2">
+                EUR {analytics?.averageOrderValue?.toFixed(2) || '0.00'}
+              </p>
+            </div>
+            <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center">
+              <TrendingUp className="text-amber-600" size={24} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Revenue Chart */}
+        <div className="bg-white p-6 rounded-lg shadow-sm">
+          <h3 className="text-lg font-bold text-stone-900 mb-4">{t.revenueChart}</h3>
+          <div className="h-64 flex items-end gap-1">
+            {analytics?.revenueByDay?.map((day, idx) => (
+              <div
+                key={idx}
+                className="flex-1 bg-stone-200 hover:bg-amber-500 transition-colors rounded-t relative group"
+                style={{ height: `${(day.revenue / maxRevenue) * 100}%`, minHeight: '4px' }}
+              >
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-stone-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                  {day.date}: EUR {day.revenue.toFixed(2)}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-between text-xs text-stone-400 mt-2">
+            <span>{analytics?.revenueByDay?.[0]?.date}</span>
+            <span>{analytics?.revenueByDay?.[analytics.revenueByDay.length - 1]?.date}</span>
+          </div>
+        </div>
+
+        {/* Popular Products */}
+        <div className="bg-white p-6 rounded-lg shadow-sm">
+          <h3 className="text-lg font-bold text-stone-900 mb-4">{t.popularProducts}</h3>
+          {analytics?.popularProducts?.length > 0 ? (
+            <div className="space-y-4">
+              {analytics.popularProducts.slice(0, 5).map((product, idx) => (
+                <div key={idx} className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="w-6 h-6 bg-stone-100 rounded-full flex items-center justify-center text-xs font-bold text-stone-500">
+                      {idx + 1}
+                    </span>
+                    <span className="text-stone-900 font-medium">{product.name}</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-stone-900 font-bold">{product.quantity}</span>
+                    <span className="text-stone-400 text-sm ml-1">{t.quantity}</span>
+                    <span className="text-stone-500 text-sm ml-3">EUR {product.revenue.toFixed(2)}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-stone-500 text-center py-8">No data available</p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // --- Footer Component ---
 
 const Footer = ({ navigate, lang }) => {
@@ -1006,9 +1792,18 @@ const App = () => {
     return stock; // null means not tracked (unlimited)
   };
 
-  // Check for successful payment on page load
+  // Check for URL-based routing on page load
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
+    const path = window.location.pathname;
+
+    // Check for admin route
+    if (path === '/admin' || path === '/admin/') {
+      setView('admin');
+      return;
+    }
+
+    // Check for successful payment
     if (urlParams.get('success') === 'true') {
       setView('success');
       setCart([]); // Clear cart after successful purchase
@@ -1056,6 +1851,20 @@ const App = () => {
     setNotification(msg);
     setTimeout(() => setNotification(null), 3000);
   };
+
+  // Admin view has its own layout, render separately
+  if (view === 'admin') {
+    return (
+      <AdminDashboard
+        lang={lang}
+        products={PRODUCTS}
+        onLogout={() => {
+          window.history.replaceState({}, document.title, '/');
+          navigate('home');
+        }}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white text-stone-900 font-sans selection:bg-amber-100 selection:text-amber-900 flex flex-col">
