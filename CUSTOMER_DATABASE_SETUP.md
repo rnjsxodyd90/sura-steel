@@ -275,11 +275,14 @@ SUPABASE_ANON_KEY=your-anon-key-here
 SUPABASE_SERVICE_KEY=your-service-role-key-here
 ```
 
-**Important:** The `SUPABASE_SERVICE_KEY` is the service role key (not the anon key) and should only be used in server-side functions. Never expose it to the frontend.
+**Important:**
+- The `SUPABASE_URL` and `SUPABASE_ANON_KEY` are used by both frontend and backend
+- The `SUPABASE_SERVICE_KEY` is the service role key (not the anon key) and should only be used in server-side functions. Never expose it to the frontend.
+- All three variables are already used by your existing inventory system, so they should already be configured in Netlify
 
 ## Frontend Supabase Client Setup
 
-The frontend should only use the anon key. See the updated `App.jsx` for the Supabase client initialization.
+The frontend uses `import.meta.env.SUPABASE_URL` and `import.meta.env.SUPABASE_ANON_KEY` (without the `VITE_` prefix). See `App.jsx` for the Supabase client initialization.
 
 ## Testing
 
