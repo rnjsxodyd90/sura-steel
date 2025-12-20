@@ -142,6 +142,7 @@ const TRANSLATIONS = {
       invalidPassword: "Invalid password",
       updateSuccess: "Inventory updated successfully",
       updateError: "Failed to update inventory"
+    },
     account: {
       title: "My Account",
       login: "Login",
@@ -184,7 +185,6 @@ const TRANSLATIONS = {
       signupSuccess: "Account created! Please check your email to verify.",
       loginError: "Invalid email or password",
       signupError: "Could not create account. Please try again."
-    }
     }
   },
   nl: {
