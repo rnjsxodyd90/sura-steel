@@ -1,5 +1,24 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { ShoppingBag, X, Menu, Star, Check, Instagram, Facebook, Twitter, ArrowRight, Hammer, Globe, ShieldCheck, Mail, MapPin, Phone, Crown, Ruler, Scale, ArrowLeft, Plus, Minus, Languages, Lock, LogOut, Package, BarChart3, Boxes, RefreshCw, TrendingUp, DollarSign, ShoppingCart, Eye, EyeOff } from 'lucide-react';
+import React, { useState, useEffect, useMemo, createContext, useContext } from 'react';
+import { ShoppingBag, X, Menu, Star, Check, Instagram, Facebook, Twitter, ArrowRight, Hammer, Globe, ShieldCheck, Mail, MapPin, Phone, Crown, Ruler, Scale, ArrowLeft, Plus, Minus, Languages, Lock, LogOut, Package, BarChart3, Boxes, RefreshCw, TrendingUp, DollarSign, ShoppingCart, Eye, EyeOff, User, History, Settings, ChevronRight, Truck } from 'lucide-react';
+import { createClient } from '@supabase/supabase-js';
+
+// --- SUPABASE CLIENT ---
+// Note: These values should be set in environment variables
+// SUPABASE_URL and SUPABASE_ANON_KEY
+const supabaseUrl = import.meta.env.SUPABASE_URL || '';
+const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY || '';
+const supabase = supabaseUrl && supabaseAnonKey ? createClient(supabaseUrl, supabaseAnonKey) : null;
+
+// --- AUTH CONTEXT ---
+const AuthContext = createContext(null);
+
+const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
 
 // --- TRANSLATIONS ---
 const TRANSLATIONS = {
@@ -46,6 +65,46 @@ const TRANSLATIONS = {
     cart: { title: "Your Basket", empty: "Your basket is empty.", continue: "Continue Shopping", total: "Total", checkout: "Checkout Securely" },
     footer: { privacy: "Privacy Policy", terms: "Terms of Service", rights: "All rights reserved." },
     stock: { inStock: "In Stock", lowStock: "Only {count} left!", outOfStock: "Out of Stock", soldOut: "Sold Out" },
+    account: {
+      title: "My Account",
+      profile: "Profile",
+      orders: "My Orders",
+      logout: "Logout",
+      loggedOut: "Logged out successfully",
+      noOrders: "You haven't placed any orders yet",
+      orderNumber: "Order #",
+      orderDate: "Order Date",
+      orderTotal: "Total",
+      orderStatus: "Status",
+      viewDetails: "View Details",
+      name: "Full Name",
+      email: "Email",
+      phone: "Phone",
+      save: "Save Changes",
+      saved: "Profile updated!"
+    },
+    login: {
+      title: "Login to Your Account",
+      email: "Email Address",
+      password: "Password",
+      submit: "Login",
+      noAccount: "Don't have an account?",
+      signup: "Sign up here",
+      error: "Invalid email or password",
+      loading: "Logging in..."
+    },
+    signup: {
+      title: "Create an Account",
+      name: "Full Name",
+      email: "Email Address",
+      password: "Password",
+      submit: "Create Account",
+      haveAccount: "Already have an account?",
+      login: "Login here",
+      error: "Failed to create account",
+      loading: "Creating account...",
+      passwordHint: "At least 6 characters"
+    },
     admin: {
       login: "Admin Login",
       password: "Password",
@@ -83,6 +142,49 @@ const TRANSLATIONS = {
       invalidPassword: "Invalid password",
       updateSuccess: "Inventory updated successfully",
       updateError: "Failed to update inventory"
+    },
+    account: {
+      title: "My Account",
+      login: "Login",
+      signup: "Sign Up",
+      logout: "Log Out",
+      email: "Email Address",
+      password: "Password",
+      confirmPassword: "Confirm Password",
+      fullName: "Full Name",
+      phone: "Phone Number",
+      loginBtn: "Log In",
+      signupBtn: "Create Account",
+      forgotPassword: "Forgot Password?",
+      noAccount: "Don't have an account?",
+      hasAccount: "Already have an account?",
+      orders: "Order History",
+      profile: "Profile Settings",
+      noOrders: "No orders yet",
+      orderNumber: "Order",
+      orderDate: "Date",
+      orderStatus: "Status",
+      orderTotal: "Total",
+      viewDetails: "View Details",
+      trackOrder: "Track Order",
+      items: "Items",
+      shippingAddress: "Shipping Address",
+      trackingNumber: "Tracking Number",
+      processing: "Processing",
+      confirmed: "Confirmed",
+      shipped: "Shipped",
+      delivered: "Delivered",
+      cancelled: "Cancelled",
+      saveProfile: "Save Changes",
+      profileSaved: "Profile saved successfully",
+      welcomeBack: "Welcome back",
+      guestCheckout: "Continue as Guest",
+      orContinueWith: "or",
+      loginRequired: "Please log in to view your orders",
+      passwordMismatch: "Passwords do not match",
+      signupSuccess: "Account created! Please check your email to verify.",
+      loginError: "Invalid email or password",
+      signupError: "Could not create account. Please try again."
     }
   },
   nl: {
@@ -128,6 +230,46 @@ const TRANSLATIONS = {
     cart: { title: "Uw Winkelwagen", empty: "Uw winkelwagen is leeg.", continue: "Verder Winkelen", total: "Totaal", checkout: "Veilig Afrekenen" },
     footer: { privacy: "Privacybeleid", terms: "Algemene Voorwaarden", rights: "Alle rechten voorbehouden." },
     stock: { inStock: "Op Voorraad", lowStock: "Nog maar {count}!", outOfStock: "Niet op Voorraad", soldOut: "Uitverkocht" },
+    account: {
+      title: "Mijn Account",
+      profile: "Profiel",
+      orders: "Mijn Bestellingen",
+      logout: "Uitloggen",
+      loggedOut: "Succesvol uitgelogd",
+      noOrders: "U heeft nog geen bestellingen geplaatst",
+      orderNumber: "Bestelling #",
+      orderDate: "Besteldatum",
+      orderTotal: "Totaal",
+      orderStatus: "Status",
+      viewDetails: "Details Bekijken",
+      name: "Volledige Naam",
+      email: "E-mail",
+      phone: "Telefoon",
+      save: "Wijzigingen Opslaan",
+      saved: "Profiel bijgewerkt!"
+    },
+    login: {
+      title: "Inloggen op Uw Account",
+      email: "E-mailadres",
+      password: "Wachtwoord",
+      submit: "Inloggen",
+      noAccount: "Heeft u geen account?",
+      signup: "Registreer hier",
+      error: "Ongeldig e-mailadres of wachtwoord",
+      loading: "Inloggen..."
+    },
+    signup: {
+      title: "Account Aanmaken",
+      name: "Volledige Naam",
+      email: "E-mailadres",
+      password: "Wachtwoord",
+      submit: "Account Aanmaken",
+      haveAccount: "Heeft u al een account?",
+      login: "Log hier in",
+      error: "Kan account niet aanmaken",
+      loading: "Account aanmaken...",
+      passwordHint: "Minimaal 6 tekens"
+    },
     admin: {
       login: "Admin Inloggen",
       password: "Wachtwoord",
@@ -319,7 +461,7 @@ const MobileNav = ({ isOpen, onClose, navigate, lang, setLang, t }) => {
   );
 };
 
-const CartSidebar = ({ isOpen, onClose, cart, updateQuantity, removeFromCart, lang }) => {
+const CartSidebar = ({ isOpen, onClose, cart, updateQuantity, removeFromCart, lang, user }) => {
   const t = TRANSLATIONS[lang].cart;
   const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
@@ -327,10 +469,17 @@ const CartSidebar = ({ isOpen, onClose, cart, updateQuantity, removeFromCart, la
   const handleCheckout = async () => {
     setIsCheckingOut(true);
     try {
+      // Prepare checkout data with customer info if logged in
+      const checkoutData = {
+        cart,
+        customer_id: user?.id || null,
+        customer_email: user?.email || null,
+      };
+
       const response = await fetch('/.netlify/functions/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cart }),
+        body: JSON.stringify(checkoutData),
       });
       
       const data = await response.json();
@@ -908,6 +1057,457 @@ const SuccessPage = ({ onContinueShopping, lang }) => {
           </Button>
           <p className="text-stone-500 text-sm mt-6">{t.support}</p>
         </div>
+      </div>
+    </div>
+  );
+};
+
+// --- Customer Account Components ---
+
+const LoginPage = ({ lang, onLogin, navigate }) => {
+  const t = TRANSLATIONS[lang].login;
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      if (!supabase) {
+        throw new Error('Supabase not configured');
+      }
+
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (authError) throw authError;
+
+      onLogin(data.user);
+      navigate('account');
+    } catch (err) {
+      setError(err.message || t.error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="pt-32 pb-24 min-h-screen bg-stone-50">
+      <div className="container mx-auto px-6 max-w-md">
+        <div className="bg-white rounded-lg shadow-sm border border-stone-200 p-8">
+          <h1 className="text-3xl font-serif text-stone-900 mb-6 text-center">{t.title}</h1>
+
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-stone-700 mb-1">{t.email}</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full p-3 border border-stone-200 rounded focus:border-stone-900 outline-none transition-colors"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-stone-700 mb-1">{t.password}</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  className="w-full p-3 border border-stone-200 rounded focus:border-stone-900 outline-none transition-colors pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+            </div>
+
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? t.loading : t.submit}
+            </Button>
+          </form>
+
+          <div className="mt-6 text-center text-sm text-stone-600">
+            {t.noAccount}{' '}
+            <button
+              onClick={() => navigate('signup')}
+              className="text-amber-600 hover:text-amber-700 font-medium"
+            >
+              {t.signup}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const SignupPage = ({ lang, onSignup, navigate }) => {
+  const t = TRANSLATIONS[lang].signup;
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      if (!supabase) {
+        throw new Error('Supabase not configured');
+      }
+
+      const { data, error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: name,
+          },
+        },
+      });
+
+      if (authError) throw authError;
+
+      if (data.user) {
+        onSignup(data.user);
+        navigate('account');
+      }
+    } catch (err) {
+      setError(err.message || t.error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="pt-32 pb-24 min-h-screen bg-stone-50">
+      <div className="container mx-auto px-6 max-w-md">
+        <div className="bg-white rounded-lg shadow-sm border border-stone-200 p-8">
+          <h1 className="text-3xl font-serif text-stone-900 mb-6 text-center">{t.title}</h1>
+
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-stone-700 mb-1">{t.name}</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className="w-full p-3 border border-stone-200 rounded focus:border-stone-900 outline-none transition-colors"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-stone-700 mb-1">{t.email}</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full p-3 border border-stone-200 rounded focus:border-stone-900 outline-none transition-colors"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-stone-700 mb-1">{t.password}</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  className="w-full p-3 border border-stone-200 rounded focus:border-stone-900 outline-none transition-colors pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+              <p className="text-xs text-stone-500 mt-1">{t.passwordHint}</p>
+            </div>
+
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? t.loading : t.submit}
+            </Button>
+          </form>
+
+          <div className="mt-6 text-center text-sm text-stone-600">
+            {t.haveAccount}{' '}
+            <button
+              onClick={() => navigate('login')}
+              className="text-amber-600 hover:text-amber-700 font-medium"
+            >
+              {t.login}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const AccountPage = ({ lang, user, onLogout, navigate }) => {
+  const t = TRANSLATIONS[lang].account;
+  const [activeTab, setActiveTab] = useState('orders');
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState({ full_name: '', email: '', phone: '' });
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    if (user && supabase) {
+      // Fetch user profile
+      const fetchProfile = async () => {
+        const { data } = await supabase
+          .from('customers')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+
+        if (data) {
+          setProfile({
+            full_name: data.full_name || '',
+            email: data.email || user.email || '',
+            phone: data.phone || '',
+          });
+        }
+      };
+
+      // Fetch orders
+      const fetchOrders = async () => {
+        setLoading(true);
+        try {
+          const { data } = await supabase
+            .from('orders')
+            .select('*')
+            .eq('customer_id', user.id)
+            .order('created_at', { ascending: false });
+
+          setOrders(data || []);
+        } catch (error) {
+          console.error('Error fetching orders:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchProfile();
+      fetchOrders();
+    }
+  }, [user]);
+
+  const handleSaveProfile = async () => {
+    if (!user || !supabase) return;
+
+    setSaving(true);
+    try {
+      await supabase
+        .from('customers')
+        .update({
+          full_name: profile.full_name,
+          phone: profile.phone,
+        })
+        .eq('id', user.id);
+
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (!user) {
+    navigate('login');
+    return null;
+  }
+
+  return (
+    <div className="pt-32 pb-24 min-h-screen bg-stone-50">
+      <div className="container mx-auto px-6 max-w-4xl">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-4xl font-serif text-stone-900">{t.title}</h1>
+          <button
+            onClick={onLogout}
+            className="flex items-center gap-2 text-stone-600 hover:text-stone-900 transition-colors"
+          >
+            <LogOut size={20} />
+            {t.logout}
+          </button>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex gap-4 border-b border-stone-200 mb-8">
+          <button
+            onClick={() => setActiveTab('orders')}
+            className={`pb-3 px-4 font-medium transition-colors ${
+              activeTab === 'orders'
+                ? 'text-stone-900 border-b-2 border-stone-900 -mb-px'
+                : 'text-stone-500 hover:text-stone-700'
+            }`}
+          >
+            <Package size={20} className="inline mr-2" />
+            {t.orders}
+          </button>
+          <button
+            onClick={() => setActiveTab('profile')}
+            className={`pb-3 px-4 font-medium transition-colors ${
+              activeTab === 'profile'
+                ? 'text-stone-900 border-b-2 border-stone-900 -mb-px'
+                : 'text-stone-500 hover:text-stone-700'
+            }`}
+          >
+            <User size={20} className="inline mr-2" />
+            {t.profile}
+          </button>
+        </div>
+
+        {/* Orders Tab */}
+        {activeTab === 'orders' && (
+          <div className="bg-white rounded-lg shadow-sm border border-stone-200 p-6">
+            {loading ? (
+              <div className="text-center py-12 text-stone-500">Loading orders...</div>
+            ) : orders.length === 0 ? (
+              <div className="text-center py-12">
+                <Package size={48} className="mx-auto mb-4 text-stone-300" />
+                <p className="text-stone-600">{t.noOrders}</p>
+                <button
+                  onClick={() => navigate('home')}
+                  className="mt-4 text-amber-600 hover:text-amber-700 font-medium"
+                >
+                  Start Shopping
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {orders.map((order) => (
+                  <div
+                    key={order.id}
+                    className="border border-stone-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <p className="font-bold text-stone-900">
+                          {t.orderNumber} {order.order_number}
+                        </p>
+                        <p className="text-sm text-stone-500">
+                          {new Date(order.created_at).toLocaleDateString(lang === 'nl' ? 'nl-NL' : 'en-US')}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold text-stone-900">€{order.total_amount.toFixed(2)}</p>
+                        <span className={`text-xs px-2 py-1 rounded ${
+                          order.status === 'confirmed' ? 'bg-green-100 text-green-700' :
+                          order.status === 'shipped' ? 'bg-blue-100 text-blue-700' :
+                          order.status === 'delivered' ? 'bg-stone-100 text-stone-700' :
+                          'bg-amber-100 text-amber-700'
+                        }`}>
+                          {order.status}
+                        </span>
+                      </div>
+                    </div>
+                    {order.items && Array.isArray(order.items) && (
+                      <div className="mt-3 text-sm text-stone-600">
+                        {order.items.map((item, idx) => (
+                          <div key={idx}>
+                            {item.quantity}x {item.name}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Profile Tab */}
+        {activeTab === 'profile' && (
+          <div className="bg-white rounded-lg shadow-sm border border-stone-200 p-6">
+            <div className="space-y-4 max-w-md">
+              <div>
+                <label className="block text-sm font-medium text-stone-700 mb-1">{t.name}</label>
+                <input
+                  type="text"
+                  value={profile.full_name}
+                  onChange={(e) => setProfile({ ...profile, full_name: e.target.value })}
+                  className="w-full p-3 border border-stone-200 rounded focus:border-stone-900 outline-none transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-stone-700 mb-1">{t.email}</label>
+                <input
+                  type="email"
+                  value={profile.email}
+                  disabled
+                  className="w-full p-3 border border-stone-200 rounded bg-stone-50 text-stone-500 cursor-not-allowed"
+                />
+                <p className="text-xs text-stone-500 mt-1">Email cannot be changed</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-stone-700 mb-1">{t.phone}</label>
+                <input
+                  type="tel"
+                  value={profile.phone}
+                  onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
+                  className="w-full p-3 border border-stone-200 rounded focus:border-stone-900 outline-none transition-colors"
+                />
+              </div>
+
+              <div className="flex items-center gap-3">
+                <Button onClick={handleSaveProfile} disabled={saving}>
+                  {saving ? 'Saving...' : t.save}
+                </Button>
+                {saved && (
+                  <span className="text-green-600 text-sm flex items-center gap-1">
+                    <Check size={16} /> {t.saved}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -1752,8 +2352,29 @@ const App = () => {
   const [notification, setNotification] = useState(null);
   const [lang, setLang] = useState('nl'); // 'nl' or 'en'
   const [inventory, setInventory] = useState({});
+  const [user, setUser] = useState(null);
+  const [session, setSession] = useState(null);
 
   const t = TRANSLATIONS[lang];
+
+  // Auth state management
+  useEffect(() => {
+    if (supabase) {
+      // Get initial session
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+      });
+
+      // Listen for auth changes
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+      });
+
+      return () => subscription.unsubscribe();
+    }
+  }, []);
 
   // Fetch inventory on load
   useEffect(() => {
@@ -1852,6 +2473,16 @@ const App = () => {
     setTimeout(() => setNotification(null), 3000);
   };
 
+  const handleLogout = async () => {
+    if (supabase) {
+      await supabase.auth.signOut();
+      setUser(null);
+      setSession(null);
+      navigate('home');
+      showNotification(t.account?.loggedOut || 'Logged out successfully');
+    }
+  };
+
   // Admin view has its own layout, render separately
   if (view === 'admin') {
     return (
@@ -1883,6 +2514,11 @@ const App = () => {
           </div>
           <div className="flex items-center gap-6 justify-self-end">
             <button onClick={() => setLang(lang === 'en' ? 'nl' : 'en')} className="hidden md:block font-bold text-xs uppercase border border-current px-2 py-1 rounded">{lang}</button>
+            {user ? (
+              <button onClick={() => navigate('account')} className="hidden md:block" title={t.account?.title || 'Account'}><User size={24} /></button>
+            ) : (
+              <button onClick={() => navigate('login')} className="hidden md:block" title={t.login?.title || 'Login'}><User size={24} /></button>
+            )}
             <button onClick={() => setIsCartOpen(true)}><ShoppingBag size={24} /></button>
           </div>
         </div>
@@ -1895,11 +2531,15 @@ const App = () => {
         {view === 'contact' && <ContactPage lang={lang} />}
         {view === 'policy' && <PolicyPage title="Shipping & Returns" />}
         {view === 'success' && <SuccessPage onContinueShopping={() => navigate('home')} lang={lang} />}
+        {view === 'login' && <LoginPage lang={lang} onLogin={setUser} navigate={navigate} />}
+        {view === 'signup' && <SignupPage lang={lang} onSignup={setUser} navigate={navigate} />}
+        {view === 'account' && user && <AccountPage lang={lang} user={user} onLogout={handleLogout} navigate={navigate} />}
+        {view === 'account' && !user && navigate('login')}
       </main>
 
       <Footer navigate={navigate} lang={lang} />
 
-      <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} cart={cart} updateQuantity={updateQuantity} removeFromCart={removeFromCart} lang={lang} />
+      <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} cart={cart} updateQuantity={updateQuantity} removeFromCart={removeFromCart} lang={lang} user={user} />
       {notification && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-stone-900 text-white px-6 py-3 rounded shadow-xl z-50 flex items-center gap-3"><Check size={16} /> {notification}</div>}
     </div>
   );
