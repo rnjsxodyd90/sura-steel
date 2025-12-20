@@ -527,63 +527,46 @@ const ProductDetailPage = ({ product, onBack, onAddToCart, lang }) => {
 
 const AboutPage = () => (
   <div className="pt-32 pb-24">
-    <div className="container mx-auto px-6 max-w-4xl">
-      <h1 className="text-5xl font-serif text-stone-900 mb-8 text-center">Our Story</h1>
-      <div className="relative h-96 mb-12 overflow-hidden rounded-lg shadow-xl">
-        <img src="/background.png" alt="Forging" className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-black/30 flex items-center justify-center"><span className="text-white text-xl tracking-widest uppercase font-bold border-2 border-white px-8 py-4">A Decade of Perfectionism</span></div>
-      </div>
-      
-      {/* Origin Story */}
-      <div className="space-y-6 text-lg text-stone-600 leading-relaxed mb-16">
-        <h3 className="text-2xl font-serif text-stone-900">It Started With a Fork</h3>
-        <p>I was 18 years old, sitting in the crowded cafeteria of that famous Swedish furniture store. I remember the moment vividly. I was enjoying a plate of their iconic meatballs. The food was delicious, comforting, and warm, but something felt wrong.</p>
-        <p>It wasn't the flavor. <b>It was the fork.</b></p>
-        <p>It was flimsy. It felt light and cheap in my hand. The edges were rough against my lip, and the finish looked dull and tarnished. I realized then that the joy of eating isn't just about the taste. It is a tactile experience. The tool we use to deliver food to our mouths is just as important as the ingredients on the plate.</p>
-        <p>That single meal sparked an obsession that would last over a decade.</p>
-      </div>
-
-      {/* The Journey */}
-      <div className="bg-stone-50 -mx-6 px-6 py-12 md:rounded-xl md:mx-0 md:px-12 mb-16">
-        <h3 className="text-2xl font-serif text-stone-900 mb-6">Ten Years in the Making</h3>
-        <div className="space-y-6 text-lg text-stone-600 leading-relaxed">
-          <p>I went home to my parents' basement, not to build furniture, but to deconstruct the dining experience. I wanted to understand why some metal feels "right" and other metal feels "wrong." What followed were hundreds and eventually thousands of experiments.</p>
-          <div className="grid md:grid-cols-2 gap-6 my-8">
-            <div className="bg-white p-6 rounded-lg border border-stone-200">
-              <h4 className="font-bold text-stone-900 mb-2">Specific Gravity</h4>
-              <p className="text-base text-stone-500">We tested weight distribution to find the perfect balance in your hand.</p>
-            </div>
-            <div className="bg-white p-6 rounded-lg border border-stone-200">
-              <h4 className="font-bold text-stone-900 mb-2">Ergonomic Contours</h4>
-              <p className="text-base text-stone-500">We shaped handles to discover the ultimate grip comfort.</p>
-            </div>
-            <div className="bg-white p-6 rounded-lg border border-stone-200">
-              <h4 className="font-bold text-stone-900 mb-2">Metallurgy</h4>
-              <p className="text-base text-stone-500">We studied alloys to maximize resistance to tarnishing.</p>
-            </div>
-            <div className="bg-white p-6 rounded-lg border border-stone-200">
-              <h4 className="font-bold text-stone-900 mb-2">Mouthfeel</h4>
-              <p className="text-base text-stone-500">We chased a finish that was smooth, substantial, and invisible.</p>
-            </div>
-          </div>
-          <p>It took ten years of trial, error, and obsession in that basement to get it right. But we finally did.</p>
-        </div>
-      </div>
-
-      {/* The Result */}
-      <div className="text-center mb-16">
-        <p className="text-2xl font-serif text-stone-900 leading-relaxed">We didn't just make a fork.<br/><span className="text-amber-700">We engineered the bridge between you and your food.</span></p>
-        <p className="text-lg text-stone-500 mt-4">Welcome to the result of a decade of perfectionism.</p>
-      </div>
-
-      {/* The Meaning & Heritage */}
-      <div className="border-t border-stone-200 pt-12 space-y-8 text-lg text-stone-600 leading-relaxed">
-        <h3 className="text-2xl font-serif text-stone-900">The Meaning of "Sura"</h3>
-        <p>In the Joseon Dynasty of Korea, the King's daily meal was called <b>"Sura" (수라)</b>. It was not merely food; it was a symbol of the nation's prosperity, prepared with the finest ingredients and served with the utmost respect.</p>
-        <p>We named our brand <b>Sura</b> because we believe the tools used to enjoy a meal should carry that same dignity—quality, balance, and refinement fit for a king's table.</p>
+    <div className="container mx-auto px-6 max-w-3xl">
+      <div className="space-y-8 text-lg text-stone-600 leading-relaxed">
         
-        <h3 className="text-2xl font-serif text-stone-900 pt-4">Our Heritage</h3>
-        <p>Rooted in the metalworking legends of <b>Tsubame, Japan</b>, and refined in Korea since 1970, our legacy is one of precision. By partnering with Korean experts for high-grade stainless steel and employing authentic <b>"Danjo" (Forged)</b> technology, we create enduring tools designed to last generations.</p>
+        {/* Origin Story */}
+        <h2 className="text-2xl font-bold text-stone-900">It started with a meatball.</h2>
+        
+        <p>I was 18 years old, sitting in the crowded cafeteria of that famous Swedish furniture store. I remember the moment vividly: I was enjoying a plate of their iconic meatballs—the food was delicious, comforting, and warm. But something felt wrong.</p>
+        
+        <p>It wasn't the flavor; it was the <b>fork</b>.</p>
+        
+        <p>It was flimsy. It felt light and cheap in my hand. The edges were rough against my lip, and the finish looked dull and tarnished. I realized then that the joy of eating isn't just about the taste; it is a tactile experience. The tool we use to deliver food to our mouths is just as important as the ingredients on the plate.</p>
+        
+        <p>That single meal sparked an obsession that would last over a decade.</p>
+        
+        <p>I went home to my parents' basement, not to build furniture, but to deconstruct the dining experience. I wanted to understand why some metal feels "right" and other metal feels "wrong." What followed were hundreds—eventually thousands—of experiments.</p>
+        
+        <p>We tested specific gravity to find the perfect <b>weight</b>. We contoured handles to discover the ultimate <b>grip</b>. We studied metallurgy to maximize <b>resistance to tarnishing</b>. We chased a specific "mouthfeel"—smooth, substantial, and invisible.</p>
+        
+        <p>It took ten years of trial, error, and obsession in that basement to get it right. But we finally did.</p>
+        
+        <p>We didn't just make a fork. We engineered the bridge between you and your food. Welcome to the result of a decade of perfectionism.</p>
+
+        {/* The Meaning of Sura */}
+        <h2 className="text-2xl font-bold text-stone-900 pt-8">The Meaning of "Sura"</h2>
+        
+        <p>In the Joseon Dynasty of Korea, the King's daily meal was called <b>"Sura" (수라)</b>.</p>
+        
+        <p>It was not merely food; it was a symbol of the nation's prosperity, prepared with the finest ingredients and served with the utmost respect. We named our brand <b>Sura</b> because we believe the tools used to enjoy a meal should carry that same dignity. We offer quality, balance, and refinement fit for a king's table.</p>
+
+        {/* Our Heritage */}
+        <h2 className="text-2xl font-bold text-stone-900 pt-8">Our Heritage: Precision Meets Tradition</h2>
+        
+        <p>While our vision began in a basement, our quality is born from history.</p>
+        
+        <p>Our roots run deep into the metalworking legends of <b>Tsubame, Japan</b>—a city world-renowned for metal polishing—and have been refined in <b>Korea since 1970</b>.</p>
+        
+        <p>By partnering with Korean experts for high-grade stainless steel and employing authentic <b>"Danjo" (Forged)</b> technology, we create enduring tools designed to last generations. This is where modern obsession meets ancient craft.</p>
+        
+        <p className="font-bold text-stone-900 pt-4">Welcome to the result of a decade of perfectionism.</p>
+        
       </div>
     </div>
   </div>
