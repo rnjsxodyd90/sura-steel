@@ -917,7 +917,7 @@ const App = () => {
   const [activeCategory, setActiveCategory] = useState('All');
   const [scrolled, setScrolled] = useState(false);
   const [notification, setNotification] = useState(null);
-  const [lang, setLang] = useState('en'); // 'en' or 'nl'
+  const [lang, setLang] = useState('nl'); // 'nl' or 'en'
 
   const t = TRANSLATIONS[lang];
 
