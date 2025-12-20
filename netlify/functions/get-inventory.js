@@ -14,16 +14,18 @@ exports.handler = async (event) => {
 
   try {
     const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_ANON_KEY;
+    // Support both new (publishable) and old (anon) key names
+    const supabaseKey = process.env.SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_ANON_KEY;
 
     if (!supabaseUrl || !supabaseKey) {
-      // Return mock data if Supabase not configured
+      console.log('Supabase not configured - SUPABASE_URL or key missing');
+      // Return empty array if Supabase not configured (frontend will treat as unlimited stock)
       return {
         statusCode: 200,
         headers,
         body: JSON.stringify({ 
           inventory: [],
-          message: 'Supabase not configured - using default stock levels'
+          message: 'Supabase not configured - all products show as available'
         }),
       };
     }
@@ -33,14 +35,18 @@ exports.handler = async (event) => {
       headers: {
         'apikey': supabaseKey,
         'Authorization': `Bearer ${supabaseKey}`,
+        'Content-Type': 'application/json',
       },
     });
 
     if (!response.ok) {
-      throw new Error('Failed to fetch inventory');
+      const errorText = await response.text();
+      console.error('Supabase API error:', response.status, errorText);
+      throw new Error(`Failed to fetch inventory: ${response.status} ${errorText}`);
     }
 
     const inventory = await response.json();
+    console.log(`Fetched ${inventory.length} inventory items`);
 
     return {
       statusCode: 200,
@@ -49,11 +55,16 @@ exports.handler = async (event) => {
     };
 
   } catch (error) {
-    console.error('Inventory fetch error:', error);
+    console.error('Inventory fetch error:', error.message);
+    // Return empty array on error so site still works
     return {
-      statusCode: 500,
+      statusCode: 200,
       headers,
-      body: JSON.stringify({ error: 'Failed to fetch inventory' }),
+      body: JSON.stringify({ 
+        inventory: [],
+        error: error.message,
+        message: 'Inventory unavailable - showing all products as available'
+      }),
     };
   }
 };

@@ -79,10 +79,15 @@ INSERT INTO inventory (product_id, product_name, variant, stock) VALUES
 ## Step 4: Get API Keys
 
 1. Go to **Settings** → **API** in Supabase
-2. Copy these values:
-   - `Project URL` → This is your SUPABASE_URL
-   - `anon public` key → This is your SUPABASE_ANON_KEY
-   - `service_role` key → This is your SUPABASE_SERVICE_KEY (keep secret!)
+2. **If you see "Publishable and secret API keys" tab:**
+   - Click on **"Publishable and secret API keys"** tab
+   - Copy the **Publishable key** (starts with `sb_publishable_...`)
+   - Copy the **Secret key** (starts with `sb_secret_...`) - this is your service key
+3. **If you see "Legacy anon, service_role API keys" tab:**
+   - Click on **"Legacy anon, service_role API keys"** tab
+   - Copy the `anon public` key
+   - Copy the `service_role` key
+4. Copy your **Project URL** (e.g., `https://xxxxx.supabase.co`)
 
 ## Step 5: Add to Netlify Environment Variables
 
@@ -90,11 +95,12 @@ INSERT INTO inventory (product_id, product_name, variant, stock) VALUES
 2. Select your site → **Site settings** → **Environment variables**
 3. Add these variables:
 
-| Key | Value |
-|-----|-------|
-| `SUPABASE_URL` | Your Project URL (e.g., https://xxxxx.supabase.co) |
-| `SUPABASE_ANON_KEY` | Your anon/public key |
-| `SUPABASE_SERVICE_KEY` | Your service_role key |
+| Key | Value | Notes |
+|-----|-------|-------|
+| `SUPABASE_URL` | Your Project URL | e.g., https://xxxxx.supabase.co |
+| `SUPABASE_PUBLISHABLE_KEY` | Your Publishable key | OR use `SUPABASE_ANON_KEY` for legacy |
+| `SUPABASE_ANON_KEY` | Your anon/public key | (Legacy - works if you don't have publishable) |
+| `SUPABASE_SERVICE_KEY` | Your Secret/Service key | For webhook updates (keep secret!) |
 
 ## Step 6: Test
 

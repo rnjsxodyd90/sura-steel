@@ -972,19 +972,26 @@ const App = () => {
   useEffect(() => {
     const fetchInventory = async () => {
       try {
+        console.log('Fetching inventory...');
         const response = await fetch('/.netlify/functions/get-inventory');
         const data = await response.json();
+        console.log('Inventory response:', data);
+        
         if (data.inventory && Array.isArray(data.inventory)) {
           // Convert array to object keyed by product_id + variant
           const inventoryMap = {};
           data.inventory.forEach(item => {
             const key = `${item.product_id}-${item.variant}`;
             inventoryMap[key] = item.stock;
+            console.log(`Inventory item: ${key} = ${item.stock}`);
           });
           setInventory(inventoryMap);
+          console.log('Inventory loaded:', Object.keys(inventoryMap).length, 'items');
+        } else {
+          console.log('No inventory data or empty array:', data.message || 'No message');
         }
       } catch (error) {
-        console.log('Inventory not configured or unavailable');
+        console.error('Error fetching inventory:', error);
       }
     };
     fetchInventory();
@@ -993,7 +1000,11 @@ const App = () => {
   // Helper function to get stock for a product variant
   const getStock = (productId, variant) => {
     const key = `${productId}-${variant}`;
-    return inventory[key] ?? null; // null means not tracked (unlimited)
+    const stock = inventory[key] ?? null;
+    if (stock !== null) {
+      console.log(`Stock check: ${key} = ${stock}`);
+    }
+    return stock; // null means not tracked (unlimited)
   };
 
   // Check for successful payment on page load
