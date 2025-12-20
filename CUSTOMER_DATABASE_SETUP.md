@@ -270,19 +270,26 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 Add these to your Netlify environment variables:
 
 ```
+# Frontend (Vite requires VITE_ prefix for client-side access)
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key-here
+
+# Backend (Netlify Functions use these directly)
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_ANON_KEY=your-anon-key-here
 SUPABASE_SERVICE_KEY=your-service-role-key-here
 ```
 
 **Important:**
-- The `SUPABASE_URL` and `SUPABASE_ANON_KEY` are used by both frontend and backend
-- The `SUPABASE_SERVICE_KEY` is the service role key (not the anon key) and should only be used in server-side functions. Never expose it to the frontend.
-- All three variables are already used by your existing inventory system, so they should already be configured in Netlify
+- The `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are used by the frontend (Vite requires the `VITE_` prefix for client-side environment variables)
+- The `SUPABASE_URL` and `SUPABASE_ANON_KEY` (without prefix) are used by Netlify Functions (server-side)
+- The `SUPABASE_SERVICE_KEY` is the service role key and should only be used in server-side functions (Netlify Functions). Never expose it to the frontend.
+
+**Note:** You need to set both the `VITE_` prefixed and non-prefixed versions of `SUPABASE_URL` and `SUPABASE_ANON_KEY` because the frontend (Vite) and backend (Netlify Functions) access environment variables differently.
 
 ## Frontend Supabase Client Setup
 
-The frontend uses `import.meta.env.SUPABASE_URL` and `import.meta.env.SUPABASE_ANON_KEY` (without the `VITE_` prefix). See `App.jsx` for the Supabase client initialization.
+The frontend uses `import.meta.env.VITE_SUPABASE_URL` and `import.meta.env.VITE_SUPABASE_ANON_KEY`. See `App.jsx` for the Supabase client initialization.
 
 ## Testing
 

@@ -4,9 +4,10 @@ import { createClient } from '@supabase/supabase-js';
 
 // --- SUPABASE CLIENT ---
 // Note: These values should be set in environment variables
-// SUPABASE_URL and SUPABASE_ANON_KEY
-const supabaseUrl = import.meta.env.SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY || '';
+// VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
+// Vite requires VITE_ prefix for client-side environment variables
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 const supabase = supabaseUrl && supabaseAnonKey ? createClient(supabaseUrl, supabaseAnonKey) : null;
 
 // --- AUTH CONTEXT ---
