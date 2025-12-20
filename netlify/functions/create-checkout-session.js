@@ -35,6 +35,10 @@ exports.handler = async (event) => {
         product_data: {
           name: item.name + (item.variant ? ` (${item.variant})` : ''),
           // Remove images for now - they can cause issues if not publicly accessible
+          metadata: {
+            product_id: item.id,
+            variant: item.variant // Database variant name for inventory tracking
+          }
         },
         unit_amount: Math.round(item.price * 100), // Stripe uses cents (e.g., 20.00 -> 2000)
       },
