@@ -4,7 +4,7 @@ exports.handler = async (event) => {
   // Add CORS headers
   const headers = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
   };
 
@@ -14,7 +14,7 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { cart } = JSON.parse(event.body);
+    const { cart, customer_id, customer_email } = JSON.parse(event.body);
 
     // Validate cart
     if (!cart || cart.length === 0) {
@@ -45,13 +45,35 @@ exports.handler = async (event) => {
       quantity: item.quantity,
     }));
 
-    const session = await stripe.checkout.sessions.create({
+    // Build session options
+    const sessionOptions = {
       payment_method_types: ['card', 'ideal'], // Enable iDEAL for Netherlands
       line_items: lineItems,
       mode: 'payment',
       success_url: `${siteUrl}?success=true`,
       cancel_url: `${siteUrl}`,
-    });
+      // Collect shipping address
+      shipping_address_collection: {
+        allowed_countries: ['NL', 'BE', 'DE', 'FR', 'GB', 'AT', 'CH', 'IT', 'ES', 'PT', 'PL', 'DK', 'SE', 'NO', 'FI', 'IE', 'LU'],
+      },
+      // Store metadata for order creation
+      metadata: {},
+    };
+
+    // If customer is logged in, store their ID in metadata
+    if (customer_id) {
+      sessionOptions.metadata.customer_id = customer_id;
+    }
+
+    // If we have the customer's email (logged in or provided), use it
+    if (customer_email) {
+      sessionOptions.customer_email = customer_email;
+      if (!customer_id) {
+        sessionOptions.metadata.guest_email = customer_email;
+      }
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionOptions);
 
     return {
       statusCode: 200,
