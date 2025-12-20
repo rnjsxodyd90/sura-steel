@@ -8,13 +8,13 @@ const TRANSLATIONS = {
     hero: { 
       badge: "The King's Standard", 
       title: "Dining Fit For Royalty.", 
-      desc: "\"Sura\" (수라) is the Korean word for the King's meal. We bring royal quality to your table using premium POSCO steel and centuries of Tsubame craftsmanship.",
+      desc: "\"Sura\" (수라) is the Korean word for the King's meal. We bring royal quality to your table using the highest grade stainless steel and centuries of Tsubame craftsmanship.",
       cta: "View Collection"
     },
     features: {
       std_title: "The \"Sura\" Standard", std_desc: "Named after the Joseon Dynasty's royal table, our cutlery meets the exacting standards of kings.",
       tech_title: "True Forged Tech", tech_desc: "Authentic \"Danjo\" (Forged) technology for superior density and edge retention.",
-      mat_title: "POSCO Steel", mat_desc: "Raw materials from Korea's POSCO Steel, renowned globally for purity."
+      mat_title: "Premium Steel", mat_desc: "Crafted from the highest grade stainless steel, renowned globally for purity and durability."
     },
     shop: { title: "The Royal Collection", subtitle: "Experience the difference of Korean Steel.", from: "from" },
     filters: { all: "All", sets: "Sets", gold: "Gold", silver: "Silver" },
@@ -51,13 +51,13 @@ const TRANSLATIONS = {
     hero: { 
       badge: "De Koningsstandaard", 
       title: "Dineren Als Een Koning.", 
-      desc: "\"Sura\" (수라) is het Koreaanse woord voor de maaltijd van de koning. Wij brengen koninklijke kwaliteit naar uw tafel met premium POSCO-staal en eeuwenoud Tsubame-vakmanschap.",
+      desc: "\"Sura\" (수라) is het Koreaanse woord voor de maaltijd van de koning. Wij brengen koninklijke kwaliteit naar uw tafel met hoogwaardig roestvrij staal en eeuwenoud Tsubame-vakmanschap.",
       cta: "Bekijk Collectie"
     },
     features: {
       std_title: "De \"Sura\" Standaard", std_desc: "Genoemd naar de koninklijke tafel van de Joseon-dynastie, voldoet ons bestek aan de eisen van koningen.",
       tech_title: "Echt Gesmeed", tech_desc: "Authentieke \"Danjo\" (Gesmede) technologie voor superieure dichtheid en scherptebehoud.",
-      mat_title: "POSCO Staal", mat_desc: "Grondstoffen van Korea's POSCO Steel, wereldwijd bekend om zuiverheid."
+      mat_title: "Premium Staal", mat_desc: "Vervaardigd van hoogwaardig roestvrij staal, wereldwijd bekend om zuiverheid en duurzaamheid."
     },
     shop: { title: "De Koninklijke Collectie", subtitle: "Ervaar het verschil van Koreaans staal.", from: "vanaf" },
     filters: { all: "Alles", sets: "Sets", gold: "Goud", silver: "Zilver" },
@@ -196,7 +196,7 @@ const PRODUCTS = [
 
 const REVIEWS = [
   { id: 1, text: "The Moon Gold set is absolutely stunning. The weight feels substantial and the finish is flawless.", author: "Chef Min-ho K." },
-  { id: 2, text: "I love knowing this uses POSCO steel. It hasn't rusted or dulled in months.", author: "Sarah L." },
+  { id: 2, text: "The quality of the steel is exceptional. It hasn't rusted or dulled in months.", author: "Sarah L." },
   { id: 3, text: "The balance reminds me of high-end Japanese cutlery, but at a better price point.", author: "James T." }
 ];
 
@@ -528,16 +528,61 @@ const ProductDetailPage = ({ product, onBack, onAddToCart, lang }) => {
 const AboutPage = () => (
   <div className="pt-32 pb-24">
     <div className="container mx-auto px-6 max-w-4xl">
-      <h1 className="text-5xl font-serif text-stone-900 mb-8 text-center">The Meaning of Sura</h1>
+      <h1 className="text-5xl font-serif text-stone-900 mb-8 text-center">Our Story</h1>
       <div className="relative h-96 mb-12 overflow-hidden rounded-lg shadow-xl">
         <img src="/background.png" alt="Forging" className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-black/30 flex items-center justify-center"><span className="text-white text-xl tracking-widest uppercase font-bold border-2 border-white px-8 py-4">Since 1970</span></div>
+        <div className="absolute inset-0 bg-black/30 flex items-center justify-center"><span className="text-white text-xl tracking-widest uppercase font-bold border-2 border-white px-8 py-4">A Decade of Perfectionism</span></div>
       </div>
-      <div className="space-y-8 text-lg text-stone-600 leading-relaxed">
-        <h3 className="text-2xl font-serif text-stone-900">What is a King's Dish?</h3>
+      
+      {/* Origin Story */}
+      <div className="space-y-6 text-lg text-stone-600 leading-relaxed mb-16">
+        <h3 className="text-2xl font-serif text-stone-900">It Started With a Fork</h3>
+        <p>I was 18 years old, sitting in the crowded cafeteria of that famous Swedish furniture store. I remember the moment vividly. I was enjoying a plate of their iconic meatballs. The food was delicious, comforting, and warm, but something felt wrong.</p>
+        <p>It wasn't the flavor. <b>It was the fork.</b></p>
+        <p>It was flimsy. It felt light and cheap in my hand. The edges were rough against my lip, and the finish looked dull and tarnished. I realized then that the joy of eating isn't just about the taste. It is a tactile experience. The tool we use to deliver food to our mouths is just as important as the ingredients on the plate.</p>
+        <p>That single meal sparked an obsession that would last over a decade.</p>
+      </div>
+
+      {/* The Journey */}
+      <div className="bg-stone-50 -mx-6 px-6 py-12 md:rounded-xl md:mx-0 md:px-12 mb-16">
+        <h3 className="text-2xl font-serif text-stone-900 mb-6">Ten Years in the Making</h3>
+        <div className="space-y-6 text-lg text-stone-600 leading-relaxed">
+          <p>I went home to my parents' basement, not to build furniture, but to deconstruct the dining experience. I wanted to understand why some metal feels "right" and other metal feels "wrong." What followed were hundreds and eventually thousands of experiments.</p>
+          <div className="grid md:grid-cols-2 gap-6 my-8">
+            <div className="bg-white p-6 rounded-lg border border-stone-200">
+              <h4 className="font-bold text-stone-900 mb-2">Specific Gravity</h4>
+              <p className="text-base text-stone-500">We tested weight distribution to find the perfect balance in your hand.</p>
+            </div>
+            <div className="bg-white p-6 rounded-lg border border-stone-200">
+              <h4 className="font-bold text-stone-900 mb-2">Ergonomic Contours</h4>
+              <p className="text-base text-stone-500">We shaped handles to discover the ultimate grip comfort.</p>
+            </div>
+            <div className="bg-white p-6 rounded-lg border border-stone-200">
+              <h4 className="font-bold text-stone-900 mb-2">Metallurgy</h4>
+              <p className="text-base text-stone-500">We studied alloys to maximize resistance to tarnishing.</p>
+            </div>
+            <div className="bg-white p-6 rounded-lg border border-stone-200">
+              <h4 className="font-bold text-stone-900 mb-2">Mouthfeel</h4>
+              <p className="text-base text-stone-500">We chased a finish that was smooth, substantial, and invisible.</p>
+            </div>
+          </div>
+          <p>It took ten years of trial, error, and obsession in that basement to get it right. But we finally did.</p>
+        </div>
+      </div>
+
+      {/* The Result */}
+      <div className="text-center mb-16">
+        <p className="text-2xl font-serif text-stone-900 leading-relaxed">We didn't just make a fork.<br/><span className="text-amber-700">We engineered the bridge between you and your food.</span></p>
+        <p className="text-lg text-stone-500 mt-4">Welcome to the result of a decade of perfectionism.</p>
+      </div>
+
+      {/* The Meaning & Heritage */}
+      <div className="border-t border-stone-200 pt-12 space-y-8 text-lg text-stone-600 leading-relaxed">
+        <h3 className="text-2xl font-serif text-stone-900">The Meaning of "Sura"</h3>
         <p>In the Joseon Dynasty of Korea, the King's daily meal was called <b>"Sura" (수라)</b>. It was not merely food; it was a symbol of the nation's prosperity, prepared with the finest ingredients and served with the utmost respect.</p>
-        <p>At Sura Steel, we believe the tools used to prepare a meal should carry that same dignity. We named our brand <b>Sura</b> because we provide cutlery that possesses the quality, balance, and sharpness fit for a king's table.</p>
-        <h3 className="text-2xl font-serif text-stone-900">Our Global Journey</h3>
+        <p>We named our brand <b>Sura</b> because we believe the tools used to enjoy a meal should carry that same dignity—quality, balance, and refinement fit for a king's table.</p>
+        
+        <h3 className="text-2xl font-serif text-stone-900 pt-4">Our Heritage</h3>
         <p>Rooted in the metalworking legends of <b>Tsubame, Japan</b>, and refined in Korea since 1970, our legacy is one of precision. By partnering with Korean experts for high-grade stainless steel and employing authentic <b>"Danjo" (Forged)</b> technology, we create enduring tools designed to last generations.</p>
       </div>
     </div>
