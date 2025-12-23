@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, createContext, useContext } from 'react';
+import React, { useState, useEffect, createContext, useContext } from 'react';
 import { ShoppingBag, X, Menu, Star, Check, Instagram, Facebook, Twitter, ArrowRight, Hammer, Globe, ShieldCheck, Mail, MapPin, Phone, Crown, Ruler, Scale, ArrowLeft, Plus, Minus, Languages, Lock, LogOut, Package, BarChart3, Boxes, RefreshCw, TrendingUp, DollarSign, ShoppingCart, Eye, EyeOff, User, History, Settings, ChevronRight, Truck } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 
@@ -37,7 +37,6 @@ const TRANSLATIONS = {
       mat_title: "Premium Steel", mat_desc: "Crafted from the highest grade stainless steel, renowned globally for purity and durability."
     },
     shop: { title: "The Royal Collection", subtitle: "Experience the difference of Korean Steel.", from: "from" },
-    filters: { all: "All", sets: "Sets", gold: "Gold", silver: "Silver" },
     product: { 
       back: "Back to Shop", 
       collection: "Collection", 
@@ -202,7 +201,6 @@ const TRANSLATIONS = {
       mat_title: "Premium Staal", mat_desc: "Vervaardigd van hoogwaardig roestvrij staal, wereldwijd bekend om zuiverheid en duurzaamheid."
     },
     shop: { title: "De Koninklijke Collectie", subtitle: "Ervaar het verschil van Koreaans staal.", from: "vanaf" },
-    filters: { all: "Alles", sets: "Sets", gold: "Goud", silver: "Zilver" },
     product: { 
       back: "Terug naar Winkel", 
       collection: "Collectie", 
@@ -314,109 +312,31 @@ const TRANSLATIONS = {
 
 // --- REAL PRODUCT DATA ---
 const PRODUCTS = [
-  // --- GOLD COLLECTION ---
   { 
-    id: 20, 
-    name: "Moon Gold", 
-    category: "Gold", 
-    image: "/images/Moon Gold.jpg", 
-    description: "Our signature set. Celestial beauty in 24k gold finish. Hand-polished for a brilliant shine.",
-    description_nl: "Onze kenmerkende set. Hemelse schoonheid in 24k gouden afwerking. Handgepolijst voor een schitterende glans.",
-    specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish + PVD Gold" },
-    price_full_set: 380,     
-    price_place_setting: 72, 
+    id: 60, 
+    name: "Moon Silver", 
+    category: "Silver", 
+    image: "/images/Moon.jpg", 
+    description: "Our signature set. Celestial beauty with a mirror polish finish. Hand-crafted for timeless elegance.",
+    description_nl: "Onze kenmerkende set. Hemelse schoonheid met een spiegelglans afwerking. Handgemaakt voor tijdloze elegantie.",
+    specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish" },
+    price_full_set: 280,     
+    price_place_setting: 54, 
     stripe_link: "", 
     components: [
-      { name: "Dinner Knife", name_nl: "Diner mes", len: "232mm", thick: "7.0mm", material: "13/0", price: 22 },
-      { name: "Dinner Spoon", name_nl: "Diner lepel", len: "200mm", thick: "3.5mm", material: "18/10", price: 20 },
-      { name: "Dinner Fork", name_nl: "Diner vork", len: "201mm", thick: "3.5mm", material: "18/10", price: 20 },
-      { name: "Tea Spoon", name_nl: "Theelepel", len: "143mm", thick: "2.5mm", material: "18/10", price: 16 },
-      { name: "Dessert Knife", name_nl: "Dessert mes", len: "208mm", thick: "7.0mm", material: "13/0", price: 21 },
-      { name: "Dessert Fork", name_nl: "Dessert vork", len: "181mm", thick: "3.0mm", material: "18/10", price: 19 },
-      { name: "Cake Fork", name_nl: "Gebaksvorkje", len: "161mm", thick: "6.0mm", material: "13/0", price: 19 }
+      { name: "Dinner Knife", name_nl: "Diner mes", len: "232mm", thick: "7.0mm", material: "13/0", price: 18 },
+      { name: "Dinner Spoon", name_nl: "Diner lepel", len: "200mm", thick: "3.5mm", material: "18/10", price: 16 },
+      { name: "Dinner Fork", name_nl: "Diner vork", len: "201mm", thick: "3.5mm", material: "18/10", price: 16 },
+      { name: "Tea Spoon", name_nl: "Theelepel", len: "143mm", thick: "2.5mm", material: "18/10", price: 12 },
+      { name: "Dessert Knife", name_nl: "Dessert mes", len: "208mm", thick: "7.0mm", material: "13/0", price: 17 },
+      { name: "Dessert Fork", name_nl: "Dessert vork", len: "181mm", thick: "3.0mm", material: "18/10", price: 15 },
+      { name: "Cake Fork", name_nl: "Gebaksvorkje", len: "161mm", thick: "6.0mm", material: "13/0", price: 15 }
     ]
-  },
-  { 
-    id: 24, 
-    name: "Pandora Gold", 
-    category: "Gold", 
-    image: "/images/Pandora Gold.jpg", 
-    description: "Unleash luxury with this premium heavy-gauge set. Bold, substantial, and unforgettable.",
-    description_nl: "Ontketen luxe met deze premium zware set. Gedurfd, substantieel en onvergetelijk.",
-    specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish + PVD Gold" },
-    price_full_set: 395,
-    price_place_setting: 75,
-    stripe_link: "",
-    components: [
-      { name: "Dinner Knife", name_nl: "Diner mes", len: "248mm", thick: "9.0mm", material: "13/0", price: 24 },
-      { name: "Dinner Spoon", name_nl: "Diner lepel", len: "208mm", thick: "5.5mm", material: "18/10", price: 22 },
-      { name: "Dinner Fork", name_nl: "Diner vork", len: "212mm", thick: "5.5mm", material: "18/10", price: 22 },
-      { name: "Tea Spoon", name_nl: "Theelepel", len: "142mm", thick: "4.0mm", material: "18/10", price: 18 }
-    ]
-  },
-  // ... Other Gold Sets
-  { id: 1, name: "Ivy Gold", category: "Gold", image: "/images/Ivy Gold.jpg", description: "Organic flowing lines wrapped in gold.", price_full_set: 350, price_place_setting: 65, components: [] },
-  { id: 2, name: "Jacob Gold", category: "Gold", image: "/images/Jacob Gold.jpg", description: "Timeless simplicity for the modern king.", price_full_set: 340, price_place_setting: 62, components: [] },
-  { id: 3, name: "Jaime Gold", category: "Gold", image: "/images/Jaime Gold.jpg", description: "Bold and substantial, a statement piece.", price_full_set: 360, price_place_setting: 68, components: [] },
-  { id: 4, name: "Jambi Gold", category: "Gold", image: "/images/Jambi Gold.jpg", description: "Exotic inspiration with a flawless gold polish.", price_full_set: 350, price_place_setting: 65, components: [] },
-  { id: 5, name: "Kaizen Gold", category: "Gold", image: "/images/Kaizen Gold.jpg", description: "Continuous improvement in design, realized in gold.", price_full_set: 370, price_place_setting: 70, components: [] },
-  { id: 6, name: "Karina Gold", category: "Gold", image: "/images/Karina Gold.jpg", description: "Graceful and elegant, fit for a queen.", price_full_set: 350, price_place_setting: 65, components: [] },
-  { id: 7, name: "Lucius Gold", category: "Gold", image: "/images/Lucius Gold.jpg", description: "Light and brilliant, illuminating the dining experience.", price_full_set: 365, price_place_setting: 69, components: [] },
-  { id: 8, name: "Mercy Gold", category: "Gold", image: "/images/Mercy Gold.jpg", description: "Soft edges and a comforting grip in gold.", price_full_set: 340, price_place_setting: 64, components: [] },
-  { id: 9, name: "Murray Gold", category: "Gold", image: "/images/Murray Gold.jpg", description: "Sturdy and reliable with a touch of luxury.", price_full_set: 330, price_place_setting: 60, components: [] },
-  { id: 10, name: "Neville Gold", category: "Gold", image: "/images/Neville Gold.jpg", description: "Classic heritage design in a warm gold hue.", price_full_set: 345, price_place_setting: 65, components: [] },
-  { id: 11, name: "Noah Brushed Gold", category: "Gold", image: "/images/Noah Brushed Gold.jpg", description: "Contemporary brushed finish for a modern table.", price_full_set: 360, price_place_setting: 68, components: [] },
-  { id: 12, name: "Sander Brushed Gold", category: "Gold", image: "/images/Sander Brushed Gold.jpg", description: "Matte gold perfection for the industrial chic home.", price_full_set: 355, price_place_setting: 67, components: [] },
-  { id: 13, name: "Sienna Gold", category: "Gold", image: "/images/Sienna Gold.jpg", description: "Warm and inviting, like the Italian sun.", price_full_set: 350, price_place_setting: 65, components: [] },
-  { id: 14, name: "Tucson Gold", category: "Gold", image: "/images/Tucson Gold.jpg", description: "Rugged elegance with a refined gold layer.", price_full_set: 340, price_place_setting: 64, components: [] },
-  { id: 15, name: "Umbridge Gold", category: "Gold", image: "/images/Umbridge Gold.jpg", description: "Strictly superior quality and shine.", price_full_set: 360, price_place_setting: 68, components: [] },
-  { id: 16, name: "Vermilio Gold", category: "Gold", image: "/images/Vermilio Gold.jpg", description: "Vibrant and striking, the center of attention.", price_full_set: 365, price_place_setting: 69, components: [] },
-  { id: 17, name: "Xena Faceted Gold", category: "Gold", image: "/images/Xena Faceted Gold.jpg", description: "Geometric facets reflect light like diamonds.", price_full_set: 390, price_place_setting: 74, components: [] },
-  { id: 18, name: "Zoya Gold", category: "Gold", image: "/images/Zoya Gold.jpg", description: "Life and brilliance in a forged gold silhouette.", price_full_set: 350, price_place_setting: 65, components: [] },
-
-  // --- SILVER COLLECTION ---
-  { 
-    id: 56, 
-    name: "Bree", 
-    category: "Silver", 
-    image: "/images/Bree.jpg", 
-    description: "Minimalist design for the modern home. 18/0 Stainless Steel.",
-    description_nl: "Minimalistisch ontwerp voor het moderne huis. 18/0 roestvrij staal.",
-    specs: { material: "18/0 Stainless Steel", finish: "Mirror Finish" },
-    price_full_set: 220,
-    price_place_setting: 45,
-    stripe_link: "",
-    components: [
-      { name: "Dinner Knife", name_nl: "Diner mes", len: "225mm", thick: "6.0mm", material: "13/0", price: 15 },
-      { name: "Dinner Fork", name_nl: "Diner vork", len: "200mm", thick: "4.0mm", material: "18/0", price: 12 },
-      { name: "Dessert Spoon", name_nl: "Dessert lepel", len: "186mm", thick: "3.5mm", material: "18/0", price: 12 },
-      { name: "Tea Spoon", name_nl: "Theelepel", len: "150mm", thick: "3.5mm", material: "18/0", price: 9 }
-    ]
-  },
-  { id: 51, name: "Armesh", category: "Silver", image: "/images/Armesh.jpg", description: "Intricate detailing.", price_full_set: 260, price_place_setting: 49, components: [] },
-  { id: 52, name: "Jacob", category: "Silver", image: "/images/Jacob.jpg", description: "Simple, honest, and built to last.", price_full_set: 230, price_place_setting: 45, components: [] },
-  { id: 53, name: "Jaime", category: "Silver", image: "/images/Jaime.jpg", description: "Bold and substantial.", price_full_set: 260, price_place_setting: 50, components: [] },
-  { id: 54, name: "Jambi", category: "Silver", image: "/images/Jambi.jpg", description: "Exotic inspiration.", price_full_set: 250, price_place_setting: 48, components: [] },
-  { id: 55, name: "Kaizen", category: "Silver", image: "/images/Kaizen.jpg", description: "Continuous improvement.", price_full_set: 270, price_place_setting: 52, components: [] },
-  { id: 57, name: "Karina", category: "Silver", image: "/images/Karina.jpg", description: "Graceful elegance.", price_full_set: 245, price_place_setting: 48, components: [] },
-  { id: 58, name: "Lucius", category: "Silver", image: "/images/Lucius.jpg", description: "Light and brilliant.", price_full_set: 265, price_place_setting: 51, components: [] },
-  { id: 59, name: "Mercy", category: "Silver", image: "/images/Mercy.jpg", description: "Soft edges.", price_full_set: 235, price_place_setting: 46, components: [] },
-  { id: 60, name: "Moon", category: "Silver", image: "/images/Moon.jpg", description: "Celestial beauty.", price_full_set: 280, price_place_setting: 54, components: [] },
-  { id: 61, name: "Murray", category: "Silver", image: "/images/Murray.jpg", description: "Sturdy reliability.", price_full_set: 230, price_place_setting: 45, components: [] },
-  { id: 62, name: "Neville", category: "Silver", image: "/images/Neville.jpg", description: "Classic heritage.", price_full_set: 240, price_place_setting: 47, components: [] },
-  { id: 63, name: "Noah Brushed", category: "Silver", image: "/images/Noah Brushed.jpg", description: "Contemporary matte.", price_full_set: 260, price_place_setting: 50, components: [] },
-  { id: 64, name: "Pandora", category: "Silver", image: "/images/Pandora.jpg", description: "Unleash luxury.", price_full_set: 275, price_place_setting: 53, components: [] },
-  { id: 65, name: "Sander Brushed", category: "Silver", image: "/images/Sander Brushed.jpg", description: "Industrial chic.", price_full_set: 250, price_place_setting: 49, components: [] },
-  { id: 66, name: "Sienna", category: "Silver", image: "/images/Sienna.jpg", description: "Warm and inviting.", price_full_set: 245, price_place_setting: 48, components: [] },
-  { id: 67, name: "Tucson", category: "Silver", image: "/images/Tucson.jpg", description: "Rugged elegance.", price_full_set: 235, price_place_setting: 46, components: [] },
-  { id: 68, name: "Umbridge", category: "Silver", image: "/images/Umbridge.jpg", description: "Superior quality.", price_full_set: 255, price_place_setting: 50, components: [] },
-  { id: 69, name: "Vermilio", category: "Silver", image: "/images/Vermilio.jpg", description: "Vibrant and striking.", price_full_set: 260, price_place_setting: 51, components: [] },
-  { id: 70, name: "Xena Faceted", category: "Silver", image: "/images/Xena Faceted.jpg", description: "Geometric facets.", price_full_set: 300, price_place_setting: 58, components: [] },
-  { id: 71, name: "Zoya", category: "Silver", image: "/images/Zoya.jpg", description: "Life and brilliance.", price_full_set: 245, price_place_setting: 48, components: [] }
+  }
 ];
 
 const REVIEWS = [
-  { id: 1, text: "The Moon Gold set is absolutely stunning. The weight feels substantial and the finish is flawless.", author: "Chef Min-ho K." },
+  { id: 1, text: "The Moon Silver set is absolutely stunning. The weight feels substantial and the mirror finish is flawless.", author: "Chef Min-ho K." },
   { id: 2, text: "The quality of the steel is exceptional. It hasn't rusted or dulled in months.", author: "Sarah L." },
   { id: 3, text: "The balance reminds me of high-end Japanese cutlery, but at a better price point.", author: "James T." }
 ];
@@ -587,14 +507,7 @@ const ProductCard = React.memo(({ product, onViewDetails, lang, t, getStock }) =
 
 // --- PAGES (Defined BEFORE App) ---
 
-const HomePage = ({ addToCart, activeCategory, setActiveCategory, onViewDetails, lang, t, getStock }) => {
-  const filteredProducts = useMemo(() => {
-    return activeCategory === 'All' 
-      ? PRODUCTS 
-      : activeCategory === 'Sets' 
-        ? PRODUCTS.filter(p => p.category === 'Gold' || p.category === 'Silver') 
-        : PRODUCTS.filter(p => p.category === activeCategory);
-  }, [activeCategory]);
+const HomePage = ({ addToCart, onViewDetails, lang, t, getStock }) => {
 
   return (
     <>
@@ -627,16 +540,12 @@ const HomePage = ({ addToCart, activeCategory, setActiveCategory, onViewDetails,
 
       <section id="shop" className="py-24">
         <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-            <div><h2 className="text-4xl font-serif text-stone-900 mb-4">{t.shop.title}</h2><p className="text-stone-500">{t.shop.subtitle}</p></div>
-            <div className="flex gap-4 border-b border-stone-200 pb-2 overflow-x-auto">
-              {['All', 'Sets', 'Gold', 'Silver'].map(cat => (
-                <button key={cat} onClick={() => setActiveCategory(cat)} className={`pb-2 text-sm uppercase tracking-wider transition-colors whitespace-nowrap ${activeCategory === cat ? 'text-stone-900 border-b-2 border-stone-900 -mb-[9px]' : 'text-stone-400 hover:text-stone-600'}`}>{cat === 'All' ? t.filters.all : cat === 'Sets' ? t.filters.sets : cat === 'Gold' ? t.filters.gold : t.filters.silver}</button>
-              ))}
-            </div>
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-serif text-stone-900 mb-4">{t.shop.title}</h2>
+            <p className="text-stone-500">{t.shop.subtitle}</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-x-8 gap-y-16">
-            {filteredProducts.map(product => (<ProductCard key={product.id} product={product} onViewDetails={onViewDetails} lang={lang} t={t} getStock={getStock} />))}
+          <div className="max-w-xl mx-auto">
+            {PRODUCTS.map(product => (<ProductCard key={product.id} product={product} onViewDetails={onViewDetails} lang={lang} t={t} getStock={getStock} />))}
           </div>
         </div>
       </section>
@@ -2348,7 +2257,6 @@ const App = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [cart, setCart] = useState([]);
-  const [activeCategory, setActiveCategory] = useState('All');
   const [scrolled, setScrolled] = useState(false);
   const [notification, setNotification] = useState(null);
   const [lang, setLang] = useState('nl'); // 'nl' or 'en'
@@ -2526,7 +2434,7 @@ const App = () => {
       </nav>
 
       <main className="flex-grow">
-        {view === 'home' && <HomePage addToCart={addToCart} activeCategory={activeCategory} setActiveCategory={setActiveCategory} onViewDetails={handleViewDetails} lang={lang} t={t} getStock={getStock} />}
+        {view === 'home' && <HomePage addToCart={addToCart} onViewDetails={handleViewDetails} lang={lang} t={t} getStock={getStock} />}
         {view === 'product' && <ProductDetailPage product={selectedProduct} onBack={() => setView('home')} onAddToCart={addToCart} lang={lang} getStock={getStock} />}
         {view === 'about' && <AboutPage />}
         {view === 'contact' && <ContactPage lang={lang} />}
