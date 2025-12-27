@@ -338,9 +338,9 @@ const TRANSLATIONS = {
 const PRODUCTS = [
   { 
     id: 60, 
-    name: "Moon Silver", 
+    name: "Dal", 
     category: "Silver", 
-    image: "/images/Moon.jpg", 
+    image: "/images/Dal.jpg", 
     description: "Our signature set. Celestial beauty with a mirror polish finish. Hand-crafted for timeless elegance.",
     description_nl: "Onze kenmerkende set. Hemelse schoonheid met een spiegelglans afwerking. Handgemaakt voor tijdloze elegantie.",
     specs: { material: "18/10 Stainless Steel", finish: "Mirror Polish" },
@@ -360,7 +360,7 @@ const PRODUCTS = [
 ];
 
 const REVIEWS = [
-  { id: 1, text: "The Moon Silver set is absolutely stunning. The weight feels substantial and the mirror finish is flawless.", author: "Chef Min-ho K." },
+  { id: 1, text: "The Dal set is absolutely stunning. The weight feels substantial and the mirror finish is flawless.", author: "Chef Min-ho K." },
   { id: 2, text: "The quality of the steel is exceptional. It hasn't rusted or dulled in months.", author: "Sarah L." },
   { id: 3, text: "The balance reminds me of high-end Japanese cutlery, but at a better price point.", author: "James T." }
 ];
