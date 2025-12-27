@@ -103,7 +103,29 @@ const TRANSLATIONS = {
       noAccount: "Don't have an account?",
       signup: "Sign up here",
       error: "Invalid email or password",
-      loading: "Logging in..."
+      loading: "Logging in...",
+      forgotPassword: "Forgot Password?"
+    },
+    forgotPassword: {
+      title: "Reset Your Password",
+      description: "Enter your email address and we'll send you a link to reset your password.",
+      email: "Email Address",
+      submit: "Send Reset Link",
+      loading: "Sending...",
+      success: "Check your email for a reset link!",
+      error: "Failed to send reset email. Please try again.",
+      backToLogin: "Back to Login"
+    },
+    resetPassword: {
+      title: "Set New Password",
+      password: "New Password",
+      confirmPassword: "Confirm Password",
+      submit: "Update Password",
+      loading: "Updating...",
+      success: "Password updated successfully!",
+      error: "Failed to update password. Please try again.",
+      mismatch: "Passwords do not match",
+      passwordHint: "At least 6 characters"
     },
     signup: {
       title: "Create an Account",
@@ -279,7 +301,29 @@ const TRANSLATIONS = {
       noAccount: "Heeft u geen account?",
       signup: "Registreer hier",
       error: "Ongeldig e-mailadres of wachtwoord",
-      loading: "Inloggen..."
+      loading: "Inloggen...",
+      forgotPassword: "Wachtwoord Vergeten?"
+    },
+    forgotPassword: {
+      title: "Wachtwoord Herstellen",
+      description: "Voer uw e-mailadres in en we sturen u een link om uw wachtwoord te resetten.",
+      email: "E-mailadres",
+      submit: "Verstuur Reset Link",
+      loading: "Versturen...",
+      success: "Controleer uw e-mail voor een reset link!",
+      error: "Kan reset e-mail niet verzenden. Probeer het opnieuw.",
+      backToLogin: "Terug naar Inloggen"
+    },
+    resetPassword: {
+      title: "Nieuw Wachtwoord Instellen",
+      password: "Nieuw Wachtwoord",
+      confirmPassword: "Bevestig Wachtwoord",
+      submit: "Wachtwoord Bijwerken",
+      loading: "Bijwerken...",
+      success: "Wachtwoord succesvol bijgewerkt!",
+      error: "Kan wachtwoord niet bijwerken. Probeer het opnieuw.",
+      mismatch: "Wachtwoorden komen niet overeen",
+      passwordHint: "Minimaal 6 tekens"
     },
     signup: {
       title: "Account Aanmaken",
@@ -1185,6 +1229,15 @@ const LoginPage = ({ lang, onLogin, navigate }) => {
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
+              <div className="text-right">
+                <button
+                  type="button"
+                  onClick={() => navigate('forgot-password')}
+                  className="text-sm text-amber-600 hover:text-amber-700"
+                >
+                  {t.forgotPassword}
+                </button>
+              </div>
             </div>
 
             <Button type="submit" className="w-full" disabled={loading}>
@@ -1201,6 +1254,208 @@ const LoginPage = ({ lang, onLogin, navigate }) => {
               {t.signup}
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// --- Forgot Password Page ---
+const ForgotPasswordPage = ({ lang, navigate }) => {
+  const t = TRANSLATIONS[lang].forgotPassword;
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      if (!supabase) {
+        throw new Error('Supabase not configured');
+      }
+
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/#reset-password`,
+      });
+
+      if (resetError) throw resetError;
+
+      setSuccess(true);
+    } catch (err) {
+      setError(err.message || t.error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="pt-32 pb-24 min-h-screen bg-stone-50">
+      <div className="container mx-auto px-6 max-w-md">
+        <div className="bg-white rounded-lg shadow-sm border border-stone-200 p-8">
+          <h1 className="text-3xl font-serif text-stone-900 mb-4 text-center">{t.title}</h1>
+          <p className="text-stone-600 text-sm text-center mb-6">{t.description}</p>
+
+          {success ? (
+            <div className="text-center">
+              <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded text-green-700">
+                <Check size={24} className="mx-auto mb-2" />
+                {t.success}
+              </div>
+              <button
+                onClick={() => navigate('login')}
+                className="text-amber-600 hover:text-amber-700 font-medium"
+              >
+                {t.backToLogin}
+              </button>
+            </div>
+          ) : (
+            <>
+              {error && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+                  {error}
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-stone-700 mb-1">{t.email}</label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="w-full p-3 border border-stone-200 rounded focus:border-stone-900 outline-none transition-colors"
+                  />
+                </div>
+
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? t.loading : t.submit}
+                </Button>
+              </form>
+
+              <div className="mt-6 text-center">
+                <button
+                  onClick={() => navigate('login')}
+                  className="text-sm text-stone-600 hover:text-stone-900"
+                >
+                  ← {t.backToLogin}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// --- Reset Password Page ---
+const ResetPasswordPage = ({ lang, navigate }) => {
+  const t = TRANSLATIONS[lang].resetPassword;
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    if (password !== confirmPassword) {
+      setError(t.mismatch);
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      if (!supabase) {
+        throw new Error('Supabase not configured');
+      }
+
+      const { error: updateError } = await supabase.auth.updateUser({
+        password: password,
+      });
+
+      if (updateError) throw updateError;
+
+      setSuccess(true);
+      setTimeout(() => navigate('login'), 2000);
+    } catch (err) {
+      setError(err.message || t.error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="pt-32 pb-24 min-h-screen bg-stone-50">
+      <div className="container mx-auto px-6 max-w-md">
+        <div className="bg-white rounded-lg shadow-sm border border-stone-200 p-8">
+          <h1 className="text-3xl font-serif text-stone-900 mb-6 text-center">{t.title}</h1>
+
+          {success ? (
+            <div className="text-center">
+              <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded text-green-700">
+                <Check size={24} className="mx-auto mb-2" />
+                {t.success}
+              </div>
+            </div>
+          ) : (
+            <>
+              {error && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+                  {error}
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-stone-700 mb-1">{t.password}</label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      minLength={6}
+                      className="w-full p-3 border border-stone-200 rounded focus:border-stone-900 outline-none transition-colors pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
+                  <p className="text-xs text-stone-500 mt-1">{t.passwordHint}</p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-stone-700 mb-1">{t.confirmPassword}</label>
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                    minLength={6}
+                    className="w-full p-3 border border-stone-200 rounded focus:border-stone-900 outline-none transition-colors"
+                  />
+                </div>
+
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? t.loading : t.submit}
+                </Button>
+              </form>
+            </>
+          )}
         </div>
       </div>
     </div>
@@ -2544,10 +2799,17 @@ const App = () => {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const path = window.location.pathname;
+    const hash = window.location.hash;
 
     // Check for admin route
     if (path === '/admin' || path === '/admin/') {
       setView('admin');
+      return;
+    }
+
+    // Check for password reset (Supabase sends users here with token in hash)
+    if (hash.includes('reset-password') || hash.includes('type=recovery')) {
+      setView('reset-password');
       return;
     }
 
@@ -2660,6 +2922,8 @@ const App = () => {
         {view === 'success' && <SuccessPage onContinueShopping={() => navigate('home')} lang={lang} />}
         {view === 'login' && <LoginPage lang={lang} onLogin={setUser} navigate={navigate} />}
         {view === 'signup' && <SignupPage lang={lang} onSignup={setUser} navigate={navigate} />}
+        {view === 'forgot-password' && <ForgotPasswordPage lang={lang} navigate={navigate} />}
+        {view === 'reset-password' && <ResetPasswordPage lang={lang} navigate={navigate} />}
         {view === 'account' && user && <AccountPage lang={lang} user={user} onLogout={handleLogout} navigate={navigate} />}
         {view === 'account' && !user && navigate('login')}
       </main>
