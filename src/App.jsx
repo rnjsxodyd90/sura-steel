@@ -62,6 +62,21 @@ const TRANSLATIONS = {
       origin_val: "South Korea / Indonesia",
       in_stock: "In Stock - Ships from The Hague"
     },
+    reviews: {
+      title: "Customer Reviews",
+      writeReview: "Write a Review",
+      noReviews: "No reviews yet. Be the first to share your experience!",
+      rating: "Rating",
+      reviewText: "Your Review",
+      submit: "Submit Review",
+      submitting: "Submitting...",
+      success: "Thank you for your review!",
+      error: "Failed to submit review. Please try again.",
+      loginRequired: "Please log in to write a review.",
+      verified: "Verified Purchase",
+      helpful: "Helpful",
+      reviewPlaceholder: "Share your experience with this product..."
+    },
     cart: {
       title: "Your Basket",
       empty: "Your basket is empty.",
@@ -259,6 +274,21 @@ const TRANSLATIONS = {
       origin: "Herkomst",
       origin_val: "Zuid-Korea / Indonesië",
       in_stock: "Op Voorraad - Verzonden vanuit Den Haag"
+    },
+    reviews: {
+      title: "Klantbeoordelingen",
+      writeReview: "Schrijf een Beoordeling",
+      noReviews: "Nog geen beoordelingen. Wees de eerste om uw ervaring te delen!",
+      rating: "Beoordeling",
+      reviewText: "Uw Beoordeling",
+      submit: "Beoordeling Verzenden",
+      submitting: "Verzenden...",
+      success: "Bedankt voor uw beoordeling!",
+      error: "Beoordeling verzenden mislukt. Probeer het opnieuw.",
+      loginRequired: "Log in om een beoordeling te schrijven.",
+      verified: "Geverifieerde Aankoop",
+      helpful: "Nuttig",
+      reviewPlaceholder: "Deel uw ervaring met dit product..."
     },
     cart: {
       title: "Uw Winkelwagen",
@@ -731,7 +761,220 @@ const HomePage = ({ addToCart, onViewDetails, lang, t, getStock }) => {
   );
 };
 
-const ProductDetailPage = ({ product, onBack, onAddToCart, lang, getStock }) => {
+// Reviews Section Component
+const ReviewsSection = ({ productId, user, lang }) => {
+  const [reviews, setReviews] = useState([]);
+  const [averageRating, setAverageRating] = useState(0);
+  const [totalReviews, setTotalReviews] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [rating, setRating] = useState(5);
+  const [reviewText, setReviewText] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState({ type: '', message: '' });
+
+  const t = TRANSLATIONS[lang].reviews;
+
+  useEffect(() => {
+    fetchReviews();
+  }, [productId]);
+
+  const fetchReviews = async () => {
+    try {
+      const response = await fetch(`/.netlify/functions/get-reviews?product_id=${productId}`);
+      const data = await response.json();
+      setReviews(data.reviews || []);
+      setAverageRating(data.average_rating || 0);
+      setTotalReviews(data.total_reviews || 0);
+    } catch (error) {
+      console.error('Failed to fetch reviews:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!user) return;
+
+    setSubmitting(true);
+    setSubmitStatus({ type: '', message: '' });
+
+    try {
+      const response = await fetch('/.netlify/functions/submit-review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          product_id: productId,
+          customer_id: user.id,
+          customer_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'Anonymous',
+          rating,
+          review_text: reviewText,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSubmitStatus({ type: 'success', message: t.success });
+        setReviewText('');
+        setRating(5);
+        setShowForm(false);
+        fetchReviews();
+      } else {
+        setSubmitStatus({ type: 'error', message: data.error || t.error });
+      }
+    } catch (error) {
+      setSubmitStatus({ type: 'error', message: t.error });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const StarRating = ({ value, onChange, interactive = false }) => (
+    <div className="flex gap-1">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <button
+          key={star}
+          type="button"
+          onClick={() => interactive && onChange && onChange(star)}
+          className={`${interactive ? 'cursor-pointer hover:scale-110' : 'cursor-default'} transition-transform`}
+          disabled={!interactive}
+        >
+          <Star
+            size={interactive ? 24 : 16}
+            className={star <= value ? 'fill-amber-400 text-amber-400' : 'text-stone-300'}
+          />
+        </button>
+      ))}
+    </div>
+  );
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString(lang === 'nl' ? 'nl-NL' : 'en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
+
+  return (
+    <div className="bg-white py-20 border-t border-stone-200">
+      <div className="container mx-auto px-6">
+        <div className="max-w-4xl mx-auto">
+          {/* Header */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-12">
+            <div>
+              <h2 className="text-3xl font-serif text-stone-900 mb-2">{t.title}</h2>
+              {totalReviews > 0 && (
+                <div className="flex items-center gap-3">
+                  <StarRating value={Math.round(averageRating)} />
+                  <span className="text-stone-600">
+                    {averageRating.toFixed(1)} ({totalReviews} {totalReviews === 1 ? 'review' : 'reviews'})
+                  </span>
+                </div>
+              )}
+            </div>
+            {user && !showForm && (
+              <button
+                onClick={() => setShowForm(true)}
+                className="mt-4 md:mt-0 bg-stone-900 text-white px-6 py-3 rounded hover:bg-amber-600 transition-colors"
+              >
+                {t.writeReview}
+              </button>
+            )}
+          </div>
+
+          {/* Status Messages */}
+          {submitStatus.message && (
+            <div className={`mb-6 p-4 rounded ${submitStatus.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+              {submitStatus.message}
+            </div>
+          )}
+
+          {/* Review Form */}
+          {showForm && user && (
+            <div className="bg-stone-50 rounded-lg p-6 mb-8">
+              <form onSubmit={handleSubmit}>
+                <div className="mb-4">
+                  <label className="block text-sm font-bold text-stone-900 mb-2">{t.rating}</label>
+                  <StarRating value={rating} onChange={setRating} interactive />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-bold text-stone-900 mb-2">{t.reviewText}</label>
+                  <textarea
+                    value={reviewText}
+                    onChange={(e) => setReviewText(e.target.value)}
+                    placeholder={t.reviewPlaceholder}
+                    className="w-full p-3 border border-stone-200 rounded focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    rows={4}
+                    required
+                    minLength={10}
+                    maxLength={1000}
+                  />
+                </div>
+                <div className="flex gap-3">
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="bg-stone-900 text-white px-6 py-3 rounded hover:bg-amber-600 transition-colors disabled:bg-stone-400"
+                  >
+                    {submitting ? t.submitting : t.submit}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowForm(false)}
+                    className="px-6 py-3 rounded border border-stone-200 hover:bg-stone-100 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          {/* Login prompt for non-logged-in users */}
+          {!user && (
+            <div className="bg-stone-50 rounded-lg p-6 mb-8 text-center">
+              <p className="text-stone-600">{t.loginRequired}</p>
+            </div>
+          )}
+
+          {/* Reviews List */}
+          {loading ? (
+            <div className="text-center py-12 text-stone-500">Loading reviews...</div>
+          ) : reviews.length === 0 ? (
+            <div className="text-center py-12 text-stone-500">{t.noReviews}</div>
+          ) : (
+            <div className="space-y-6">
+              {reviews.map((review) => (
+                <div key={review.id} className="border-b border-stone-100 pb-6">
+                  <div className="flex items-start justify-between mb-2">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-bold text-stone-900">{review.customer_name}</span>
+                        {review.verified_purchase && (
+                          <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded flex items-center gap-1">
+                            <Check size={12} /> {t.verified}
+                          </span>
+                        )}
+                      </div>
+                      <StarRating value={review.rating} />
+                    </div>
+                    <span className="text-sm text-stone-400">{formatDate(review.created_at)}</span>
+                  </div>
+                  <p className="text-stone-600 mt-3">{review.review_text}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const ProductDetailPage = ({ product, onBack, onAddToCart, lang, getStock, user }) => {
   const [selectedOption, setSelectedOption] = useState('set');
   const t = TRANSLATIONS[lang].product;
   const tStock = TRANSLATIONS[lang].stock;
@@ -853,7 +1096,7 @@ const ProductDetailPage = ({ product, onBack, onAddToCart, lang, getStock }) => 
               <h2 className="text-3xl font-serif text-stone-900 mb-3">{t.tech_specs}</h2>
               <p className="text-stone-500 max-w-2xl mx-auto">{t.tech_desc}</p>
             </div>
-            
+
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
               {(product.components.length > 0 ? product.components : [
                   { name: "Dinner Knife", len: "Standard", thick: "Standard", material: "13/0", price: 22 },
@@ -881,6 +1124,9 @@ const ProductDetailPage = ({ product, onBack, onAddToCart, lang, getStock }) => 
           </div>
         </div>
       )}
+
+      {/* Reviews Section */}
+      <ReviewsSection productId={product.id} user={user} lang={lang} />
     </div>
   );
 };
@@ -2915,7 +3161,7 @@ const App = () => {
 
       <main className="flex-grow">
         {view === 'home' && <HomePage addToCart={addToCart} onViewDetails={handleViewDetails} lang={lang} t={t} getStock={getStock} />}
-        {view === 'product' && <ProductDetailPage product={selectedProduct} onBack={() => setView('home')} onAddToCart={addToCart} lang={lang} getStock={getStock} />}
+        {view === 'product' && <ProductDetailPage product={selectedProduct} onBack={() => setView('home')} onAddToCart={addToCart} lang={lang} getStock={getStock} user={user} />}
         {view === 'about' && <AboutPage />}
         {view === 'contact' && <ContactPage lang={lang} />}
         {view === 'policy' && <PolicyPage title="Shipping & Returns" />}
