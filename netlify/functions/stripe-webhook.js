@@ -142,7 +142,35 @@ exports.handler = async (event) => {
 
           if (orderResponse.ok) {
             const orderResult = await orderResponse.json();
-            console.log('Order created successfully:', orderResult[0]?.id || orderNumber);
+            const orderId = orderResult[0]?.id;
+            console.log('Order created successfully:', orderId || orderNumber);
+
+            // Mark discount code as used if one was applied
+            const discountCode = session.metadata?.discount_code;
+            if (discountCode && orderId) {
+              try {
+                const discountResponse = await fetch(`${supabaseUrl}/rest/v1/rpc/use_discount_code`, {
+                  method: 'POST',
+                  headers: {
+                    'apikey': supabaseServiceKey,
+                    'Authorization': `Bearer ${supabaseServiceKey}`,
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    p_code: discountCode,
+                    p_order_id: orderId,
+                  }),
+                });
+
+                if (discountResponse.ok) {
+                  console.log('Discount code marked as used:', discountCode);
+                } else {
+                  console.error('Failed to mark discount code as used');
+                }
+              } catch (discountError) {
+                console.error('Error marking discount code as used:', discountError);
+              }
+            }
           } else {
             const errorText = await orderResponse.text();
             console.error('Failed to create order:', errorText);

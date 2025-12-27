@@ -62,7 +62,19 @@ const TRANSLATIONS = {
       origin_val: "South Korea / Indonesia",
       in_stock: "In Stock - Ships from The Hague"
     },
-    cart: { title: "Your Basket", empty: "Your basket is empty.", continue: "Continue Shopping", total: "Total", checkout: "Checkout Securely" },
+    cart: {
+      title: "Your Basket",
+      empty: "Your basket is empty.",
+      continue: "Continue Shopping",
+      total: "Total",
+      checkout: "Checkout Securely",
+      discountCode: "Discount Code",
+      discountPlaceholder: "Enter code",
+      apply: "Apply",
+      remove: "Remove",
+      discount: "Discount",
+      subtotal: "Subtotal"
+    },
     footer: { privacy: "Privacy Policy", terms: "Terms of Service", rights: "All rights reserved." },
     stock: { inStock: "In Stock", lowStock: "Only {count} left!", outOfStock: "Out of Stock", soldOut: "Sold Out" },
     account: {
@@ -226,7 +238,19 @@ const TRANSLATIONS = {
       origin_val: "Zuid-Korea / Indonesië",
       in_stock: "Op Voorraad - Verzonden vanuit Den Haag"
     },
-    cart: { title: "Uw Winkelwagen", empty: "Uw winkelwagen is leeg.", continue: "Verder Winkelen", total: "Totaal", checkout: "Veilig Afrekenen" },
+    cart: {
+      title: "Uw Winkelwagen",
+      empty: "Uw winkelwagen is leeg.",
+      continue: "Verder Winkelen",
+      total: "Totaal",
+      checkout: "Veilig Afrekenen",
+      discountCode: "Kortingscode",
+      discountPlaceholder: "Voer code in",
+      apply: "Toepassen",
+      remove: "Verwijderen",
+      discount: "Korting",
+      subtotal: "Subtotaal"
+    },
     footer: { privacy: "Privacybeleid", terms: "Algemene Voorwaarden", rights: "Alle rechten voorbehouden." },
     stock: { inStock: "Op Voorraad", lowStock: "Nog maar {count}!", outOfStock: "Niet op Voorraad", soldOut: "Uitverkocht" },
     account: {
@@ -384,8 +408,62 @@ const MobileNav = ({ isOpen, onClose, navigate, lang, setLang, t }) => {
 
 const CartSidebar = ({ isOpen, onClose, cart, updateQuantity, removeFromCart, lang, user }) => {
   const t = TRANSLATIONS[lang].cart;
-  const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [discountCode, setDiscountCode] = useState('');
+  const [appliedDiscount, setAppliedDiscount] = useState(null);
+  const [discountError, setDiscountError] = useState('');
+  const [isValidating, setIsValidating] = useState(false);
+
+  // Calculate discount amount and total
+  const discountAmount = appliedDiscount ? (subtotal * appliedDiscount.discount_percent / 100) : 0;
+  const total = subtotal - discountAmount;
+
+  const handleApplyDiscount = async () => {
+    if (!discountCode.trim()) return;
+
+    if (!user) {
+      setDiscountError(lang === 'nl' ? 'Log in om een kortingscode te gebruiken' : 'Please log in to use a discount code');
+      return;
+    }
+
+    setIsValidating(true);
+    setDiscountError('');
+
+    try {
+      const response = await fetch('/.netlify/functions/validate-discount-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: discountCode.trim(),
+          customer_id: user.id,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.valid) {
+        setAppliedDiscount({
+          code: data.code,
+          discount_percent: data.discount_percent,
+        });
+        setDiscountError('');
+      } else {
+        setDiscountError(data.error || (lang === 'nl' ? 'Ongeldige code' : 'Invalid code'));
+      }
+    } catch (error) {
+      console.error('Discount validation error:', error);
+      setDiscountError(lang === 'nl' ? 'Fout bij valideren' : 'Validation error');
+    } finally {
+      setIsValidating(false);
+    }
+  };
+
+  const handleRemoveDiscount = () => {
+    setAppliedDiscount(null);
+    setDiscountCode('');
+    setDiscountError('');
+  };
 
   const handleCheckout = async () => {
     setIsCheckingOut(true);
@@ -395,6 +473,7 @@ const CartSidebar = ({ isOpen, onClose, cart, updateQuantity, removeFromCart, la
         cart,
         customer_id: user?.id || null,
         customer_email: user?.email || null,
+        discount_code: appliedDiscount?.code || null,
       };
 
       const response = await fetch('/.netlify/functions/create-checkout-session', {
@@ -402,13 +481,13 @@ const CartSidebar = ({ isOpen, onClose, cart, updateQuantity, removeFromCart, la
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(checkoutData),
       });
-      
+
       const data = await response.json();
-      
+
       if (response.ok && data.url) {
         window.location.href = data.url;
       } else {
-        alert('Error creating checkout session. Please try again.');
+        alert(data.error || 'Error creating checkout session. Please try again.');
         setIsCheckingOut(false);
       }
     } catch (error) {
@@ -454,8 +533,63 @@ const CartSidebar = ({ isOpen, onClose, cart, updateQuantity, removeFromCart, la
             )}
           </div>
           {cart.length > 0 && (
-            <div className="p-6 border-t border-stone-100 bg-stone-50">
-              <div className="flex justify-between mb-4 text-lg font-serif font-medium"><span>{t.total}</span><span>€{total.toFixed(2)}</span></div>
+            <div className="p-6 border-t border-stone-100 bg-stone-50 space-y-4">
+              {/* Discount Code Input */}
+              <div>
+                <label className="text-xs font-medium text-stone-600 uppercase tracking-wide mb-2 block">{t.discountCode}</label>
+                {appliedDiscount ? (
+                  <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded px-3 py-2">
+                    <div className="flex items-center gap-2">
+                      <Check size={16} className="text-green-600" />
+                      <span className="font-medium text-green-800">{appliedDiscount.code}</span>
+                      <span className="text-green-600 text-sm">(-{appliedDiscount.discount_percent}%)</span>
+                    </div>
+                    <button onClick={handleRemoveDiscount} className="text-stone-400 hover:text-red-500">
+                      <X size={16} />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={discountCode}
+                      onChange={(e) => setDiscountCode(e.target.value.toUpperCase())}
+                      placeholder={t.discountPlaceholder}
+                      className="flex-1 px-3 py-2 border border-stone-300 rounded text-sm focus:border-amber-500 outline-none transition-colors"
+                      onKeyDown={(e) => e.key === 'Enter' && handleApplyDiscount()}
+                    />
+                    <button
+                      onClick={handleApplyDiscount}
+                      disabled={isValidating || !discountCode.trim()}
+                      className="px-4 py-2 bg-stone-900 text-white text-sm rounded hover:bg-stone-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      {isValidating ? '...' : t.apply}
+                    </button>
+                  </div>
+                )}
+                {discountError && (
+                  <p className="text-red-500 text-xs mt-1">{discountError}</p>
+                )}
+              </div>
+
+              {/* Order Summary */}
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between text-stone-600">
+                  <span>{t.subtotal}</span>
+                  <span>€{subtotal.toFixed(2)}</span>
+                </div>
+                {appliedDiscount && (
+                  <div className="flex justify-between text-green-600">
+                    <span>{t.discount} (-{appliedDiscount.discount_percent}%)</span>
+                    <span>-€{discountAmount.toFixed(2)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between text-lg font-serif font-medium pt-2 border-t border-stone-200">
+                  <span>{t.total}</span>
+                  <span>€{total.toFixed(2)}</span>
+                </div>
+              </div>
+
               <Button onClick={handleCheckout} className="w-full">{isCheckingOut ? '...' : t.checkout}</Button>
             </div>
           )}
@@ -2135,9 +2269,12 @@ const AnalyticsTab = ({ authToken, t, lang }) => {
 
 // --- Footer Component ---
 
-const Footer = ({ navigate, lang }) => {
+const Footer = ({ navigate, lang, user }) => {
   const t = TRANSLATIONS[lang].footer;
-  
+  const [isSubscribing, setIsSubscribing] = useState(false);
+  const [subscribeStatus, setSubscribeStatus] = useState(null); // 'success', 'error', 'already'
+  const [subscribeMessage, setSubscribeMessage] = useState('');
+
   const content = {
     en: {
       tagline: "Dining Fit For Royalty",
@@ -2150,8 +2287,13 @@ const Footer = ({ navigate, lang }) => {
       connect: "Connect",
       newsletter: "Newsletter",
       newsletterDesc: "Get updates on new collections and exclusive offers.",
+      newsletterLoggedOut: "Create an account to subscribe and receive a 15% discount code!",
+      newsletterSuccess: "Check your email for your 15% discount code!",
+      newsletterAlready: "You're already subscribed!",
+      newsletterError: "Something went wrong. Please try again.",
       emailPlaceholder: "Enter your email",
-      subscribe: "Subscribe"
+      subscribe: "Subscribe",
+      createAccount: "Create Account"
     },
     nl: {
       tagline: "Dineren Als Een Koning",
@@ -2164,12 +2306,56 @@ const Footer = ({ navigate, lang }) => {
       connect: "Volg Ons",
       newsletter: "Nieuwsbrief",
       newsletterDesc: "Ontvang updates over nieuwe collecties en exclusieve aanbiedingen.",
+      newsletterLoggedOut: "Maak een account aan om je in te schrijven en ontvang 15% korting!",
+      newsletterSuccess: "Check je e-mail voor je 15% kortingscode!",
+      newsletterAlready: "Je bent al ingeschreven!",
+      newsletterError: "Er ging iets mis. Probeer het opnieuw.",
       emailPlaceholder: "Voer uw e-mail in",
-      subscribe: "Aanmelden"
+      subscribe: "Aanmelden",
+      createAccount: "Account Aanmaken"
     }
   };
 
   const c = content[lang] || content.en;
+
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    if (!user) return;
+
+    setIsSubscribing(true);
+    setSubscribeStatus(null);
+    setSubscribeMessage('');
+
+    try {
+      const response = await fetch('/.netlify/functions/subscribe-newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customer_id: user.id,
+          email: user.email,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setSubscribeStatus('success');
+        setSubscribeMessage(c.newsletterSuccess);
+      } else if (data.error?.includes('already subscribed')) {
+        setSubscribeStatus('already');
+        setSubscribeMessage(c.newsletterAlready);
+      } else {
+        setSubscribeStatus('error');
+        setSubscribeMessage(data.error || c.newsletterError);
+      }
+    } catch (error) {
+      console.error('Newsletter subscription error:', error);
+      setSubscribeStatus('error');
+      setSubscribeMessage(c.newsletterError);
+    } finally {
+      setIsSubscribing(false);
+    }
+  };
 
   return (
     <footer className="bg-stone-900 text-white">
@@ -2219,16 +2405,48 @@ const Footer = ({ navigate, lang }) => {
           <div>
             <h4 className="font-bold text-sm uppercase tracking-wider mb-4">{c.newsletter}</h4>
             <p className="text-stone-400 text-sm mb-4">{c.newsletterDesc}</p>
-            <form className="flex gap-2" onSubmit={(e) => e.preventDefault()}>
-              <input 
-                type="email" 
-                placeholder={c.emailPlaceholder}
-                className="flex-1 px-4 py-2 bg-stone-800 border border-stone-700 rounded text-sm text-white placeholder-stone-500 focus:border-amber-500 outline-none transition-colors"
-              />
-              <button type="submit" className="px-4 py-2 bg-amber-600 hover:bg-amber-500 rounded text-sm font-medium transition-colors">
-                {c.subscribe}
-              </button>
-            </form>
+
+            {subscribeStatus === 'success' || subscribeStatus === 'already' ? (
+              <div className={`p-4 rounded ${subscribeStatus === 'success' ? 'bg-green-900/50 border border-green-700' : 'bg-amber-900/50 border border-amber-700'}`}>
+                <div className="flex items-center gap-2">
+                  <Check size={18} className={subscribeStatus === 'success' ? 'text-green-400' : 'text-amber-400'} />
+                  <p className={`text-sm ${subscribeStatus === 'success' ? 'text-green-300' : 'text-amber-300'}`}>
+                    {subscribeMessage}
+                  </p>
+                </div>
+              </div>
+            ) : !user ? (
+              <div>
+                <p className="text-amber-400 text-sm mb-3">{c.newsletterLoggedOut}</p>
+                <button
+                  onClick={() => navigate('signup')}
+                  className="px-4 py-2 bg-amber-600 hover:bg-amber-500 rounded text-sm font-medium transition-colors"
+                >
+                  {c.createAccount}
+                </button>
+              </div>
+            ) : (
+              <div>
+                <form className="flex gap-2" onSubmit={handleSubscribe}>
+                  <input
+                    type="email"
+                    value={user.email}
+                    disabled
+                    className="flex-1 px-4 py-2 bg-stone-800 border border-stone-700 rounded text-sm text-stone-400 cursor-not-allowed"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isSubscribing}
+                    className="px-4 py-2 bg-amber-600 hover:bg-amber-500 rounded text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSubscribing ? '...' : c.subscribe}
+                  </button>
+                </form>
+                {subscribeStatus === 'error' && (
+                  <p className="text-red-400 text-xs mt-2">{subscribeMessage}</p>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -2446,7 +2664,7 @@ const App = () => {
         {view === 'account' && !user && navigate('login')}
       </main>
 
-      <Footer navigate={navigate} lang={lang} />
+      <Footer navigate={navigate} lang={lang} user={user} />
 
       <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} cart={cart} updateQuantity={updateQuantity} removeFromCart={removeFromCart} lang={lang} user={user} />
       {notification && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-stone-900 text-white px-6 py-3 rounded shadow-xl z-50 flex items-center gap-3"><Check size={16} /> {notification}</div>}

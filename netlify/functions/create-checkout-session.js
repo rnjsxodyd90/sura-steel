@@ -1,5 +1,46 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
+// Helper function to validate discount code server-side
+async function validateDiscountCode(code, customerId) {
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
+
+  if (!supabaseUrl || !supabaseServiceKey || !code || !customerId) {
+    return null;
+  }
+
+  try {
+    const response = await fetch(`${supabaseUrl}/rest/v1/rpc/validate_discount_code`, {
+      method: 'POST',
+      headers: {
+        'apikey': supabaseServiceKey,
+        'Authorization': `Bearer ${supabaseServiceKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        p_code: code.toUpperCase().trim(),
+        p_customer_id: customerId,
+      }),
+    });
+
+    if (!response.ok) return null;
+
+    const result = await response.json();
+    const validation = result[0];
+
+    if (validation && validation.is_valid) {
+      return {
+        code: code.toUpperCase().trim(),
+        discount_percent: validation.discount_percent,
+      };
+    }
+  } catch (error) {
+    console.error('Error validating discount code:', error);
+  }
+
+  return null;
+}
+
 exports.handler = async (event) => {
   // Add CORS headers
   const headers = {
@@ -14,7 +55,7 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { cart, customer_id, customer_email } = JSON.parse(event.body);
+    const { cart, customer_id, customer_email, discount_code } = JSON.parse(event.body);
 
     // Validate cart
     if (!cart || cart.length === 0) {
@@ -28,7 +69,25 @@ exports.handler = async (event) => {
     // Get the site URL from Netlify environment or use the origin
     const siteUrl = process.env.URL || 'https://surasteel.com';
 
-    // Transform your cart items into Stripe's format
+    // Validate discount code if provided
+    let validatedDiscount = null;
+    if (discount_code && customer_id) {
+      validatedDiscount = await validateDiscountCode(discount_code, customer_id);
+      if (!validatedDiscount) {
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ error: 'Invalid or expired discount code' }),
+        };
+      }
+    }
+
+    // Calculate discount multiplier
+    const discountMultiplier = validatedDiscount
+      ? (100 - validatedDiscount.discount_percent) / 100
+      : 1;
+
+    // Transform your cart items into Stripe's format (with discount applied)
     const lineItems = cart.map((item) => ({
       price_data: {
         currency: 'eur',
@@ -40,7 +99,8 @@ exports.handler = async (event) => {
             variant: item.variant // Database variant name for inventory tracking
           }
         },
-        unit_amount: Math.round(item.price * 100), // Stripe uses cents (e.g., 20.00 -> 2000)
+        // Apply discount to unit amount
+        unit_amount: Math.round(item.price * 100 * discountMultiplier),
       },
       quantity: item.quantity,
     }));
@@ -71,6 +131,12 @@ exports.handler = async (event) => {
       if (!customer_id) {
         sessionOptions.metadata.guest_email = customer_email;
       }
+    }
+
+    // Store discount code in metadata for webhook to mark as used
+    if (validatedDiscount) {
+      sessionOptions.metadata.discount_code = validatedDiscount.code;
+      sessionOptions.metadata.discount_percent = validatedDiscount.discount_percent.toString();
     }
 
     const session = await stripe.checkout.sessions.create(sessionOptions);
